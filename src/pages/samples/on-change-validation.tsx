@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ValidationMessages } from "../../validation/components/validation-messages.tsx";
-import { useValidation } from "../../validation/hooks/use-validation.ts";
+import { useConclusion } from "../../validation/hooks/use-conclusion.ts";
 import { RuleResult } from "../../validation/rule.ts";
 import { Validator } from "../../validation/validator.ts";
 
@@ -27,7 +27,7 @@ const validator = Validator.of<string>()
 export function OnChangeValidation() {
   const [name, setName] = useState<string>("");
 
-  const { conclusion } = useValidation(name, validator);
+  const { conclusion } = useConclusion(name, validator);
 
   return (
     <div>

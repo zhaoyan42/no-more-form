@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { Validator } from "../validator.ts";
 import { ValidateConclusion } from "../conclusion.ts";
 
-export function useValidation<TSubject>(
+export function useConclusion<TSubject>(
   subject: TSubject,
   validator: Validator<TSubject>,
 ) {
