@@ -1,16 +1,16 @@
 import { useState } from "react";
-import { ImmediateValidationWithSubmit } from "./samples/immediate-validation-with-submit.tsx";
-import { ImmediateValidation } from "./samples/immediate-validation.tsx";
+import { OnChangeValidationWithSubmit } from "./samples/on-change-validation-with-submit.tsx";
+import { OnChangeValidation } from "./samples/on-change-validation.tsx";
 
-type SampleType = "immediate validate" | "immediate validate with submit";
+type SampleType = "on change validation" | "on change validation with submit";
 
 const samples: SampleType[] = [
-  "immediate validate",
-  "immediate validate with submit",
+  "on change validation",
+  "on change validation with submit",
 ];
 
 export function Sample() {
-  const [sample, setSample] = useState<SampleType>("immediate validate");
+  const [sample, setSample] = useState<SampleType>("on change validation");
 
   return (
     <div>
@@ -28,10 +28,10 @@ export function Sample() {
         ))}
       </ul>
 
-      <div>{sample === "immediate validate" && <ImmediateValidation />}</div>
+      <div>{sample === "on change validation" && <OnChangeValidation />}</div>
       <div>
-        {sample === "immediate validate with submit" && (
-          <ImmediateValidationWithSubmit />
+        {sample === "on change validation with submit" && (
+          <OnChangeValidationWithSubmit />
         )}
       </div>
     </div>

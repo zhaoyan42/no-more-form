@@ -24,58 +24,30 @@ const validator = Validator.of<string>()
     return RuleResult.valid;
   });
 
-export function ImmediateValidationWithSubmit() {
+export function OnChangeValidation() {
   const [name, setName] = useState<string>("");
 
-  const [submitState, setSubmitState] = useState<boolean | null>(null);
-
   const { conclusion } = useValidation(name, validator);
-
-  const submit = () => {
-    if (conclusion.isValid) {
-      setSubmitState(true);
-    } else {
-      setSubmitState(false);
-    }
-  };
 
   return (
     <div>
       <h2>
         These rules will be validating on name{" "}
-        <span style={{ color: "red" }}>immediately</span>
+        <span style={{ color: "red" }}>on change</span>
       </h2>
       <ul>
         <li>name is required (empty : error)</li>
         <li>name may be too short (length less than 5 : warning)</li>
         <li>name is too long (length greater than 10 : error)</li>
       </ul>
-      <div>
-        <input
-          type="text"
-          name="sample"
-          value={name}
-          placeholder="input something"
-          onChange={(e) => setName(e.target.value)}
-          autoComplete="off"
-        />
-        <ValidationMessages conclusion={conclusion} />
-      </div>
-
-      <div style={{ paddingTop: "20px" }}>
-        <button onClick={submit}>submit</button>
-
-        <button onClick={submit} disabled={!conclusion.isValid}>
-          button with disabled :{" "}
-          {conclusion.isValid ? "can submit" : "can't submit"}
-        </button>
-
-        {submitState !== null && (
-          <div>{submitState ? "submit success" : "submit failed"}</div>
-        )}
-      </div>
-
-      <div style={{ paddingTop: "20px" }}></div>
+      <input
+        type="text"
+        value={name}
+        placeholder="input something"
+        onChange={(e) => setName(e.target.value)}
+        autoComplete="off"
+      />
+      <ValidationMessages conclusion={conclusion} />
     </div>
   );
 }
