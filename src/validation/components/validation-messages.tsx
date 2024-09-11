@@ -1,12 +1,10 @@
 import { useCallback } from "react";
-import { ValidateConclusion } from "../conclusion.ts";
 import { RuleResult } from "../rule.ts";
+import { Validation } from "../validation.ts";
 
-export function ValidationMessages({
-  conclusion,
-}: {
-  conclusion: ValidateConclusion;
-}) {
+export function ValidationMessages({ validation }: { validation: Validation }) {
+  const { conclusion, visible } = validation;
+
   const getStyles = useCallback((result: RuleResult) => {
     switch (result.state) {
       case "warning":
@@ -19,12 +17,14 @@ export function ValidationMessages({
   }, []);
 
   return (
-    <>
-      {conclusion.notValidResults.map((result, index) => (
-        <div key={index} style={getStyles(result)}>
-          {result.message}
-        </div>
-      ))}
-    </>
+    visible && (
+      <>
+        {conclusion.notValidResults.map((result, index) => (
+          <div key={index} style={getStyles(result)}>
+            {result.message}
+          </div>
+        ))}
+      </>
+    )
   );
 }

@@ -24,10 +24,10 @@ const validator = Validator.of<string>()
     return RuleResult.valid;
   });
 
-export function OnChangeValidation() {
+export function EagerValidation() {
   const [name, setName] = useState<string>("");
 
-  const validation = useValidation(name, validator);
+  const validation = useValidation(name, validator, { eager: true });
 
   return (
     <div>

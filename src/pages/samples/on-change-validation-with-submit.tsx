@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { ValidationMessages } from "../../validation/components/validation-messages.tsx";
-import { useConclusion } from "../../validation/hooks/use-conclusion.ts";
 import { RuleResult } from "../../validation/rule.ts";
 import { Validator } from "../../validation/validator.ts";
+import { useValidation } from "../../validation/hooks/use-validation-states.ts";
 
 const validator = Validator.of<string>()
   .addRule((subject) => {
@@ -29,7 +29,9 @@ export function OnChangeValidationWithSubmit() {
 
   const [submitState, setSubmitState] = useState<boolean | null>(null);
 
-  const { conclusion } = useConclusion(name, validator);
+  const validation = useValidation(name, validator);
+
+  const { conclusion } = validation;
 
   const submit = () => {
     if (conclusion.isValid) {
@@ -59,7 +61,7 @@ export function OnChangeValidationWithSubmit() {
           onChange={(e) => setName(e.target.value)}
           autoComplete="off"
         />
-        <ValidationMessages conclusion={conclusion} />
+        <ValidationMessages validation={validation} />
       </div>
 
       <div style={{ paddingTop: "20px" }}>
