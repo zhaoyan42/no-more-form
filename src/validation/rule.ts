@@ -6,15 +6,15 @@ export class RuleResult {
     public message: string,
   ) {}
 
-  isValid() {
+  get isValid() {
     return this.state === "valid";
   }
 
-  isWarning() {
+  get isWarning() {
     return this.state === "warning";
   }
 
-  isInvalid() {
+  get isInvalid() {
     return this.state === "invalid";
   }
 
