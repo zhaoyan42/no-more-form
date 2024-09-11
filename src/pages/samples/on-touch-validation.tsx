@@ -24,14 +24,16 @@ const validator = Validator.of<string>()
     return RuleResult.valid;
   });
 
-export function OnChangeValidation() {
+export function OnTouchValidation() {
   const [name, setName] = useState<string>("");
 
   const validation = useValidation(name, validator, {
     eager: false,
-    onChange: true,
-    onTouch: false,
+    onChange: false,
+    onTouch: true,
   });
+
+  const { setTouched } = validation;
 
   return (
     <div>
@@ -50,6 +52,7 @@ export function OnChangeValidation() {
         placeholder="input something"
         onChange={(e) => setName(e.target.value)}
         autoComplete="off"
+        onBlur={setTouched}
       />
       <ValidationMessages validation={validation} />
     </div>

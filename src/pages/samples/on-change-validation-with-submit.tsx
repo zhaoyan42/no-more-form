@@ -29,7 +29,11 @@ export function OnChangeValidationWithSubmit() {
 
   const [submitState, setSubmitState] = useState<boolean | null>(null);
 
-  const validation = useValidation(name, validator);
+  const validation = useValidation(name, validator, {
+    eager: false,
+    onChange: true,
+    onTouch: false,
+  });
 
   const { conclusion } = validation;
 
