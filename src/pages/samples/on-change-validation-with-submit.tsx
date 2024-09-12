@@ -1,35 +1,14 @@
 import { useState } from "react";
 import { ValidationMessages } from "../../validation/components/validation-messages.tsx";
-import { RuleResult } from "../../validation/rule.ts";
-import { Validator } from "../../validation/validator.ts";
 import { useValidation } from "../../validation/hooks/use-validation-states.ts";
-
-const validator = Validator.of<string>()
-  .addRule((subject) => {
-    if (subject.length === 0) {
-      return RuleResult.invalid("name is required");
-    }
-    return RuleResult.valid;
-  })
-  .addRule((subject) => {
-    if (0 < subject.length && subject.length < 5) {
-      return RuleResult.warning("name may be too short");
-    }
-    return RuleResult.valid;
-  })
-  .addRule((subject) => {
-    if (subject.length > 10) {
-      return RuleResult.invalid("name is too long");
-    }
-    return RuleResult.valid;
-  });
+import { sampleNameValidator } from "./validator/validators.ts";
 
 export function OnChangeValidationWithSubmit() {
   const [name, setName] = useState<string>("");
 
   const [submitState, setSubmitState] = useState<boolean | null>(null);
 
-  const validation = useValidation(name, validator, {
+  const validation = useValidation(name, sampleNameValidator, {
     eager: false,
     onChange: true,
     onTouch: false,
