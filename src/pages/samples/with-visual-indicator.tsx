@@ -3,10 +3,8 @@ import { ValidationMessages } from "../../validation/components/validation-messa
 import { useValidation } from "../../validation/hooks/use-validation-states.ts";
 import { sampleNameValidator } from "./validator/validators.ts";
 
-export function OnChangeValidationWithSubmit() {
+export function WithVisualIndicator() {
   const [name, setName] = useState<string>("");
-
-  const [submitState, setSubmitState] = useState<boolean | null>(null);
 
   const validation = useValidation(name, sampleNameValidator, {
     eager: false,
@@ -15,14 +13,6 @@ export function OnChangeValidationWithSubmit() {
   });
 
   const { conclusion } = validation;
-
-  const submit = () => {
-    if (conclusion.isValid) {
-      setSubmitState(true);
-    } else {
-      setSubmitState(false);
-    }
-  };
 
   return (
     <div>
@@ -36,29 +26,23 @@ export function OnChangeValidationWithSubmit() {
         <li>name is too long (length greater than 10 : error)</li>
       </ul>
       <div>
-        <input
-          type="text"
-          name="sample"
-          value={name}
-          placeholder="input something"
-          onChange={(e) => setName(e.target.value)}
-          autoComplete="off"
-        />
+        <div>
+          <input
+            type="text"
+            name="sample"
+            value={name}
+            placeholder="input something"
+            onChange={(e) => setName(e.target.value)}
+            autoComplete="off"
+          />
+          <button disabled={!conclusion.isValid}>
+            {conclusion.isValid ? "can submit" : "can't submit"}
+          </button>
+        </div>
         <ValidationMessages validation={validation} />
       </div>
 
-      <div style={{ paddingTop: "20px" }}>
-        <button onClick={submit}>submit</button>
-
-        <button onClick={submit} disabled={!conclusion.isValid}>
-          button with disabled :{" "}
-          {conclusion.isValid ? "can submit" : "can't submit"}
-        </button>
-
-        {submitState !== null && (
-          <div>{submitState ? "submit success" : "submit failed"}</div>
-        )}
-      </div>
+      <div style={{ paddingTop: "20px" }}></div>
 
       <div style={{ paddingTop: "20px" }}></div>
     </div>

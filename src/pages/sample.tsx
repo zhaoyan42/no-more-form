@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { OnChangeValidationWithSubmit } from "./samples/on-change-validation-with-submit.tsx";
+import { WithVisualIndicator } from "./samples/with-visual-indicator.tsx";
 import { OnChangeValidation } from "./samples/on-change-validation.tsx";
 import { EagerValidation } from "./samples/eager-validation.tsx";
 import { OnTouchValidation } from "./samples/on-touch-validation.tsx";
@@ -7,19 +7,18 @@ import { OnTouchValidation } from "./samples/on-touch-validation.tsx";
 type SampleType =
   | "eager validation"
   | "on change validation"
-  | "on change validation with submit"
+  | "with visual indicator"
   | "on touch validation";
 const samples: SampleType[] = [
   "eager validation",
   "on change validation",
-  "on change validation with submit",
+  "with visual indicator",
   "on touch validation",
 ];
 
 export function Sample() {
-  const [currentSample, setCurrentSample] = useState<SampleType>(
-    "on change validation",
-  );
+  const [currentSample, setCurrentSample] =
+    useState<SampleType>("eager validation");
 
   return (
     <div>
@@ -43,9 +42,7 @@ export function Sample() {
         {currentSample === "on change validation" && <OnChangeValidation />}
       </div>
       <div>
-        {currentSample === "on change validation with submit" && (
-          <OnChangeValidationWithSubmit />
-        )}
+        {currentSample === "with visual indicator" && <WithVisualIndicator />}
       </div>
       <div>
         {currentSample === "on touch validation" && <OnTouchValidation />}

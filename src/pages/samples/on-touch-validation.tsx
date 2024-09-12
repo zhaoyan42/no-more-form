@@ -18,7 +18,7 @@ export function OnTouchValidation() {
     <div>
       <h2>
         These rules will be validating on name{" "}
-        <span style={{ color: "red" }}>on change</span>
+        <span style={{ color: "red" }}>on touch</span>
       </h2>
       <ul>
         <li>name is required (empty : error)</li>
