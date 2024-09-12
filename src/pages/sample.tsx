@@ -3,17 +3,20 @@ import { WithVisualIndicator } from "./samples/with-visual-indicator.tsx";
 import { OnChangeValidation } from "./samples/on-change-validation.tsx";
 import { EagerValidation } from "./samples/eager-validation.tsx";
 import { OnTouchValidation } from "./samples/on-touch-validation.tsx";
+import { GroupedValidation } from "./samples/grouped-validation.tsx";
 
 type SampleType =
   | "eager validation"
   | "on change validation"
   | "with visual indicator"
-  | "on touch validation";
+  | "on touch validation"
+  | "grouped validation";
 const samples: SampleType[] = [
   "eager validation",
   "on change validation",
   "with visual indicator",
   "on touch validation",
+  "grouped validation",
 ];
 
 export function Sample() {
@@ -46,6 +49,9 @@ export function Sample() {
       </div>
       <div>
         {currentSample === "on touch validation" && <OnTouchValidation />}
+      </div>
+      <div>
+        {currentSample === "grouped validation" && <GroupedValidation />}
       </div>
     </div>
   );

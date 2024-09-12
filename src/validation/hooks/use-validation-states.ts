@@ -44,10 +44,12 @@ export function useValidation<TSubject>(
     eager?: boolean;
     onChange?: boolean;
     onTouch?: boolean;
+    groupTouched?: boolean;
   } = {
     eager: false,
     onChange: true,
     onTouch: true,
+    groupTouched: false,
   },
 ) {
   const {
@@ -75,6 +77,12 @@ export function useValidation<TSubject>(
       setVisible(true);
     }
   }, [fieldTouched, options.onTouch]);
+
+  useEffect(() => {
+    if (options.groupTouched) {
+      setVisible(true);
+    }
+  }, [options.groupTouched]);
 
   return useMemo(
     () => ({ conclusion, visible, setTouched }) satisfies Validation,

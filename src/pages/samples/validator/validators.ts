@@ -20,3 +20,17 @@ export const sampleNameValidator = Validator.of<string>()
     }
     return RuleResult.valid;
   });
+
+export const sampleEmailValidator = Validator.of<string>()
+  .addRule((subject) => {
+    if (subject.length === 0) {
+      return RuleResult.invalid("email is required");
+    }
+    return RuleResult.valid;
+  })
+  .addRule((subject) => {
+    if (subject.length > 0 && !subject.includes("@")) {
+      return RuleResult.invalid("email is invalid");
+    }
+    return RuleResult.valid;
+  });
