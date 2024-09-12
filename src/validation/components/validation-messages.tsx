@@ -3,7 +3,7 @@ import { RuleResult } from "../rule.ts";
 import { Validation } from "../validation.ts";
 
 export function ValidationMessages({ validation }: { validation: Validation }) {
-  const { conclusion, visible } = validation;
+  const { visibleConclusion, visible } = validation;
 
   const getStyles = useCallback((result: RuleResult) => {
     switch (result.state) {
@@ -19,7 +19,7 @@ export function ValidationMessages({ validation }: { validation: Validation }) {
   return (
     visible && (
       <>
-        {conclusion.notValidResults.map((result, index) => (
+        {visibleConclusion.notValidResults.map((result, index) => (
           <div key={index} style={getStyles(result)}>
             {result.message}
           </div>
