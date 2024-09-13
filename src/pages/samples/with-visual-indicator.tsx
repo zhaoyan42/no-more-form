@@ -41,10 +41,6 @@ export function WithVisualIndicator() {
         </div>
         <ValidationMessages validation={validation} />
       </div>
-
-      <div style={{ paddingTop: "20px" }}></div>
-
-      <div style={{ paddingTop: "20px" }}></div>
     </div>
   );
 }
