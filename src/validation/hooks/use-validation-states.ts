@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Validation } from "../validation.ts";
 import { FieldStates, ValidationStates } from "../states.ts";
-import { ValidateConclusion } from "../conclusion.ts";
+import { RuleResultSet } from "../rule-result-set.ts";
 import { Rule } from "../rule.ts";
 import { RuleSet } from "../rule-set.ts";
 
@@ -61,14 +61,14 @@ export function useValidation<TSubject>(
 
   const [visible, setVisible] = useState(options.eager || false);
 
-  const validator = useMemo(() => RuleSet.of(rules), [rules]);
+  const ruleSet = useMemo(() => RuleSet.of(rules), [rules]);
 
-  const getConclusion = useCallback(
-    () => new ValidateConclusion(validator.validate(subject)),
-    [subject, validator],
+  const getResultSet = useCallback(
+    () => new RuleResultSet(ruleSet.validate(subject)),
+    [subject, ruleSet],
   );
 
-  const visibleConclusion = useMemo(() => getConclusion(), [getConclusion]);
+  const visibleResultSet = useMemo(() => getResultSet(), [getResultSet]);
 
   const setTouched = useCallback(() => {
     setFieldTouched(true);
@@ -95,11 +95,11 @@ export function useValidation<TSubject>(
   return useMemo(
     () =>
       ({
-        visibleConclusion,
+        visibleResultSet,
         visible,
         setTouched,
-        getConclusion,
+        getResultSet,
       }) satisfies Validation,
-    [visibleConclusion, setTouched, visible, getConclusion],
+    [visibleResultSet, setTouched, visible, getResultSet],
   );
 }

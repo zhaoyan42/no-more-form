@@ -1,6 +1,6 @@
 import { RuleResult } from "./rule.ts";
 
-export class ValidateConclusion {
+export class RuleResultSet {
   constructor(public results: RuleResult[]) {}
 
   get isValid() {

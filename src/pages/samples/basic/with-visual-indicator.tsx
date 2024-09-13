@@ -12,7 +12,7 @@ export function WithVisualIndicator() {
     onTouch: false,
   });
 
-  const { visibleConclusion } = validation;
+  const { visibleResultSet } = validation;
 
   return (
     <div>
@@ -35,8 +35,8 @@ export function WithVisualIndicator() {
             onChange={(e) => setName(e.target.value)}
             autoComplete="off"
           />
-          <button disabled={!visibleConclusion.isValid}>
-            {visibleConclusion.isValid ? "can submit" : "can't submit"}
+          <button disabled={!visibleResultSet.isValid}>
+            {visibleResultSet.isValid ? "can submit" : "can't submit"}
           </button>
         </div>
         <ValidationMessages validation={validation} />

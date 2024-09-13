@@ -1,8 +1,8 @@
-import { ValidateConclusion } from "./conclusion.ts";
+import { RuleResultSet } from "./rule-result-set.ts";
 
 export interface Validation {
-  visibleConclusion: ValidateConclusion;
+  visibleResultSet: RuleResultSet;
   visible: boolean;
   setTouched: () => void;
-  getConclusion: () => ValidateConclusion;
+  getResultSet: () => RuleResultSet;
 }
