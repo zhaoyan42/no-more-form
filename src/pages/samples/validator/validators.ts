@@ -34,3 +34,13 @@ export const sampleEmailValidator = Validator.of<string>()
     }
     return RuleResult.valid;
   });
+
+export const sampleCompositeValidator = Validator.of<{
+  accept: boolean;
+  reason: string;
+}>().addRule((subject) => {
+  if (!subject.accept && subject.reason.length === 0) {
+    return RuleResult.invalid("reason is required");
+  }
+  return RuleResult.valid;
+});
