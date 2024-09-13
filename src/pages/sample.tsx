@@ -5,6 +5,7 @@ import { EagerValidation } from "./samples/basic/eager-validation.tsx";
 import { OnTouchValidation } from "./samples/basic/on-touch-validation.tsx";
 import { GroupedValidation } from "./samples/basic/grouped-validation.tsx";
 import { CompositeValidation } from "./samples/advance/composite-validation.tsx";
+import { DynamicValidation } from "./samples/advance/dynamic-validation.tsx";
 
 type SampleType =
   | "eager validation"
@@ -12,7 +13,8 @@ type SampleType =
   | "with visual indicator"
   | "on touch validation"
   | "grouped validation"
-  | "composite validation";
+  | "composite validation"
+  | "dynamic validation";
 const basicSamples: SampleType[] = [
   "eager validation",
   "on change validation",
@@ -21,12 +23,15 @@ const basicSamples: SampleType[] = [
   "grouped validation",
 ];
 
-const advancedSamples: SampleType[] = ["composite validation"];
+const advancedSamples: SampleType[] = [
+  "composite validation",
+  "dynamic validation",
+];
 
 function Option(props: {
   onClick: () => void;
   sample: SampleType;
-  currentSample: any;
+  currentSample: SampleType;
 }) {
   return (
     <li style={{ cursor: "pointer" }} onClick={props.onClick}>
@@ -85,6 +90,9 @@ export function Sample() {
       </div>
       <div>
         {currentSample === "composite validation" && <CompositeValidation />}
+      </div>
+      <div>
+        {currentSample === "dynamic validation" && <DynamicValidation />}
       </div>
     </div>
   );

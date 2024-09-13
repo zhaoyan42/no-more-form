@@ -1,15 +1,27 @@
 import { useMemo, useState } from "react";
 import { ValidationMessages } from "../../../validation/components/validation-messages.tsx";
 import { useValidation } from "../../../validation/hooks/use-validation-states.ts";
-import { sampleCompositeValidator } from "../validator/validators.ts";
+import { Validator } from "../../../validation/validator.ts";
+import { RuleResult } from "../../../validation/rule.ts";
 
-export function CompositeValidation() {
+export function DynamicValidation() {
   const [accept, setAccept] = useState<boolean>(false);
   const [reason, setReason] = useState<string>("");
 
-  const subject = useMemo(() => ({ accept, reason }), [accept, reason]);
+  const validator = useMemo(() => {
+    const validator = Validator.of<string>();
+    if (!accept) {
+      validator.addRule((subject) => {
+        if (subject.length === 0) {
+          return RuleResult.invalid("reason is required");
+        }
+        return RuleResult.valid;
+      });
+    }
+    return validator;
+  }, [accept]);
 
-  const validation = useValidation(subject, sampleCompositeValidator, {
+  const validation = useValidation(reason, validator, {
     eager: true,
   });
 
