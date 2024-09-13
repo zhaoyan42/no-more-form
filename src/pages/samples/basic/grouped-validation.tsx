@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { ValidationMessages } from "../../validation/components/validation-messages.tsx";
-import { useValidation } from "../../validation/hooks/use-validation-states.ts";
+import { ValidationMessages } from "../../../validation/components/validation-messages.tsx";
+import { useValidation } from "../../../validation/hooks/use-validation-states.ts";
 import {
   sampleEmailValidator,
   sampleNameValidator,
-} from "./validator/validators.ts";
-import { useGroupStates } from "../../validation/hooks/use-group-states.ts";
+} from "../validator/validators.ts";
+import { useGroupStates } from "../../../validation/hooks/use-group-states.ts";
 
 export function GroupedValidation() {
   const [name, setName] = useState<string>("");

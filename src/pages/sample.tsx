@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { WithVisualIndicator } from "./samples/with-visual-indicator.tsx";
-import { OnChangeValidation } from "./samples/on-change-validation.tsx";
-import { EagerValidation } from "./samples/eager-validation.tsx";
-import { OnTouchValidation } from "./samples/on-touch-validation.tsx";
-import { GroupedValidation } from "./samples/grouped-validation.tsx";
+import { WithVisualIndicator } from "./samples/basic/with-visual-indicator.tsx";
+import { OnChangeValidation } from "./samples/basic/on-change-validation.tsx";
+import { EagerValidation } from "./samples/basic/eager-validation.tsx";
+import { OnTouchValidation } from "./samples/basic/on-touch-validation.tsx";
+import { GroupedValidation } from "./samples/basic/grouped-validation.tsx";
 
 type SampleType =
   | "eager validation"
