@@ -1,11 +1,7 @@
 import { useState } from "react";
 import { ValidationMessages } from "../../../validation/components/validation-messages.tsx";
 import { useValidation } from "../../../validation/hooks/use-validation-states.ts";
-import {
-  sampleAgeValidator,
-  sampleItemsValidator,
-  sampleNameValidator,
-} from "../validator/validators.ts";
+import { ageRules, itemsRules, nameRules } from "../validator/rules.ts";
 
 interface Item {
   name: string;
@@ -23,11 +19,11 @@ function ItemEditor({
   onNameChanged: (value: string) => void;
   onAgeChanged: (value: number) => void;
 }) {
-  const nameValidation = useValidation(name, sampleNameValidator, {
+  const nameValidation = useValidation(name, nameRules, {
     eager: true,
   });
 
-  const ageValidation = useValidation(age, sampleAgeValidator, {
+  const ageValidation = useValidation(age, ageRules, {
     eager: true,
   });
 
@@ -74,7 +70,7 @@ function ItemEditor({
 export function MultipleLayerValidation() {
   const [items, setItems] = useState<Item[]>([]);
 
-  const itemsValidation = useValidation(items, sampleItemsValidator, {
+  const itemsValidation = useValidation(items, itemsRules, {
     eager: true,
   });
 

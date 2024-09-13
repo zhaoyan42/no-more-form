@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { ValidationMessages } from "../../../validation/components/validation-messages.tsx";
 import { useValidation } from "../../../validation/hooks/use-validation-states.ts";
-import { sampleCompositeValidator } from "../validator/validators.ts";
+import { compositeRules } from "../validator/rules.ts";
 
 export function CompositeValidation() {
   const [accept, setAccept] = useState<boolean>(false);
@@ -9,7 +9,7 @@ export function CompositeValidation() {
 
   const subject = useMemo(() => ({ accept, reason }), [accept, reason]);
 
-  const validation = useValidation(subject, sampleCompositeValidator, {
+  const validation = useValidation(subject, compositeRules, {
     eager: true,
   });
 

@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Validator } from "../validator.ts";
 import { Validation } from "../validation.ts";
 import { FieldStates, ValidationStates } from "../states.ts";
 import { ValidateConclusion } from "../conclusion.ts";
+import { Rule } from "../rule.ts";
+import { Validator } from "../validator.ts";
 
 export function useValidationStates(): ValidationStates {
   const [dirty, setDirty] = useState(false);
@@ -39,7 +40,7 @@ export function useFieldStates<T>(subject: T): FieldStates {
 
 export function useValidation<TSubject>(
   subject: TSubject,
-  validator: Validator<TSubject>,
+  rules: Rule<TSubject>[],
   options: {
     eager?: boolean;
     onChange?: boolean;
@@ -59,6 +60,8 @@ export function useValidation<TSubject>(
   } = useFieldStates(subject);
 
   const [visible, setVisible] = useState(options.eager || false);
+
+  const validator = useMemo(() => Validator.of(rules), [rules]);
 
   const getConclusion = useCallback(
     () => new ValidateConclusion(validator.validate(subject)),

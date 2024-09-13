@@ -1,11 +1,9 @@
 import { useState } from "react";
 import { ValidationMessages } from "../../../validation/components/validation-messages.tsx";
 import { useValidation } from "../../../validation/hooks/use-validation-states.ts";
-import {
-  sampleEmailValidator,
-  sampleNameValidator,
-} from "../validator/validators.ts";
+
 import { useGroupStates } from "../../../validation/hooks/use-group-states.ts";
+import { emailRules, nameRules } from "../validator/rules.ts";
 
 export function GroupedValidation() {
   const [name, setName] = useState<string>("");
@@ -13,14 +11,14 @@ export function GroupedValidation() {
 
   const { groupTouched, setGroupTouched } = useGroupStates();
 
-  const nameValidation = useValidation(name, sampleNameValidator, {
+  const nameValidation = useValidation(name, nameRules, {
     eager: false,
     onChange: false,
     onTouch: false,
     groupTouched: groupTouched,
   });
 
-  const emailValidation = useValidation(email, sampleEmailValidator, {
+  const emailValidation = useValidation(email, emailRules, {
     eager: false,
     onChange: false,
     onTouch: false,
