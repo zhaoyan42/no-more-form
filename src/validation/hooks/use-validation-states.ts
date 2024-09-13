@@ -3,7 +3,7 @@ import { Validation } from "../validation.ts";
 import { FieldStates, ValidationStates } from "../states.ts";
 import { ValidateConclusion } from "../conclusion.ts";
 import { Rule } from "../rule.ts";
-import { Validator } from "../validator.ts";
+import { RuleSet } from "../rule-set.ts";
 
 export function useValidationStates(): ValidationStates {
   const [dirty, setDirty] = useState(false);
@@ -61,7 +61,7 @@ export function useValidation<TSubject>(
 
   const [visible, setVisible] = useState(options.eager || false);
 
-  const validator = useMemo(() => Validator.of(rules), [rules]);
+  const validator = useMemo(() => RuleSet.of(rules), [rules]);
 
   const getConclusion = useCallback(
     () => new ValidateConclusion(validator.validate(subject)),

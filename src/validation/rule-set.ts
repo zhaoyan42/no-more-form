@@ -1,10 +1,10 @@
 import { Rule, RuleResult } from "./rule.ts";
 
-export class Validator<TSubject> {
+export class RuleSet<TSubject> {
   private constructor(private rules: Rule<TSubject>[]) {}
 
   static of<T>(rules: Rule<T>[] = []) {
-    return new Validator<T>(rules);
+    return new RuleSet<T>(rules);
   }
 
   addRule(rule: Rule<TSubject>) {
