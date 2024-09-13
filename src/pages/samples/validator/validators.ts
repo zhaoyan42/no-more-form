@@ -44,3 +44,36 @@ export const sampleCompositeValidator = Validator.of<{
   }
   return RuleResult.valid;
 });
+
+export const sampleItemsValidator = Validator.of<
+  {
+    name: string;
+    age: number;
+  }[]
+>()
+  .addRule((subject) => {
+    if (subject.length === 0) {
+      return RuleResult.invalid("items are required");
+    }
+    return RuleResult.valid;
+  })
+  .addRule((subject) => {
+    if (subject.length > 5) {
+      return RuleResult.invalid("items are too many");
+    }
+    return RuleResult.valid;
+  });
+
+export const sampleAgeValidator = Validator.of<number>()
+  .addRule((subject) => {
+    if (subject < 0) {
+      return RuleResult.invalid("age is too small");
+    }
+    return RuleResult.valid;
+  })
+  .addRule((subject) => {
+    if (subject > 6) {
+      return RuleResult.invalid("age is too large");
+    }
+    return RuleResult.valid;
+  });
