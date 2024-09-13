@@ -30,7 +30,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'pnpm'
-    - run: pnpm ci
+    - run: pnpm install
     - run: pnpm run build
     - uses: peaceiris/actions-gh-pages@v3
       with:
