@@ -1,14 +1,19 @@
 import { Rule, RuleResult } from "./rule.ts";
 
 export class Validator<TSubject> {
-  static of<T>() {
-    return new Validator<T>();
-  }
+  private constructor(private rules: Rule<TSubject>[]) {}
 
-  private rules: Rule<TSubject>[] = [];
+  static of<T>(rules: Rule<T>[] = []) {
+    return new Validator<T>(rules);
+  }
 
   addRule(rule: Rule<TSubject>) {
     this.rules.push(rule);
+    return this;
+  }
+
+  addRules(rules: Rule<TSubject>[]) {
+    this.rules.push(...rules);
     return this;
   }
 
