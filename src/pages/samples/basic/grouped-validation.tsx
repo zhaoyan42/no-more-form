@@ -3,7 +3,7 @@ import { ValidationMessages } from "../../../validation/components/validation-me
 import { useValidation } from "../../../validation/hooks/use-validation-states.ts";
 
 import { useGroupStates } from "../../../validation/hooks/use-group-states.ts";
-import { emailRules, nameRules } from "../validator/rules.ts";
+import { emailRules, nameRules } from "../common/rules.ts";
 
 export function GroupedValidation() {
   const [name, setName] = useState<string>("");

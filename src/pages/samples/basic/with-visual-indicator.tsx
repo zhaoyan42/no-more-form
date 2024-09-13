@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ValidationMessages } from "../../../validation/components/validation-messages.tsx";
 import { useValidation } from "../../../validation/hooks/use-validation-states.ts";
-import { nameRules } from "../validator/rules.ts";
+import { nameRules } from "../common/rules.ts";
 
 export function WithVisualIndicator() {
   const [name, setName] = useState<string>("");
