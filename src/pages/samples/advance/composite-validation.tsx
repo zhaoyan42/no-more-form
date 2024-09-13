@@ -18,13 +18,11 @@ export function CompositeValidation() {
   return (
     <div>
       <h2>
-        These rules will be validating on name{" "}
+        These rules will be validating on accept and reason{" "}
         <span style={{ color: "red" }}>eagerly</span>
       </h2>
       <ul>
-        <li>name is required (empty : error)</li>
-        <li>name may be too short (length less than 5 : warning)</li>
-        <li>name is too long (length greater than 10 : error)</li>
+        <li>reason is required when accept not checked (empty : error)</li>
       </ul>
       <div
         style={{
