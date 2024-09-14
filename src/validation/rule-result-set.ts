@@ -10,4 +10,6 @@ export class RuleResultSet {
   get notValidResults() {
     return this.results.filter((result) => !result.isValid);
   }
+
+  static empty = new RuleResultSet([]);
 }

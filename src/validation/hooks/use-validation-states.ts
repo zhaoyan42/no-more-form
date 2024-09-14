@@ -68,7 +68,10 @@ export function useValidation<TSubject>(
     [subject, ruleSet],
   );
 
-  const visibleResultSet = useMemo(() => getResultSet(), [getResultSet]);
+  const visibleResultSet = useMemo(() => {
+    if (!visible) return RuleResultSet.empty;
+    return getResultSet();
+  }, [getResultSet, visible]);
 
   const setTouched = useCallback(() => {
     setFieldTouched(true);
