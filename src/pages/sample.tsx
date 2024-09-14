@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { InterruptSubmit } from "./samples/basic/interrupt-submit.tsx";
 import { WithVisualIndicator } from "./samples/basic/with-visual-indicator.tsx";
 import { OnChangeValidation } from "./samples/basic/on-change-validation.tsx";
 import { EagerValidation } from "./samples/basic/eager-validation.tsx";
@@ -14,6 +15,7 @@ type SampleType =
   | "with visual indicator"
   | "on touch validation"
   | "grouped validation"
+  | "interrupt submit"
   | "composite validation"
   | "dynamic validation"
   | "multiple layer";
@@ -23,6 +25,7 @@ const basicSamples: SampleType[] = [
   "with visual indicator",
   "on touch validation",
   "grouped validation",
+  "interrupt submit",
 ];
 
 const advancedSamples: SampleType[] = [
@@ -91,6 +94,7 @@ export function Sample() {
       <div>
         {currentSample === "grouped validation" && <GroupedValidation />}
       </div>
+      <div>{currentSample === "interrupt submit" && <InterruptSubmit />}</div>
       <div>
         {currentSample === "composite validation" && <CompositeValidation />}
       </div>

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Validation } from "../validation.ts";
+import { Validation, ValidationSet } from "../validation.ts";
 import { FieldStates, ValidationStates } from "../states.ts";
 import { RuleResultSet } from "../rule-result-set.ts";
 import { Rule } from "../rule.ts";
@@ -46,6 +46,7 @@ export function useValidation<TSubject>(
     onChange?: boolean;
     onTouch?: boolean;
     groupTouched?: boolean;
+    validationSet?: ValidationSet;
   } = {
     eager: false,
     onChange: true,
@@ -95,7 +96,7 @@ export function useValidation<TSubject>(
     }
   }, [options.groupTouched]);
 
-  return useMemo(
+  const validation = useMemo(
     () =>
       ({
         visibleResultSet,
@@ -105,4 +106,10 @@ export function useValidation<TSubject>(
       }) satisfies Validation,
     [visibleResultSet, setTouched, visible, getResultSet],
   );
+
+  if (options.validationSet) {
+    options.validationSet.addValidation(validation);
+  }
+
+  return validation;
 }
