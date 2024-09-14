@@ -29,7 +29,8 @@ export function GroupedValidation() {
     <div>
       <h2>
         These rules will be validating on name and email{" "}
-        <span style={{ color: "red" }}>on group touched</span>
+        <span style={{ color: "red" }}>on group touched</span> (in this sample
+        the validation will be triggered when the submit button is clicked.)
       </h2>
       <ul>
         <li>name is required (empty : error)</li>

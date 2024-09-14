@@ -67,7 +67,7 @@ function ItemEditor({
   );
 }
 
-export function MultipleLayerValidation() {
+export function MultipleLayerSubjectValidation() {
   const [items, setItems] = useState<Item[]>([]);
 
   const itemsValidation = useValidation(items, itemsRules, {
@@ -77,11 +77,17 @@ export function MultipleLayerValidation() {
   return (
     <div>
       <h2>
-        These rules will be validating on items{" "}
-        <span style={{ color: "red" }}>eagerly</span>
+        These rules will be validating on items and item's name and age eagerly
+        <span style={{ color: "red" }}>in different layers.</span>
+        (in this sample the items layer only validate the items length, the item
+        layer will validate the name and age of each item separately .)
       </h2>
       <ul>
-        <li>reason is required when accept not checked (empty : error)</li>
+        <li>name is required (empty : error)</li>
+        <li>name may be too short (length less than 5 : warning)</li>
+        <li>name is too long (length greater than 10 : error)</li>
+        <li>age is too young (less than 0 : error)</li>
+        <li>age is too old (greater than 6 : error)</li>
       </ul>
 
       <button

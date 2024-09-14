@@ -35,8 +35,9 @@ export function InterruptSubmit() {
   return (
     <div>
       <h2>
-        These rules will be validating on name and email{" "}
-        <span style={{ color: "red" }}>on group touched</span>
+        These rules will be validating on name and email eagerly and will{" "}
+        <span style={{ color: "red" }}>interrupt</span> the submit process if
+        the validation fails.
       </h2>
       <ul>
         <li>name is required (empty : error)</li>

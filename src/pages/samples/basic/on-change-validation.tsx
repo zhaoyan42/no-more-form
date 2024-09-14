@@ -16,7 +16,8 @@ export function OnChangeValidation() {
     <div>
       <h2>
         These rules will be validating on name{" "}
-        <span style={{ color: "red" }}>on change</span>
+        <span style={{ color: "red" }}>on change</span> (in this sample the
+        validation will be triggered when the input field changes.)
       </h2>
       <ul>
         <li>name is required (empty : error)</li>

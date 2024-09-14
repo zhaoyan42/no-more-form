@@ -1,23 +1,38 @@
 import { useMemo, useState } from "react";
 import { ValidationMessages } from "../../../validation/components/validation-messages.tsx";
 import { useValidation } from "../../../validation/hooks/use-validation-states.ts";
-import { compositeRules } from "../common/rules.ts";
+import { Rule, RuleResult } from "../../../validation/rule.ts";
 
-export function CompositeValidation() {
+export function DynamicRulesValidation() {
   const [accept, setAccept] = useState<boolean>(false);
   const [reason, setReason] = useState<string>("");
 
-  const subject = useMemo(() => ({ accept, reason }), [accept, reason]);
+  const rules = useMemo(() => {
+    const result: Rule<string>[] = [];
+    if (!accept) {
+      result.push((subject: string) => {
+        if (!subject) {
+          return RuleResult.invalid(
+            "reason is required when accept not checked",
+          );
+        }
+        return RuleResult.valid;
+      });
+    }
+    return result;
+  }, [accept]);
 
-  const validation = useValidation(subject, compositeRules, {
+  const validation = useValidation(reason, rules, {
     eager: true,
   });
 
   return (
     <div>
       <h2>
-        These rules will be validating on accept and reason{" "}
-        <span style={{ color: "red" }}>eagerly</span>
+        These rules will be validating on reason eagerly and{" "}
+        <span style={{ color: "red" }}>dynamically</span> (in this sample the
+        validation will validate the reason by the{" "}
+        <span style={{ color: "red" }}>dynamic</span> rules.)
       </h2>
       <ul>
         <li>reason is required when accept not checked (empty : error)</li>

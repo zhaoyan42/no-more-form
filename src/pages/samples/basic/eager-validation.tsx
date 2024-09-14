@@ -12,7 +12,8 @@ export function EagerValidation() {
     <div>
       <h2>
         These rules will be validating on name{" "}
-        <span style={{ color: "red" }}>eagerly</span>
+        <span style={{ color: "red" }}>eagerly</span> (in this sample the
+        validation will be triggered when the component is rendered.)
       </h2>
       <ul>
         <li>name is required (empty : error)</li>

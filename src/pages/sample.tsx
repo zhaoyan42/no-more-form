@@ -5,9 +5,9 @@ import { OnChangeValidation } from "./samples/basic/on-change-validation.tsx";
 import { EagerValidation } from "./samples/basic/eager-validation.tsx";
 import { OnTouchValidation } from "./samples/basic/on-touch-validation.tsx";
 import { GroupedValidation } from "./samples/basic/grouped-validation.tsx";
-import { CompositeValidation } from "./samples/advance/composite-validation.tsx";
-import { DynamicValidation } from "./samples/advance/dynamic-validation.tsx";
-import { MultipleLayerValidation } from "./samples/advance/multiple-layer-validation.tsx";
+import { CompositeSubjectValidation } from "./samples/advance/composite-subject-validation.tsx";
+import { DynamicRulesValidation } from "./samples/advance/dynamic-rules-validation.tsx";
+import { MultipleLayerSubjectValidation } from "./samples/advance/multiple-layer-subject-validation.tsx";
 
 type SampleType =
   | "eager validation"
@@ -18,7 +18,7 @@ type SampleType =
   | "interrupt submit"
   | "composite validation"
   | "dynamic validation"
-  | "multiple layer";
+  | "multiple layer subject";
 const basicSamples: SampleType[] = [
   "eager validation",
   "on change validation",
@@ -31,7 +31,7 @@ const basicSamples: SampleType[] = [
 const advancedSamples: SampleType[] = [
   "composite validation",
   "dynamic validation",
-  "multiple layer",
+  "multiple layer subject",
 ];
 
 function Option(props: {
@@ -96,13 +96,17 @@ export function Sample() {
       </div>
       <div>{currentSample === "interrupt submit" && <InterruptSubmit />}</div>
       <div>
-        {currentSample === "composite validation" && <CompositeValidation />}
+        {currentSample === "composite validation" && (
+          <CompositeSubjectValidation />
+        )}
       </div>
       <div>
-        {currentSample === "dynamic validation" && <DynamicValidation />}
+        {currentSample === "dynamic validation" && <DynamicRulesValidation />}
       </div>
       <div>
-        {currentSample === "multiple layer" && <MultipleLayerValidation />}
+        {currentSample === "multiple layer subject" && (
+          <MultipleLayerSubjectValidation />
+        )}
       </div>
     </div>
   );

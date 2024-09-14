@@ -17,8 +17,9 @@ export function WithVisualIndicator() {
   return (
     <div>
       <h2>
-        These rules will be validating on name{" "}
-        <span style={{ color: "red" }}>on change</span>
+        These rules will be validating on name on change and will show the{" "}
+        <span style={{ color: "red" }}>visual indicator</span> (in this sample
+        the submit button will be disabled when the validation is not valid.)
       </h2>
       <ul>
         <li>name is required (empty : error)</li>

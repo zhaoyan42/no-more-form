@@ -18,7 +18,8 @@ export function OnTouchValidation() {
     <div>
       <h2>
         These rules will be validating on name{" "}
-        <span style={{ color: "red" }}>on touch</span>
+        <span style={{ color: "red" }}>on touch</span> (in this sample the
+        validation will be triggered when the input field loses focus.)
       </h2>
       <ul>
         <li>name is required (empty : error)</li>
