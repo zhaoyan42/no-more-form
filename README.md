@@ -1,50 +1,33 @@
-# React + TypeScript + Vite
+# Why
+## 目前主流的验证框架有哪些？它们的做了什么？
+# What
+## 当我们在做验证的时候，我们到底在做什么？
+### 主题、规则、结果、结果集
+![subject_rule_result.png](docs%2Fsubject_rule_result.png)
+1. 主题
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+被验证的对象。例如：用户输入的用户名、密码、邮箱等。需要注意的是，主题可以是值类型，也可以是一个对象，也可以是一个集合。我们不限定具体的类型
 
-Currently, two official plugins are available:
+2. 规则
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+对于主题的判定方法。例如：当用户名长度小于 6 时，应该给出“验证结果”
 
-## Expanding the ESLint configuration
+3. 结果：
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+规则应用于主题后的结论，包括结果类型和提示信息两部分，这里需要注意，类型包含“合法”、“非法”、“建议”，“建议”类型用于提示但并不阻拦用户。例如：{“合法”,“”} 或者 {“非法”,“用户名长度不能小于 6”} 或者 {“建议”,“用户名长度不能小于 6”}
 
-- Configure the top-level `parserOptions` property like this:
+4. 规则集：
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+多个规则的集合。因为我们通常需要对主题同时进行多个规则的验证。例如：用户名长度不能小于 6；用户名不能包含特殊字符。
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+5. 结果集：
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+规则集应用于主题后的结论集。通常包含了多个结果。例如：[{“非法”,“密码长度不能小于 12”},{“非法”,“密码必须包含数字”},{“建议”,“密码建议包含大写字符”}]
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+### 状态、视觉呈现、拦截
+1. 状态：决定界面的显示/隐藏的依据
+2. 视觉呈现：得到结果后，展示给用户的方式
+3. 拦截：在使用主题数据之前，对主题数据进行验证并决定是否继续
+### 
+# How
+## 
