@@ -1,79 +1,208 @@
 # Why
-## 目前主流的验证框架有哪些？它们的做了什么？
+## 目前主流前端框架下验证的实现方式
 ### 1. 原味form表单验证
 原味form表单验证有两种方式：
 
-HTML5 内置验证
-
 通过input元素的type属性来控制的，例如：type="email"、type="number"、type="url"等。
-但这种方式扩展性和提示性都不够好。我们不深入讨论。
+但这种方式扩展性和颗粒度都不够好。我们不深入讨论。
 
-```html
-<form id="myForm">
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="username" required minlength="5" maxlength="10">
+```jsx
+import React, { useRef, useState } from 'react';
 
-    <label for="age">Age:</label>
-    <input type="number" id="age" name="age" required min="0" max="100">
+const MyForm = () => {
+    const formRef = useRef<HTMLFormElement>(null);
+    const [errorMessage, setErrorMessage] = useState<string>('');
 
-    <input type="submit" value="Submit">
-</form>
+    const handleSubmit = (event: React.FormEvent) => {
+        event.preventDefault(); // 手动阻止默认行为
+
+        if (formRef.current && !formRef.current.checkValidity()) {
+            setErrorMessage('Form is invalid!');
+        } else {
+            setErrorMessage('');
+            // Handle form submission
+        }
+    };
+
+    return (
+        <form ref={formRef} id="myForm" onSubmit={handleSubmit}>
+            <label htmlFor="username">Username:</label>
+            <input
+                type="text"
+                id="username"
+                name="username"
+                required
+                minLength={5}
+                maxLength={10}
+            />
+
+            <input type="submit" value="Submit" />
+
+            {errorMessage && <div style={{ color: 'red' }}>{errorMessage}</div>}
+        </form>
+    );
+};
+
+export default MyForm;
 ```
 
 另一种自定义的验证的结果是通过form元素的submit事件相应的回调函数来处理的。
 
-```html 
-<form id="myForm">
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="username">
+```jsx 
+import React, { useState } from 'react';
 
-    <label for="age">Age:</label>
-    <input type="number" id="age" name="age">
+const MyForm = () => {
+    const [username, setUsername] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
 
-    <input type="submit" value="Submit">
-</form>
-
-<script>
-    document.getElementById('myForm').addEventListener('submit', function(event) {
-        const username = document.getElementById('username').value;
-        const age = document.getElementById('age').value;
-
+    const handleSubmit = (event: React.FormEvent) => {
+        event.preventDefault(); // 甚至需要手动阻止默认行为
         let isValid = true;
-        let errorMessage = '';
+        let errors = '';
 
         if (username.length < 5 || username.length > 10) {
             isValid = false;
-            errorMessage += 'Username must be between 5 and 10 characters.\n';
-        }
-
-        if (age < 0 || age > 100) {
-            isValid = false;
-            errorMessage += 'Age must be between 0 and 100.\n';
+            errors += 'Username must be between 5 and 10 characters.\n';
         }
 
         if (!isValid) {
-            alert(errorMessage);
-            event.preventDefault();
+            setErrorMessage(errors);
+        } else {
+            setErrorMessage('');
+            // Handle form submission
         }
-    });
-</script>
+    };
+
+    return (
+        <form id="myForm" onSubmit={handleSubmit}>
+            <label htmlFor="username">Username:</label>
+            <input
+                type="text"
+                id="username"
+                name="username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+            />
+
+            <input type="submit" value="Submit" />
+
+            {errorMessage && <div style={{ color: 'red' }}>{errorMessage}</div>}
+        </form>
+    );
+};
+
+export default MyForm;
 ```
 
-看起来很符合表单验证的需求对吗？我们来看看form的一些属性：
-1. method：表单提交的方式，有get和post两种方式
-2. action：表单提交的地址
-3. target：表单提交后的目标窗口
-4. enctype：表单提交的编码方式
-5. accept-charset：表单提交的字符集
+其实从这里可以看出，在MVVM和SPA盛行的今天，原味from表单的验证的**提交**功能一般都不需要，你经常需要手动阻止默认行为。 
+其实看起来我们没有充分的理由必须使用form标签和onSubmit事件，你完全可以完全不使用form标签。
 
-等等，这些属性在做什么？这些属性是用来控制表单提交的行为的，而不是用来控制表单验证的行为的。 
-所以，原味form表单验证并不全是一个验证框架。你在目前的主流前端框架中使用它的时候甚至经常需要手动屏蔽掉浏览器的默认验证行为（刷新页面）。
+### 2. react-hook-form
 
-在某一些复杂表单中，我们有时会期望验证表单中的一部分数据，而不是全部数据。
-想象一下，你现在需要提交一个表单到服务器，在提交前验证其中订单信息和收货地址信息，但事先可以单独。
+这是一个在Github上至今为止有 41k+ star的项目，它对原生的form表单进行了封装，提供了更加方便的API。 不少组件都是基于react-hook-form进行封装的。
+但是它的验证方式依然是通过form元素的submit事件相应的回调函数来处理的。
 
-而当你仅仅保存订单信息（而不提交）的时候，你希望验证订单是否填写正确，但并不希望验证收货地址，因为那可能会让你的收货地址非预期的提示验证错误。
+```typescript jsx
+import { useForm } from "react-hook-form";
 
+export const MyForm = () => {
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm({
+        defaultValues: {
+            username: "test",
+        },
+    });
+
+    const onSubmit = (data: any) => {
+        console.log(data);
+    };
+
+    return (
+        <form onSubmit={handleSubmit(onSubmit)}>
+            <label htmlFor="username">Username:</label>
+            <input
+                type="text"
+                id="username"
+                {...register("username", {
+                    required: true,
+                    minLength: 5,
+                    maxLength: 10,
+                })}
+            />
+            {errors.username && (
+                <span>Username must be between 5 and 10 characters.</span>
+            )}
+
+            <input type="submit" value="Submit" />
+        </form>
+    );
+};
+```
+
+我认为，一个验证框架，应该外部挂载式的去验证已存在的数据，尽可能少地侵入已有的逻辑。
+
+首先，defaultValues的定义说明，其实在react-hook-form中，真正在验证发生的时候，使用的是hook内部的数据。submit的时候，得到的也是内部数据。这会导致什么问题呢？
+
+当你在组件中需要引用这个数据的时候，你需要通过hook的API来获取，这会导致你的代码和hook的API耦合在一起。
+
+当然，你可以用过在外部定义一个state来保存这个数据:
+
+```typescript jsx
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+
+export const Sample = () => {
+    const [username, setUsername] = useState("test");
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+        setValue,
+    } = useForm();
+
+    const onSubmit = (data: any) => {
+        console.log(data);
+    };
+
+    const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newValue = e.target.value;
+        setUsername(newValue);
+        setValue("username", newValue);
+    };
+
+    return (
+        <form onSubmit={handleSubmit(onSubmit)}>
+            <label htmlFor="username">Username:</label>
+            <input
+                type="text"
+                id="username"
+                value={username}
+                {...register("username", {
+                    required: true,
+                    minLength: 5,
+                    maxLength: 10,
+                })}
+                onChange={handleUsernameChange}
+            />
+            {errors.username && (
+                <span>Username must be between 5 and 10 characters.</span>
+            )}
+
+            <input type="submit" value="Submit" />
+        </form>
+    );
+};
+```
+
+但是这样的话，数据就会变为两份，一份在hook内部，一份在外部state，我们称之为冗余，只要存在冗余，就会涉及到同步的问题。
+
+你不得不花费额外的精力去保证【验证的数据】和【最终提交的state数据】是同一份你数据，这一点在涉及到非标准表单组件等复杂情况的时候，会变得尤为明显。
+
+其次，react-hook-form的register使用会侵入到你的jsx代码中，占用原本开放的onChange等等行为（上面这样简单处理后，甚至丢失了onChange的时候应该重新验证的特性）。
+如果是一个非标准的表单组件，情况会更为复杂。这极大的违背了少侵入的原则，让我们的代码看起来像一锅意大利面。
 
 # What
 ## 当我们在做验证的时候，我们到底在做什么？
