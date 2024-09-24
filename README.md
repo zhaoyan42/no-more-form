@@ -1,251 +1,232 @@
+这个项目“不会”为您提供一个绝对完美的解决方案。它主要包含一个已经用于生产环境的简易验证框架，以及一些示例代码。以下我会逐步介绍为什么我们应该放弃form验证，以及如何实现一个更加简洁优雅的验证框架。
+
 # Why
 
-回答这个问题之前，我们先来看一下前端表单验证的现状。
+我们先来看一看一个不太复杂的例子：
 
-## 目前主流前端框架下验证的实现方式
-### 1. 原味form表单验证
-原味form表单验证有两种方式：
+![sample.png](docs%2Fsample.png)
 
-通过input元素的type属性来控制的，例如：type="email"、type="number"、type="url"等。
-但这种方式扩展性和颗粒度都不够好。我们不深入讨论，有兴趣可以自行了解。
+针对这么一个简单的表单，我们需要做几个简单的验证：
+1. Name 必须是中文
+2. Email 必须是 qq.com 或者 163.com 邮箱
+3. Count 必须在 3 和 10 之间
+4. Count 必须是奇数
+5. Email 为 live.com 时，给出一个警告，但不阻止提交
+6. 提交时，如果有错误，阻止提交
 
-另一种自定义的验证的结果是通过form元素的submit事件相应的回调函数来处理的。
+## 验证框架
 
-```jsx 
-import React, { useState } from "react";
+### 1. 不使用验证框架
 
-export const MyForm = () => {
-    const [username, setUsername] = useState("");
-    const [count, setCount] = useState(0);
-    const [errorMessage, setErrorMessage] = useState("");
+```typescript jsx
+import { useState } from 'react';
 
-    const handleSubmit = (event: React.FormEvent) => {
-        event.preventDefault(); // 甚至需要手动阻止默认行为
-        let isValid = true;
-        let errors = "";
+const MyForm = () => {
+   const [name, setName] = useState('');
+   const [email, setEmail] = useState('');
+   const [count, setCount] = useState(0);
+   const [errors, setErrors] = useState({});
 
-        if (username.length < 5 || username.length > 10) {
-            isValid = false;
-            errors += "Username must be between 5 and 10 characters.\n";
-        }
-        
-        if (count < 0) {
-            isValid = false;
-            errors += "Count must be greater than or equal to 0.\n";
-        }
+   const validate = () => {
+      const newErrors = {};
+      // 验证Name
+      if (!/^[\u4e00-\u9fa5]+$/.test(name)) newErrors.name = 'Name 必须是中文';
+      // 验证Email
+      if (!/^\S+@(qq\.com|163\.com)$/.test(email)) {
+         if (/^\S+@live\.com$/.test(email)) {
+            newErrors.email = 'Warning: live.com 可能注册失败';// 这里是一个警告
+         } else {
+            newErrors.email = 'Email 必须是 qq.com 或者 163.com 邮箱';
+         }
+      }
+      // 验证Count
+      if (count < 3 || count > 10) newErrors.count = 'Count 必须在 3 和 10 之间';
+      if (count % 2 === 0) newErrors.count = 'Count 必须是奇数';
+      setErrors(newErrors);
+      return Object.keys(newErrors).length === 0 || newErrors.email === 'Warning: live.com 可能注册失败'; // 这里用错误信息来判断
+   };
 
-        if (!isValid) {
-            setErrorMessage(errors);
-        } else {
-            setErrorMessage("");
-            // Handle form submission
-        }
-    };
+   const handleSubmit = (e) => {
+      e.preventDefault();
+      if (validate()) {
+         console.log('Form submitted:', { name, email, count });
+      }
+   };
 
-    return (
-        <form id="myForm" onSubmit={handleSubmit}>
-            <label htmlFor="username">Username:</label>
-            <input
-                type="text"
-                id="username"
-                name="username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-            />
-
-            <button type="button" onClick={() => setCount((x) => x + 1)}>
-                +
-            </button>
-            {count}
-            <button type="button" onClick={() => setCount((x) => x - 1)}>
-                -
-            </button>
-
-            <input type="submit" value="Submit" />
-
-            {errorMessage && <div style={{ color: "red" }}>{errorMessage}</div>}
-        </form>
-    );
+   return (
+           <form onSubmit={handleSubmit}>
+              <div>
+                 <label>Name:</label>
+                 <input
+                         type="text"
+                         value={name}
+                         onChange={(e) => setName(e.target.value)}
+                 />
+                 {errors.name && <span>{errors.name}</span>}
+              </div>
+              <div>
+                 <label>Email:</label>
+                 <input
+                         type="email"
+                         value={email}
+                         onChange={(e) => setEmail(e.target.value)}
+                 />
+                 {errors.email && <span>{errors.email}</span>}
+              </div>
+              <div>
+                 <label>Count:</label>
+                 <button type="button" onClick={() => setCount(count - 1)}>-</button>
+                 <span>{count}</span>
+                 <button type="button" onClick={() => setCount(count + 1)}>+</button>
+                 {errors.count && <span>{errors.count}</span>}
+              </div>
+              <button type="submit">Submit</button>
+           </form>
+   );
 };
 ```
 
-其实从这里可以看出，原味from表单的验证的**提交**功能一般都不需要，你甚至经常需要手动阻止默认行为。 
-其实我们没有充分的理由必须使用form标签和onSubmit事件，你完全可以完全不使用form标签，直接监听input的onClick事件更简单。
+看起来完成得不错，但似乎validate函数耦合了太多的逻辑。我们试试用验证框架来改进一下。
 
 ### 2. react-hook-form
 
 这是一个在Github上至今为止有 41k+ star的项目，它对原生的form表单进行了封装，提供了更加方便的API。 不少组件都是基于react-hook-form进行封装的。
 但是它的验证方式依然是通过form元素的submit事件相应的回调函数来处理的。
 
-我们先用纯react-hook-form的方式来实现上面的例子：
+我们用react-hook-form改进一下这个例子：
 
 ```typescript jsx
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 
-export const MyForm = () => {
-    const {
-        register,
-        handleSubmit,
-        setValue,
-        getValues,
-        formState: { errors },
-    } = useForm({
-        defaultValues: {
-            username: "test",
-            count: 0,
-        },
-    });
+const MyForm = () => {
+   const [name, setName] = useState("");
+   const [email, setEmail] = useState("");
+   const [count, setCount] = useState(0);
 
-    useEffect(() => {
-        register("count", {
-            validate: (value) =>
-                value >= 0 || "Count must be greater than or equal to 0.",
-        });
-    }, [register]);
-    
-    const onSubmit = (data: any) => {
-        console.log(data);
-    };
+   const {
+      register,
+      handleSubmit,
+      formState: { errors },
+      setValue,
+   } = useForm({
+      defaultValues: { name, email, count }, // 默认值？我们待会儿会讲到
+   });
 
-    const incrementCount = () => {
-        const currentCount = getValues("count");
-        setValue("count", currentCount + 1);
-    };
+   const submit = () => {
+      console.log("Form submitted:", { name, email, count });
+   };
 
-    const decrementCount = () => {
-        const currentCount = getValues("count");
-        setValue("count", currentCount - 1);
-    };
+   const validateEmail = (value) => {
+      if (/^\S+@(qq\.com|163\.com)$/.test(value)) return true;
+      if (/^\S+@live\.com$/.test(value)) return "警告: live.com 邮箱可能注册失败";
+      return "Email 必须是 qq.com 或者 163.com 邮箱";
+   };
 
-    return (
-        <form onSubmit={handleSubmit(onSubmit)}>
-            <label htmlFor="username">Username:</label>
-            <input
-                type="text"
-                id="username"
-                // 请注意这段侵入代码
-                {...register("username", {
-                    required: true,
-                    minLength: 5,
-                    maxLength: 10,
-                })}
-            />
-            {errors.username && (
-                <span>Username must be between 5 and 10 characters.</span>
-            )}
+   const validateCount = (value) => {
+      if (value < 3 || value > 10) return "Count 必须在 3 和 10 之间";
+      if (value % 2 === 0) return "Count 必须是奇数";
+      return true;
+   };
 
-            <button type="button" onClick={incrementCount}>
-                +
-            </button>
-            <span>{getValues("count")}</span> {/* 这段代码真不“reactive” */}
-            <button type="button" onClick={decrementCount}>
-                -
-            </button>
-            {errors.count && <span>Count must be greater than or equal to 0.</span>}
+   // 参数中的data其实根本用不上，因为我们已经在组件中维护了name、email、count的状态
+   const handleFormSubmit = (data, e) => {
+      const hasErrors = Object.keys(errors).length > 0;
+      if (hasErrors) {
+         return;
+      }
 
-            <input type="submit" value="Submit" />
-        </form>
-    );
+      submit();
+   };
+
+   const onInvalid = (errors, e) => {
+      const hasLiveEmailWarning =
+              errors.email?.message === "警告: live.com 邮箱可能注册失败"; // 仍然绕不开根据message判断
+      if (hasLiveEmailWarning) {
+         e.preventDefault();
+         submit(); // 为了绕开警告，我们不得不在onInvalid中调用onSubmit，真奇怪
+      }
+   };
+
+   return (
+           <form onSubmit={handleSubmit(handleFormSubmit, onInvalid)}>
+              <div>
+                 <label>姓名:</label>
+                 <input
+                         {...register("name", {
+                            required: "姓名不能为空",
+                            validate: (value) =>
+                                    /^[\u4e00-\u9fa5]+$/.test(value) || "姓名必须为中文",
+                         })}
+                         value={name}
+                         onChange={(e) => {
+                            setName(e.target.value);
+                         }}
+                 />
+                 {errors.name && <span>{errors.name.message}</span>}
+              </div>
+              <div>
+                 <label>邮箱:</label>
+                 <input
+                         {...register("email", {
+                            required: "Email不能为空",
+                            validate: validateEmail,
+                         })}
+                         value={email}
+                         onChange={(e) => {
+                            setEmail(e.target.value);
+                         }}
+                 />
+                 {errors.email && <span>{errors.email.message}</span>}
+              </div>
+              <div>
+                 <label>计数:</label>
+                 <button
+                         type="button"
+                         onClick={() => {
+                            setCount(count - 1);
+                            setValue("count", count - 1); // 这里必须显式手动同步！！！
+                         }}
+                 >
+                    -
+                 </button>
+                 <span>{count}</span>
+                 <button
+                         type="button"
+                         onClick={() => {
+                            setCount(count + 1);
+                            setValue("count", count + 1); // 这里必须显式手动同步！！！
+                         }}
+                 >
+                    +
+                 </button>
+                 {/* 为了能利用上框架，我们不得不使用隐藏的input来让验证生效 */}
+                 <input
+                         type="hidden"
+                         {...register("count", {
+                            validate: validateCount,
+                         })}
+                 />
+                 {errors.count && <span>{errors.count.message}</span>}
+              </div>
+              <button type="submit">提交</button>
+           </form>
+   );
 };
 ```
 
-似乎完成了工作，但是，hey，我们在用react对吗？为什么这样一个示例里面完全在使用事件驱动的方式在操作数据？这不是react的风格。
+经过如此多的补丁，我们终于用上了react-hook-form，但是我们发现，几个如此简单的需求，我们竟然需要这么多的代码来实现。
 
-我们改进一下，可以用过在外部定义一个state来保存这个数据:
+这里我们简单总结一下使用react-hook-form遇到的问题：
 
-```typescript jsx
-import { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
-
-export const MyForm = () => {
-    const [username, setUsername] = useState("test");
-    const [count, setCount] = useState(0);
-    const {
-        register,
-        handleSubmit,
-        setValue,
-        formState: { errors },
-    } = useForm({
-        // 请注意这个defaultValues
-        defaultValues: {
-            username: username,
-            count: count,
-        },
-    });
-
-    // 因为没有使用input，不得不在这里注册count
-    useEffect(() => {
-        register("count", {
-            validate: (value) =>
-                value >= 0 || "Count must be greater than or equal to 0.",
-        });
-    }, [register]);
-
-    const onSubmit = (data: any) => {
-        console.log(data);
-    };
-
-    const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setUsername(event.target.value);
-    };
-
-    const incrementCount = () => {
-        setCount((prevCount) => {
-            const newCount = prevCount + 1;
-            setValue("count", newCount); // 同步更新 count 的值
-            return newCount;
-        });
-    };
-
-    const decrementCount = () => {
-        setCount((prevCount) => {
-            const newCount = prevCount - 1;
-            setValue("count", newCount); // 同步更新 count 的值
-            return newCount;
-        });
-    };
-
-    return (
-        <form onSubmit={handleSubmit(onSubmit)}>
-            <label htmlFor="username">Username:</label>
-            <input
-                type="text"
-                id="username"
-                value={username}
-                // 请注意这段侵入代码                
-                {...register("username", {
-                    required: true,
-                    minLength: 5,
-                    maxLength: 10,
-                })}
-                onChange={handleUsernameChange}
-            />
-            {errors.username && (
-                <span>Username must be between 5 and 10 characters.</span>
-            )}
-
-            <button type="button" onClick={incrementCount}>
-                +
-            </button>
-            <span>{count}</span>
-            <button type="button" onClick={decrementCount}>
-                -
-            </button>
-            {errors.count && <span>Count must be greater than or equal to 0.</span>}
-
-            <input type="submit" value="Submit" />
-        </form>
-    );
-};
-```
-
-因为研究得并不深，我能想到的最简单实现办法就这些了。当然，我们还可以使用某些UI库来用可能更少的代码实现这个功能，但是这些库的验证方式大多也是基于form，所以有这么几个本质问题并没有得到解决：
-
-1. 数据冗余：defaultValues的定义反映了一个问题，其实在react-hook-form中，数据存在两份：一份在hook内部，一份在外部state。真正在验证发生的时候，使用的是hook
+1. 数据冗余：defaultValues的定义反映了一个问题，其实在整个表单中，存在两份数据：一份在hook内部，一份在外部state。真正在验证发生的时候，使用的是hook
    内部的数据。换句话说，我验证的根本不是我真正需要验证的数据(state)。
+
 ![2024-09-18-2343.svg](docs%2F2024-09-18-2343.svg)
    
    你不得不花费额外的精力去保证【hook中验证的数据】和【正在使用的state数据】是同一份数据，这一点在涉及到非标准表单组件等复杂情况的时候，会变得尤为明显。
+   
+   我知道有人会说，那为什么不直接使用hook中提供的数据呢？那么，请思考一个问题，为什么我们要使用react、vue、angular这样的框架？
 
 
 2. 逻辑侵入：react-hook-form的register使用会侵入到你的组件jsx代码中，占用原本开放的onChange等等行为。在这个示例中，我不得不将onChange={handleUsernameChange}
