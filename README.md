@@ -7,49 +7,62 @@
 ![sample.png](docs%2Fsample.png)
 
 针对这么一个简单的表单，我们需要做几个简单的验证：
-1. Name 必须是中文
-2. Email 必须是 qq.com 或者 163.com 邮箱
-3. Count 必须在 3 和 10 之间
-4. Count 必须是奇数
-5. Email 为 live.com 时，给出一个警告，但不阻止提交
-6. 提交时，如果有错误，阻止提交
+1. Name 必填
+2. Name 必须是中文
+3. Email 必填
+4. Email 必须是 qq.com 或者 163.com 邮箱
+5. Count 必须在 3 和 10 之间
+6. Count 必须是奇数
+7. Email 为 live.com 时，给出一个警告，但不阻止提交
+8. 提交时，如果有错误，阻止提交
 
 ## 验证框架
 
 ### 1. 不使用验证框架
 
 ```typescript jsx
-import { useState } from 'react';
+import { useState } from "react";
 
 const MyForm = () => {
-   const [name, setName] = useState('');
-   const [email, setEmail] = useState('');
+   const [name, setName] = useState("");
+   const [email, setEmail] = useState("");
    const [count, setCount] = useState(0);
    const [errors, setErrors] = useState({});
 
    const validate = () => {
       const newErrors = {};
       // 验证Name
-      if (!/^[\u4e00-\u9fa5]+$/.test(name)) newErrors.name = 'Name 必须是中文';
+      if (!name) {
+         newErrors.name = "Name 必填";
+      } else if (!/^[\u4e00-\u9fa5]+$/.test(name)) {
+         newErrors.name = "Name 必须是中文";
+      }
+
       // 验证Email
-      if (!/^\S+@(qq\.com|163\.com)$/.test(email)) {
+      if (!email) {
+         newErrors.email = "Email 必填";
+      } else if (!/^\S+@(qq\.com|163\.com)$/.test(email)) {
          if (/^\S+@live\.com$/.test(email)) {
-            newErrors.email = '警告: live.com 可能注册失败';// 这里是一个警告
+            newErrors.email = "警告: live.com 可能注册失败"; // 这里是一个警告
          } else {
-            newErrors.email = 'Email 必须是 qq.com 或者 163.com 邮箱';
+            newErrors.email = "Email 必须是 qq.com 或者 163.com 邮箱";
          }
       }
+
       // 验证Count
-      if (count < 3 || count > 10) newErrors.count = 'Count 必须在 3 和 10 之间';
-      if (count % 2 === 0) newErrors.count = 'Count 必须是奇数';
+      if (count < 3 || count > 10) newErrors.count = "Count 必须在 3 和 10 之间";
+      if (count % 2 === 0) newErrors.count = "Count 必须是奇数";
       setErrors(newErrors);
-      return Object.keys(newErrors).length === 0 || newErrors.email === '警告: live.com 可能注册失败'; // 这里用错误信息来判断
+      return (
+              Object.keys(newErrors).length === 0 ||
+              newErrors.email === "警告: live.com 可能注册失败"
+      ); // 这里用错误信息来判断
    };
 
    const handleSubmit = (e) => {
       e.preventDefault();
       if (validate()) {
-         console.log('Form submitted:', { name, email, count });
+         console.log("Form submitted:", { name, email, count });
       }
    };
 
