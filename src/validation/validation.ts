@@ -14,7 +14,7 @@ export class ValidationSet {
     this.validations.push(validation);
   }
 
-  get valid() {
+  get isValid() {
     return !this.validations.some(
       (validation) => !validation.visibleResultSet.isValid,
     );

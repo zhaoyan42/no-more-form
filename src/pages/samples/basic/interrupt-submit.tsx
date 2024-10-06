@@ -24,7 +24,7 @@ export function InterruptSubmit() {
   });
 
   const submit = () => {
-    if (!validationSet.valid) {
+    if (!validationSet.isValid) {
       setSubmitted(false);
       return;
     }

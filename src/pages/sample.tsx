@@ -8,8 +8,10 @@ import { GroupedValidation } from "./samples/basic/grouped-validation.tsx";
 import { CompositeSubjectValidation } from "./samples/advance/composite-subject-validation.tsx";
 import { DynamicRulesValidation } from "./samples/advance/dynamic-rules-validation.tsx";
 import { MultipleLayerSubjectValidation } from "./samples/advance/multiple-layer-subject-validation.tsx";
+import { Demo } from "./demo.tsx";
 
 type SampleType =
+  | "demo"
   | "eager validation"
   | "on change validation"
   | "with visual indicator"
@@ -47,11 +49,18 @@ function Option(props: {
 }
 
 export function Sample() {
-  const [currentSample, setCurrentSample] =
-    useState<SampleType>("eager validation");
+  const [currentSample, setCurrentSample] = useState<SampleType>("demo");
 
   return (
     <div>
+      <h1>Demo</h1>
+      <Option
+        onClick={() => {
+          setCurrentSample("demo");
+        }}
+        sample={"demo"}
+        currentSample={currentSample}
+      />
       <h1>Choose a sample:</h1>
       <h2>basic samples</h2>
       <ul>
@@ -81,6 +90,7 @@ export function Sample() {
         ))}
       </ul>
 
+      <div>{currentSample === "demo" && <Demo />}</div>
       <div>{currentSample === "eager validation" && <EagerValidation />}</div>
       <div>
         {currentSample === "on change validation" && <OnChangeValidation />}
