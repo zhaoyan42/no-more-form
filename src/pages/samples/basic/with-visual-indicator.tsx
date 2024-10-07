@@ -2,17 +2,14 @@ import { useState } from "react";
 import { ValidationMessages } from "../../../validation/components/validation-messages.tsx";
 import { useValidation } from "../../../validation/hooks/use-validation-states.ts";
 import { nameRules } from "../common/rules.ts";
+import { useGroup } from "../../../validation/hooks/use-group.ts";
 
 export function WithVisualIndicator() {
   const [name, setName] = useState<string>("");
 
-  const validation = useValidation(name, nameRules, {
-    eager: false,
-    onChange: true,
-    onTouch: false,
-  });
+  const group = useGroup();
 
-  const { visibleResultSet } = validation;
+  const validation = useValidation(name, nameRules, { group });
 
   return (
     <div>
@@ -36,8 +33,8 @@ export function WithVisualIndicator() {
             onChange={(e) => setName(e.target.value)}
             autoComplete="off"
           />
-          <button disabled={!visibleResultSet.isValid}>
-            {visibleResultSet.isValid ? "can submit" : "can't submit"}
+          <button disabled={!group.isValid()}>
+            {group.isValid() ? "can submit" : "can't submit"}
           </button>
         </div>
         <ValidationMessages validation={validation} />

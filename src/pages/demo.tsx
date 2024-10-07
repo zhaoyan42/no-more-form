@@ -26,7 +26,7 @@ export const Demo = () => {
 
   const submit = () => {
     group.validate();
-    if (group.isValid) {
+    if (group.isValid()) {
       console.log("Form submitted:", { name, email, count });
     }
   };
@@ -107,7 +107,7 @@ const emailRequired: Rule<string> = (value) => {
 const emailDomain: Rule<string> = (value) => {
   if (/^\S+@(qq\.com|163\.com)$/.test(value)) return RuleResult.valid;
   if (/^\S+@live\.com$/.test(value))
-    return RuleResult.warning("警告: live.com 邮箱���能注册失败");
+    return RuleResult.warning("警告: live.com 邮箱可能注册失败");
   return RuleResult.invalid("Email 必须是 qq.com 或者 163.com 邮箱");
 };
 

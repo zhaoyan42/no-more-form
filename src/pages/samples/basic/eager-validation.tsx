@@ -6,7 +6,7 @@ import { nameRules } from "../common/rules.ts";
 export function EagerValidation() {
   const [name, setName] = useState<string>("");
 
-  const validation = useValidation(name, nameRules, { eager: true });
+  const validation = useValidation(name, nameRules);
 
   return (
     <div>
@@ -27,7 +27,7 @@ export function EagerValidation() {
         onChange={(e) => setName(e.target.value)}
         autoComplete="off"
       />
-      <ValidationMessages validation={validation} />
+      <ValidationMessages validation={validation} eager />
     </div>
   );
 }

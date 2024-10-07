@@ -1,7 +1,8 @@
 import { useMemo, useState } from "react";
 import { ValidationMessages } from "../../../validation/components/validation-messages.tsx";
 import { useValidation } from "../../../validation/hooks/use-validation-states.ts";
-import { Rule, RuleResult } from "../../../validation/rule.ts";
+import type { Rule } from "../../../validation/rule.ts";
+import { RuleResult } from "../../../validation/rule.ts";
 
 export function DynamicRulesValidation() {
   const [accept, setAccept] = useState<boolean>(false);
@@ -22,9 +23,7 @@ export function DynamicRulesValidation() {
     return result;
   }, [accept]);
 
-  const validation = useValidation(reason, rules, {
-    eager: true,
-  });
+  const validation = useValidation(reason, rules);
 
   return (
     <div>
@@ -57,7 +56,7 @@ export function DynamicRulesValidation() {
         onChange={(e) => setReason(e.target.value)}
         autoComplete="off"
       />
-      <ValidationMessages validation={validation} />
+      <ValidationMessages validation={validation} eager />
     </div>
   );
 }

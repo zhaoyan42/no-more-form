@@ -3,7 +3,7 @@ import type { Validation } from "../validation.ts";
 import { ValidationSet } from "../validation.ts";
 
 export interface Group {
-  isValid: boolean;
+  isValid: () => boolean;
   touched: boolean;
   validate: () => void;
   addValidation: (validation: Validation) => void;
@@ -22,10 +22,12 @@ export function useGroup() {
     validateSet.addValidation(validation);
   };
 
+  const isValid = () => validateSet.isValid;
+
   return {
     touched,
     validate,
     addValidation,
-    isValid: validateSet.isValid,
+    isValid,
   } satisfies Group as Group;
 }

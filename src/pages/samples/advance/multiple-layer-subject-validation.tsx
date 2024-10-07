@@ -19,13 +19,9 @@ function ItemEditor({
   onNameChanged: (value: string) => void;
   onAgeChanged: (value: number) => void;
 }) {
-  const nameValidation = useValidation(name, nameRules, {
-    eager: true,
-  });
+  const nameValidation = useValidation(name, nameRules);
 
-  const ageValidation = useValidation(age, ageRules, {
-    eager: true,
-  });
+  const ageValidation = useValidation(age, ageRules);
 
   return (
     <div
@@ -42,7 +38,7 @@ function ItemEditor({
           onChange={(e) => onNameChanged(e.target.value)}
           autoComplete="off"
         />
-        <ValidationMessages validation={nameValidation} />
+        <ValidationMessages validation={nameValidation} eager />
       </div>
       <div>
         <button
@@ -61,7 +57,7 @@ function ItemEditor({
           -
         </button>
 
-        <ValidationMessages validation={ageValidation} />
+        <ValidationMessages validation={ageValidation} eager />
       </div>
     </div>
   );
@@ -70,9 +66,7 @@ function ItemEditor({
 export function MultipleLayerSubjectValidation() {
   const [items, setItems] = useState<Item[]>([]);
 
-  const itemsValidation = useValidation(items, itemsRules, {
-    eager: true,
-  });
+  const itemsValidation = useValidation(items, itemsRules);
 
   return (
     <div>
@@ -124,7 +118,7 @@ export function MultipleLayerSubjectValidation() {
         />
       ))}
 
-      <ValidationMessages validation={itemsValidation} />
+      <ValidationMessages validation={itemsValidation} eager />
     </div>
   );
 }

@@ -11,19 +11,9 @@ export function GroupedValidation() {
 
   const group = useGroup();
 
-  const nameValidation = useValidation(name, nameRules, {
-    eager: false,
-    onChange: false,
-    onTouch: false,
-    group,
-  });
+  const nameValidation = useValidation(name, nameRules, { group });
 
-  const emailValidation = useValidation(email, emailRules, {
-    eager: false,
-    onChange: false,
-    onTouch: false,
-    group,
-  });
+  const emailValidation = useValidation(email, emailRules, { group });
 
   return (
     <div>
@@ -65,6 +55,9 @@ export function GroupedValidation() {
       <button
         onClick={() => {
           group.validate();
+          if (group.isValid()) {
+            console.log("Form submitted:", { name, email });
+          }
         }}
       >
         submit

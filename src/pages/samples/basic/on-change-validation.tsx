@@ -6,11 +6,7 @@ import { nameRules } from "../common/rules.ts";
 export function OnChangeValidation() {
   const [name, setName] = useState<string>("");
 
-  const validation = useValidation(name, nameRules, {
-    eager: false,
-    onChange: true,
-    onTouch: false,
-  });
+  const validation = useValidation(name, nameRules);
 
   return (
     <div>
@@ -31,7 +27,7 @@ export function OnChangeValidation() {
         onChange={(e) => setName(e.target.value)}
         autoComplete="off"
       />
-      <ValidationMessages validation={validation} />
+      <ValidationMessages validation={validation} onTouch={false} />
     </div>
   );
 }

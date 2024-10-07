@@ -37,7 +37,7 @@ export const emailRules = [
 export const compositeRules = [
   (subject: { accept: boolean; reason: string }) => {
     if (!subject.accept && subject.reason.length === 0) {
-      return RuleResult.invalid("reason is required");
+      return RuleResult.invalid("reason is required when accept not checked");
     }
     return RuleResult.valid;
   },

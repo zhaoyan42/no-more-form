@@ -9,9 +9,7 @@ export function CompositeSubjectValidation() {
 
   const subject = useMemo(() => ({ accept, reason }), [accept, reason]);
 
-  const validation = useValidation(subject, compositeRules, {
-    eager: true,
-  });
+  const validation = useValidation(subject, compositeRules);
 
   return (
     <div>
@@ -46,7 +44,7 @@ export function CompositeSubjectValidation() {
         onChange={(e) => setReason(e.target.value)}
         autoComplete="off"
       />
-      <ValidationMessages validation={validation} />
+      <ValidationMessages validation={validation} eager />
     </div>
   );
 }

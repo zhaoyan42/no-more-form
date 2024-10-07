@@ -6,11 +6,7 @@ import { nameRules } from "../common/rules.ts";
 export function OnTouchValidation() {
   const [name, setName] = useState<string>("");
 
-  const validation = useValidation(name, nameRules, {
-    eager: false,
-    onChange: false,
-    onTouch: true,
-  });
+  const validation = useValidation(name, nameRules);
 
   const { setTouched } = validation;
 
@@ -34,7 +30,7 @@ export function OnTouchValidation() {
         autoComplete="off"
         onBlur={setTouched}
       />
-      <ValidationMessages validation={validation} />
+      <ValidationMessages validation={validation} onChange={false} />
     </div>
   );
 }

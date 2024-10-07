@@ -1,9 +1,10 @@
-import { RuleResultSet } from "./rule-result-set.ts";
+import type { RuleResultSet } from "./rule-result-set.ts";
 
 export interface Validation {
-  visibleResultSet: RuleResultSet;
-  visible: boolean;
+  dirty: boolean;
+  touched: boolean;
   setTouched: () => void;
+  isValid: boolean;
   getResultSet: () => RuleResultSet;
 }
 
@@ -15,8 +16,6 @@ export class ValidationSet {
   }
 
   get isValid() {
-    return !this.validations.some(
-      (validation) => !validation.visibleResultSet.isValid,
-    );
+    return !this.validations.some((validation) => !validation.isValid);
   }
 }

@@ -12,18 +12,12 @@ export function InterruptSubmit() {
 
   const group = useGroup();
 
-  const nameValidation = useValidation(name, nameRules, {
-    eager: true,
-    group,
-  });
+  const nameValidation = useValidation(name, nameRules, { group });
 
-  const emailValidation = useValidation(email, emailRules, {
-    eager: true,
-    group,
-  });
+  const emailValidation = useValidation(email, emailRules, { group });
 
   const submit = () => {
-    if (!group.isValid) {
+    if (!group.isValid()) {
       setSubmitted(false);
       return;
     }
@@ -54,7 +48,7 @@ export function InterruptSubmit() {
           onChange={(e) => setName(e.target.value)}
           autoComplete="off"
         />
-        <ValidationMessages validation={nameValidation} />
+        <ValidationMessages validation={nameValidation} eager />
       </div>
       <div>
         email:
@@ -65,7 +59,7 @@ export function InterruptSubmit() {
           onChange={(e) => setEmail(e.target.value)}
           autoComplete="off"
         />
-        <ValidationMessages validation={emailValidation} />
+        <ValidationMessages validation={emailValidation} eager />
       </div>
 
       <button onClick={submit}>submit</button>

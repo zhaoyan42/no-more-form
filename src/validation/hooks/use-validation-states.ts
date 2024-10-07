@@ -6,7 +6,7 @@ import type { Rule } from "../rule.ts";
 import { RuleSet } from "../rule-set.ts";
 import type { Group } from "./use-group.ts";
 
-export function useValidationStates(): ValidationStates {
+function useValidationStates(): ValidationStates {
   const [dirty, setDirty] = useState(false);
   const [touched, setTouched] = useState(false);
 
@@ -21,7 +21,7 @@ export function useValidationStates(): ValidationStates {
   );
 }
 
-export function useFieldStates<T>(subject: T): FieldStates {
+function useFieldStates<T>(subject: T): FieldStates {
   const { dirty, setDirty, touched, setTouched } = useValidationStates();
 
   const initialState = useRef(subject);
@@ -42,15 +42,8 @@ export function useFieldStates<T>(subject: T): FieldStates {
 export function useValidation<TSubject>(
   subject: TSubject,
   rules: Rule<TSubject>[],
-  options: {
-    eager?: boolean;
-    onChange?: boolean;
-    onTouch?: boolean;
+  options?: {
     group?: Group;
-  } = {
-    eager: false,
-    onChange: true,
-    onTouch: true,
   },
 ) {
   const {
@@ -59,8 +52,6 @@ export function useValidation<TSubject>(
     setTouched: setFieldTouched,
   } = useFieldStates(subject);
 
-  const [visible, setVisible] = useState(options.eager || false);
-
   const ruleSet = useMemo(() => RuleSet.of(rules), [rules]);
 
   const getResultSet = useCallback(
@@ -68,46 +59,32 @@ export function useValidation<TSubject>(
     [subject, ruleSet],
   );
 
-  const visibleResultSet = useMemo(() => {
-    if (!visible) return RuleResultSet.empty;
-    return getResultSet();
-  }, [getResultSet, visible]);
-
   const setTouched = useCallback(() => {
     setFieldTouched(true);
   }, [setFieldTouched]);
 
-  useEffect(() => {
-    if ((options.onChange === undefined || options.onChange) && fieldDirty) {
-      setVisible(true);
-    }
-  }, [fieldDirty, options.onChange]);
-
-  useEffect(() => {
-    if ((options.onTouch === undefined || options.onTouch) && fieldTouched) {
-      setVisible(true);
-    }
-  }, [fieldTouched, options.onTouch]);
-
-  useEffect(() => {
-    if (options.group?.touched) {
-      setVisible(true);
-    }
-  }, [options.group?.touched]);
-
   const validation = useMemo(
     () =>
       ({
-        visibleResultSet,
-        visible,
+        dirty: fieldDirty,
+        touched: options?.group?.touched ?? fieldTouched,
         setTouched,
+        get isValid() {
+          return getResultSet().isValid;
+        },
         getResultSet,
-      }) satisfies Validation,
-    [visibleResultSet, setTouched, visible, getResultSet],
+      }) satisfies Validation as Validation,
+    [
+      fieldDirty,
+      fieldTouched,
+      getResultSet,
+      options?.group?.touched,
+      setTouched,
+    ],
   );
 
-  if (options.group) {
-    options.group.addValidation(validation);
+  if (options?.group) {
+    options?.group.addValidation(validation);
   }
 
   return validation;
