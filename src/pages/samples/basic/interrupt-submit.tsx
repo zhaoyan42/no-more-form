@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { ValidationMessages } from "../../../validation/components/validation-messages.tsx";
 import { useValidation } from "../../../validation/hooks/use-validation-states.ts";
-import { ValidationSet } from "../../../validation/validation.ts";
-
 import { emailRules, nameRules } from "../common/rules.ts";
+import { useGroup } from "../../../validation/hooks/use-group.ts";
 
 export function InterruptSubmit() {
   const [name, setName] = useState<string>("");
@@ -11,20 +10,20 @@ export function InterruptSubmit() {
 
   const [submitted, setSubmitted] = useState(false);
 
-  const validationSet = new ValidationSet();
+  const group = useGroup();
 
   const nameValidation = useValidation(name, nameRules, {
     eager: true,
-    validationSet,
+    group,
   });
 
   const emailValidation = useValidation(email, emailRules, {
     eager: true,
-    validationSet,
+    group,
   });
 
   const submit = () => {
-    if (!validationSet.isValid) {
+    if (!group.isValid) {
       setSubmitted(false);
       return;
     }

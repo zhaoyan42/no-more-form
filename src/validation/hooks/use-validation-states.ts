@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Validation, ValidationSet } from "../validation.ts";
-import { FieldStates, ValidationStates } from "../states.ts";
+import type { Validation } from "../validation.ts";
+import type { FieldStates, ValidationStates } from "../states.ts";
 import { RuleResultSet } from "../rule-result-set.ts";
-import { Rule } from "../rule.ts";
+import type { Rule } from "../rule.ts";
 import { RuleSet } from "../rule-set.ts";
+import type { Group } from "./use-group.ts";
 
 export function useValidationStates(): ValidationStates {
   const [dirty, setDirty] = useState(false);
@@ -45,13 +46,11 @@ export function useValidation<TSubject>(
     eager?: boolean;
     onChange?: boolean;
     onTouch?: boolean;
-    groupTouched?: boolean;
-    validationSet?: ValidationSet;
+    group?: Group;
   } = {
     eager: false,
     onChange: true,
     onTouch: true,
-    groupTouched: false,
   },
 ) {
   const {
@@ -91,10 +90,10 @@ export function useValidation<TSubject>(
   }, [fieldTouched, options.onTouch]);
 
   useEffect(() => {
-    if (options.groupTouched) {
+    if (options.group?.touched) {
       setVisible(true);
     }
-  }, [options.groupTouched]);
+  }, [options.group?.touched]);
 
   const validation = useMemo(
     () =>
@@ -107,8 +106,8 @@ export function useValidation<TSubject>(
     [visibleResultSet, setTouched, visible, getResultSet],
   );
 
-  if (options.validationSet) {
-    options.validationSet.addValidation(validation);
+  if (options.group) {
+    options.group.addValidation(validation);
   }
 
   return validation;

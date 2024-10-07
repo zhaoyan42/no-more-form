@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Rule, RuleResult } from "../validation/rule.ts";
+import type { Rule } from "../validation/rule.ts";
+import { RuleResult } from "../validation/rule.ts";
 import { useValidation } from "../validation/hooks/use-validation-states.ts";
 import { ValidationMessages } from "../validation/components/validation-messages.tsx";
-import { ValidationSet } from "../validation/validation.ts";
-import { useGroupStates } from "../validation/hooks/use-group-states.ts";
+import { useGroup } from "../validation/hooks/use-group.ts";
 
 export const Demo = () => {
   // State 定义
@@ -12,25 +12,21 @@ export const Demo = () => {
   const [count, setCount] = useState(0);
 
   // 组状态
-  const { groupTouched, setGroupTouched } = useGroupStates();
-  const validationSet = new ValidationSet(); // 注意这里不是State
+  const group = useGroup();
 
   const nameValidation = useValidation(name, [nameRequired, nameChinese], {
-    validationSet,
-    groupTouched,
+    group,
   });
   const emailValidation = useValidation(email, [emailRequired, emailDomain], {
-    validationSet,
-    groupTouched,
+    group,
   });
   const countValidation = useValidation(count, [countRange, countOdd], {
-    validationSet,
-    groupTouched,
+    group,
   });
 
   const submit = () => {
-    setGroupTouched(true);
-    if (validationSet.isValid) {
+    group.validate();
+    if (group.isValid) {
       console.log("Form submitted:", { name, email, count });
     }
   };

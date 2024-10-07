@@ -2,27 +2,27 @@ import { useState } from "react";
 import { ValidationMessages } from "../../../validation/components/validation-messages.tsx";
 import { useValidation } from "../../../validation/hooks/use-validation-states.ts";
 
-import { useGroupStates } from "../../../validation/hooks/use-group-states.ts";
 import { emailRules, nameRules } from "../common/rules.ts";
+import { useGroup } from "../../../validation/hooks/use-group.ts";
 
 export function GroupedValidation() {
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
 
-  const { groupTouched, setGroupTouched } = useGroupStates();
+  const group = useGroup();
 
   const nameValidation = useValidation(name, nameRules, {
     eager: false,
     onChange: false,
     onTouch: false,
-    groupTouched: groupTouched,
+    group,
   });
 
   const emailValidation = useValidation(email, emailRules, {
     eager: false,
     onChange: false,
     onTouch: false,
-    groupTouched: groupTouched,
+    group,
   });
 
   return (
@@ -64,7 +64,7 @@ export function GroupedValidation() {
 
       <button
         onClick={() => {
-          setGroupTouched(true);
+          group.validate();
         }}
       >
         submit
