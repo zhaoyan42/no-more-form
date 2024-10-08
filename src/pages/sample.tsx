@@ -7,6 +7,7 @@ import { GroupedValidation } from "./samples/basic/grouped-validation.tsx";
 import { CompositeSubjectValidation } from "./samples/advance/composite-subject-validation.tsx";
 import { DynamicRulesValidation } from "./samples/advance/dynamic-rules-validation.tsx";
 import { MultipleLayerSubjectValidation } from "./samples/advance/multiple-layer-subject-validation.tsx";
+import { NoRenderValidation } from "./samples/advance/no-render-validation.tsx";
 
 type SampleType =
   | "即时验证"
@@ -14,6 +15,7 @@ type SampleType =
   | "带视觉指示器"
   | "触摸时验证"
   | "分组验证"
+  | "无渲染验证"
   | "复合验证"
   | "动态验证"
   | "多层次验证";
@@ -23,6 +25,7 @@ const basicSamples: SampleType[] = [
   "带视觉指示器",
   "触摸时验证",
   "分组验证",
+  "无渲染验证",
 ];
 
 const advancedSamples: SampleType[] = ["复合验证", "动态验证", "多层次验证"];
@@ -88,18 +91,15 @@ export function Sample() {
       </div>
 
       <div style={{ flexGrow: "1", padding: "20px" }}>
-        <div>{currentSample === "即时验证" && <EagerValidation />}</div>
-        <div>{currentSample === "变更时验证" && <OnChangeValidation />}</div>
-        <div>{currentSample === "带视觉指示器" && <WithVisualIndicator />}</div>
-        <div>{currentSample === "触摸时验证" && <OnTouchValidation />}</div>
-        <div>{currentSample === "分组验证" && <GroupedValidation />}</div>
-        <div>
-          {currentSample === "复合验证" && <CompositeSubjectValidation />}
-        </div>
-        <div>{currentSample === "动态验证" && <DynamicRulesValidation />}</div>
-        <div>
-          {currentSample === "多层次验证" && <MultipleLayerSubjectValidation />}
-        </div>
+        {currentSample === "即时验证" && <EagerValidation />}
+        {currentSample === "变更时验证" && <OnChangeValidation />}
+        {currentSample === "带视觉指示器" && <WithVisualIndicator />}
+        {currentSample === "触摸时验证" && <OnTouchValidation />}
+        {currentSample === "分组验证" && <GroupedValidation />}
+        {currentSample === "无渲染验证" && <NoRenderValidation />}
+        {currentSample === "复合验证" && <CompositeSubjectValidation />}
+        {currentSample === "动态验证" && <DynamicRulesValidation />}
+        {currentSample === "多层次验证" && <MultipleLayerSubjectValidation />}
       </div>
     </div>
   );
