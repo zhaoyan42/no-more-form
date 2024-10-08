@@ -55,7 +55,7 @@ export function GroupedValidation() {
       <button
         onClick={() => {
           group.validate();
-          if (group.isValid()) {
+          if (group.isValid) {
             console.log("表单已提交:", { name, email });
           }
         }}

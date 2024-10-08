@@ -33,8 +33,8 @@ export function WithVisualIndicator() {
             onChange={(e) => setName(e.target.value)}
             autoComplete="off"
           />
-          <button disabled={!group.isValid()}>
-            group:{group.isValid() ? "可以提交" : "不能提交"}
+          <button disabled={!group.isValid}>
+            group:{group.isValid ? "可以提交" : "不能提交"}
           </button>
           <button disabled={!validation.isValid}>
             validation:{validation.isValid ? "可以提交" : "不能提交"}

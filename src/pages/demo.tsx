@@ -26,7 +26,7 @@ export const Demo = () => {
 
   const submit = () => {
     group.validate();
-    if (group.isValid()) {
+    if (group.isValid) {
       console.log("Form submitted:", { name, email, count });
     }
   };
