@@ -7,10 +7,8 @@ import { GroupedValidation } from "./samples/basic/grouped-validation.tsx";
 import { CompositeSubjectValidation } from "./samples/advance/composite-subject-validation.tsx";
 import { DynamicRulesValidation } from "./samples/advance/dynamic-rules-validation.tsx";
 import { MultipleLayerSubjectValidation } from "./samples/advance/multiple-layer-subject-validation.tsx";
-import { Demo } from "./demo.tsx";
 
 type SampleType =
-  | "demo"
   | "eager validation"
   | "on change validation"
   | "with visual indicator"
@@ -46,73 +44,82 @@ function Option(props: {
 }
 
 export function Sample() {
-  const [currentSample, setCurrentSample] = useState<SampleType>("demo");
+  const [currentSample, setCurrentSample] =
+    useState<SampleType>("eager validation");
 
   return (
-    <div>
-      <h1>Demo</h1>
-      <Option
-        onClick={() => {
-          setCurrentSample("demo");
+    <div
+      style={{
+        height: "100vh",
+        width: "100vw",
+        display: "flex",
+      }}
+    >
+      <div
+        style={{
+          flexShrink: "0",
+          width: "300px",
+          borderRight: "1px solid #ccc",
+          padding: "20px",
         }}
-        sample={"demo"}
-        currentSample={currentSample}
-      />
-      <h1>Choose a sample:</h1>
-      <h2>basic samples</h2>
-      <ul>
-        {basicSamples.map((sample) => (
-          <Option
-            key={sample}
-            onClick={() => {
-              setCurrentSample(sample);
-            }}
-            sample={sample}
-            currentSample={currentSample}
-          />
-        ))}
-      </ul>
+      >
+        <h1>Choose a sample:</h1>
+        <h2>basic samples</h2>
+        <ul>
+          {basicSamples.map((sample) => (
+            <Option
+              key={sample}
+              onClick={() => {
+                setCurrentSample(sample);
+              }}
+              sample={sample}
+              currentSample={currentSample}
+            />
+          ))}
+        </ul>
 
-      <h2>advanced samples</h2>
-      <ul>
-        {advancedSamples.map((sample) => (
-          <Option
-            key={sample}
-            onClick={() => {
-              setCurrentSample(sample);
-            }}
-            sample={sample}
-            currentSample={currentSample}
-          />
-        ))}
-      </ul>
+        <h2>advanced samples</h2>
+        <ul>
+          {advancedSamples.map((sample) => (
+            <Option
+              key={sample}
+              onClick={() => {
+                setCurrentSample(sample);
+              }}
+              sample={sample}
+              currentSample={currentSample}
+            />
+          ))}
+        </ul>
+      </div>
 
-      <div>{currentSample === "demo" && <Demo />}</div>
-      <div>{currentSample === "eager validation" && <EagerValidation />}</div>
-      <div>
-        {currentSample === "on change validation" && <OnChangeValidation />}
-      </div>
-      <div>
-        {currentSample === "with visual indicator" && <WithVisualIndicator />}
-      </div>
-      <div>
-        {currentSample === "on touch validation" && <OnTouchValidation />}
-      </div>
-      <div>
-        {currentSample === "grouped validation" && <GroupedValidation />}
-      </div>
-      <div>
-        {currentSample === "composite validation" && (
-          <CompositeSubjectValidation />
-        )}
-      </div>
-      <div>
-        {currentSample === "dynamic validation" && <DynamicRulesValidation />}
-      </div>
-      <div>
-        {currentSample === "multiple layer subject" && (
-          <MultipleLayerSubjectValidation />
-        )}
+      <div style={{ flexGrow: "1", padding: "20px" }}>
+        <div>{currentSample === "eager validation" && <EagerValidation />}</div>
+        <div>
+          {currentSample === "on change validation" && <OnChangeValidation />}
+        </div>
+        <div>
+          {currentSample === "with visual indicator" && <WithVisualIndicator />}
+        </div>
+        <div>
+          {currentSample === "on touch validation" && <OnTouchValidation />}
+        </div>
+        <div>
+          {currentSample === "grouped validation" && <GroupedValidation />}
+        </div>
+        <div>
+          {currentSample === "composite validation" && (
+            <CompositeSubjectValidation />
+          )}
+        </div>
+        <div>
+          {currentSample === "dynamic validation" && <DynamicRulesValidation />}
+        </div>
+        <div>
+          {currentSample === "multiple layer subject" && (
+            <MultipleLayerSubjectValidation />
+          )}
+        </div>
       </div>
     </div>
   );
