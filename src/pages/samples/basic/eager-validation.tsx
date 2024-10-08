@@ -11,19 +11,18 @@ export function EagerValidation() {
   return (
     <div>
       <h2>
-        These rules will be validating on name{" "}
-        <span style={{ color: "red" }}>eagerly</span> (in this sample the
-        validation will be triggered when the component is rendered.)
+        <span style={{ color: "red" }}>即时触发验证</span>
+        （验证会在组件渲染时触发）
       </h2>
       <ul>
-        <li>name is required (empty : error)</li>
-        <li>name may be too short (length less than 5 : warning)</li>
-        <li>name is too long (length greater than 10 : error)</li>
+        <li>名字是必填项（为空：错误）</li>
+        <li>名字可能太短（长度小于5：警告）</li>
+        <li>名字太长（长度大于10：错误）</li>
       </ul>
       <input
         type="text"
         value={name}
-        placeholder="input something"
+        placeholder="输入一些内容"
         onChange={(e) => setName(e.target.value)}
         autoComplete="off"
       />

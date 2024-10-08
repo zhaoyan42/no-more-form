@@ -8,33 +8,32 @@ export function DynamicRulesValidation() {
   const [accept, setAccept] = useState<boolean>(false);
   const [reason, setReason] = useState<string>("");
 
-  const rules = useMemo(() => {
-    const result: Rule<string>[] = [];
-    if (!accept) {
-      result.push((subject: string) => {
-        if (!subject) {
-          return RuleResult.invalid(
-            "reason is required when accept not checked",
-          );
-        }
-        return RuleResult.valid;
-      });
-    }
-    return result;
-  }, [accept]);
-
-  const validation = useValidation(reason, rules);
+  const validation = useValidation(
+    reason,
+    useMemo(() => {
+      const result: Rule<string>[] = [];
+      if (!accept) {
+        result.push((subject: string) => {
+          if (!subject) {
+            return RuleResult.invalid("当未勾选接受时，理由是必填项");
+          }
+          return RuleResult.valid;
+        });
+      }
+      return result;
+    }, [accept]),
+  );
 
   return (
     <div>
       <h2>
-        These rules will be validating on reason eagerly and{" "}
-        <span style={{ color: "red" }}>dynamically</span> (in this sample the
-        validation will validate the reason by the{" "}
-        <span style={{ color: "red" }}>dynamic</span> rules.)
+        <span style={{ color: "red" }}>动态验证</span>
+        （在这个示例中，验证将会根据数据不同，通过
+        <span style={{ color: "red" }}>动态</span>
+        规则对理由进行验证。）
       </h2>
       <ul>
-        <li>reason is required when accept not checked (empty : error)</li>
+        <li>当未勾选接受时，理由是必填项（为空：错误）</li>
       </ul>
       <div
         style={{
@@ -47,12 +46,12 @@ export function DynamicRulesValidation() {
           checked={accept}
           onChange={(e) => setAccept(e.target.checked)}
         />
-        <label htmlFor="accept">accept</label>
+        <label htmlFor="accept">接受</label>
       </div>
       <input
         type="text"
         value={reason}
-        placeholder="input something"
+        placeholder="输入内容"
         onChange={(e) => setReason(e.target.value)}
         autoComplete="off"
       />

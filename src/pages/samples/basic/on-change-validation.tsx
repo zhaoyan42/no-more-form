@@ -11,19 +11,19 @@ export function OnChangeValidation() {
   return (
     <div>
       <h2>
-        These rules will be validating on name{" "}
-        <span style={{ color: "red" }}>on change</span> (in this sample the
-        validation will be triggered when the input field changes.)
+        这些规则将会对名字进行
+        <span style={{ color: "red" }}>修改时触发验证</span>
+        （验证会在输入字段更改时触发）
       </h2>
       <ul>
-        <li>name is required (empty : error)</li>
-        <li>name may be too short (length less than 5 : warning)</li>
-        <li>name is too long (length greater than 10 : error)</li>
+        <li>名字是必填项（为空：错误）</li>
+        <li>名字可能太短（长度小于5：警告）</li>
+        <li>名字太长（长度大于10：错误）</li>
       </ul>
       <input
         type="text"
         value={name}
-        placeholder="input something"
+        placeholder="输入名字"
         onChange={(e) => setName(e.target.value)}
         autoComplete="off"
       />

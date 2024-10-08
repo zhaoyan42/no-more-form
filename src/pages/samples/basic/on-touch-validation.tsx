@@ -13,19 +13,18 @@ export function OnTouchValidation() {
   return (
     <div>
       <h2>
-        These rules will be validating on name{" "}
-        <span style={{ color: "red" }}>on touch</span> (in this sample the
-        validation will be triggered when the input field loses focus.)
+        <span style={{ color: "red" }}>被触动后触发验证</span>
+        （验证会在输入字段失去焦点时触发）
       </h2>
       <ul>
-        <li>name is required (empty : error)</li>
-        <li>name may be too short (length less than 5 : warning)</li>
-        <li>name is too long (length greater than 10 : error)</li>
+        <li>名字是必填项（为空：错误）</li>
+        <li>名字可能太短（长度小于5：警告）</li>
+        <li>名字太长（长度大于10：错误）</li>
       </ul>
       <input
         type="text"
         value={name}
-        placeholder="input something"
+        placeholder="输入名字"
         onChange={(e) => setName(e.target.value)}
         autoComplete="off"
         onBlur={setTouched}

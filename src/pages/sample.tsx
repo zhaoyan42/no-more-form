@@ -9,27 +9,23 @@ import { DynamicRulesValidation } from "./samples/advance/dynamic-rules-validati
 import { MultipleLayerSubjectValidation } from "./samples/advance/multiple-layer-subject-validation.tsx";
 
 type SampleType =
-  | "eager validation"
-  | "on change validation"
-  | "with visual indicator"
-  | "on touch validation"
-  | "grouped validation"
-  | "composite validation"
-  | "dynamic validation"
-  | "multiple layer subject";
+  | "即时验证"
+  | "变更时验证"
+  | "带视觉指示器"
+  | "触摸时验证"
+  | "分组验证"
+  | "复合验证"
+  | "动态验证"
+  | "多层次验证";
 const basicSamples: SampleType[] = [
-  "eager validation",
-  "on change validation",
-  "with visual indicator",
-  "on touch validation",
-  "grouped validation",
+  "即时验证",
+  "变更时验证",
+  "带视觉指示器",
+  "触摸时验证",
+  "分组验证",
 ];
 
-const advancedSamples: SampleType[] = [
-  "composite validation",
-  "dynamic validation",
-  "multiple layer subject",
-];
+const advancedSamples: SampleType[] = ["复合验证", "动态验证", "多层次验证"];
 
 function Option(props: {
   onClick: () => void;
@@ -44,8 +40,7 @@ function Option(props: {
 }
 
 export function Sample() {
-  const [currentSample, setCurrentSample] =
-    useState<SampleType>("eager validation");
+  const [currentSample, setCurrentSample] = useState<SampleType>("即时验证");
 
   return (
     <div
@@ -63,8 +58,7 @@ export function Sample() {
           padding: "20px",
         }}
       >
-        <h1>Choose a sample:</h1>
-        <h2>basic samples</h2>
+        <h2>基础示例</h2>
         <ul>
           {basicSamples.map((sample) => (
             <Option
@@ -78,7 +72,7 @@ export function Sample() {
           ))}
         </ul>
 
-        <h2>advanced samples</h2>
+        <h2>高级示例</h2>
         <ul>
           {advancedSamples.map((sample) => (
             <Option
@@ -94,31 +88,17 @@ export function Sample() {
       </div>
 
       <div style={{ flexGrow: "1", padding: "20px" }}>
-        <div>{currentSample === "eager validation" && <EagerValidation />}</div>
+        <div>{currentSample === "即时验证" && <EagerValidation />}</div>
+        <div>{currentSample === "变更时验证" && <OnChangeValidation />}</div>
+        <div>{currentSample === "带视觉指示器" && <WithVisualIndicator />}</div>
+        <div>{currentSample === "触摸时验证" && <OnTouchValidation />}</div>
+        <div>{currentSample === "分组验证" && <GroupedValidation />}</div>
         <div>
-          {currentSample === "on change validation" && <OnChangeValidation />}
+          {currentSample === "复合验证" && <CompositeSubjectValidation />}
         </div>
+        <div>{currentSample === "动态验证" && <DynamicRulesValidation />}</div>
         <div>
-          {currentSample === "with visual indicator" && <WithVisualIndicator />}
-        </div>
-        <div>
-          {currentSample === "on touch validation" && <OnTouchValidation />}
-        </div>
-        <div>
-          {currentSample === "grouped validation" && <GroupedValidation />}
-        </div>
-        <div>
-          {currentSample === "composite validation" && (
-            <CompositeSubjectValidation />
-          )}
-        </div>
-        <div>
-          {currentSample === "dynamic validation" && <DynamicRulesValidation />}
-        </div>
-        <div>
-          {currentSample === "multiple layer subject" && (
-            <MultipleLayerSubjectValidation />
-          )}
+          {currentSample === "多层次验证" && <MultipleLayerSubjectValidation />}
         </div>
       </div>
     </div>

@@ -18,34 +18,34 @@ export function GroupedValidation() {
   return (
     <div>
       <h2>
-        These rules will be validating on name and email{" "}
-        <span style={{ color: "red" }}>on group touched</span> (in this sample
-        the validation will be triggered when the submit button is clicked.)
+        对若干字段进行
+        <span style={{ color: "red" }}>分组手动触发验证</span>
+        （两个字段的验证会在点击提交按钮时同时触发）
       </h2>
       <ul>
-        <li>name is required (empty : error)</li>
-        <li>name may be too short (length less than 5 : warning)</li>
-        <li>name is too long (length greater than 10 : error)</li>
-        <li>email is required (empty : error)</li>
-        <li>email is has @ (has not @ : error)</li>
+        <li>名字是必填项（为空：错误）</li>
+        <li>名字可能太短（长度小于5：警告）</li>
+        <li>名字太长（长度大于10：错误）</li>
+        <li>电子邮件是必填项（为空：错误）</li>
+        <li>电子邮件必须包含@符号（不包含@符号：错误）</li>
       </ul>
       <div>
-        name:
+        名字：
         <input
           type="text"
           value={name}
-          placeholder="input name"
+          placeholder="输入名字"
           onChange={(e) => setName(e.target.value)}
           autoComplete="off"
         />
         <ValidationMessages validation={nameValidation} />
       </div>
       <div>
-        email:
+        电子邮件：
         <input
           type="text"
           value={email}
-          placeholder="input email"
+          placeholder="输入电子邮件"
           onChange={(e) => setEmail(e.target.value)}
           autoComplete="off"
         />
@@ -56,11 +56,11 @@ export function GroupedValidation() {
         onClick={() => {
           group.validate();
           if (group.isValid()) {
-            console.log("Form submitted:", { name, email });
+            console.log("表单已提交:", { name, email });
           }
         }}
       >
-        submit
+        提交
       </button>
     </div>
   );

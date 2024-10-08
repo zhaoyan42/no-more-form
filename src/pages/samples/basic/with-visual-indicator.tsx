@@ -14,14 +14,14 @@ export function WithVisualIndicator() {
   return (
     <div>
       <h2>
-        These rules will be validating on name on change and will show the{" "}
-        <span style={{ color: "red" }}>visual indicator</span> (in this sample
-        the submit button will be disabled when the validation is not valid.)
+        使用验证结果对页面元素进行
+        <span style={{ color: "red" }}>视觉提示</span>
+        （当验证不通过时，提交按钮将被禁用。）
       </h2>
       <ul>
-        <li>name is required (empty : error)</li>
-        <li>name may be too short (length less than 5 : warning)</li>
-        <li>name is too long (length greater than 10 : error)</li>
+        <li>名字是必填项（为空：错误）</li>
+        <li>名字可能太短（长度小于5：警告）</li>
+        <li>名字太长（长度大于10：错误）</li>
       </ul>
       <div>
         <div>
@@ -29,12 +29,15 @@ export function WithVisualIndicator() {
             type="text"
             name="sample"
             value={name}
-            placeholder="input something"
+            placeholder="输入名字"
             onChange={(e) => setName(e.target.value)}
             autoComplete="off"
           />
           <button disabled={!group.isValid()}>
-            {group.isValid() ? "can submit" : "can't submit"}
+            group:{group.isValid() ? "可以提交" : "不能提交"}
+          </button>
+          <button disabled={!validation.isValid}>
+            validation:{validation.isValid ? "可以提交" : "不能提交"}
           </button>
         </div>
         <ValidationMessages validation={validation} />
