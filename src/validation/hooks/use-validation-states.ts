@@ -67,7 +67,7 @@ export function useValidation<TSubject>(
     () =>
       ({
         dirty: fieldDirty,
-        touched: options?.group?.touched ?? fieldTouched,
+        touched: options?.group?.touched || fieldTouched,
         setTouched,
         get isValid() {
           return getResultSet().isValid;

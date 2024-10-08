@@ -39,8 +39,8 @@ export const Demo = () => {
           value={name}
           onChange={(e) => {
             setName(e.target.value);
-            nameValidation.setTouched();
           }}
+          onBlur={nameValidation.setTouched}
         />
         <ValidationMessages validation={nameValidation} />
       </div>
@@ -50,8 +50,8 @@ export const Demo = () => {
           value={email}
           onChange={(e) => {
             setEmail(e.target.value);
-            emailValidation.setTouched();
           }}
+          onBlur={emailValidation.setTouched}
         />
         <ValidationMessages validation={emailValidation} />
       </div>
