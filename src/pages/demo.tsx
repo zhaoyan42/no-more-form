@@ -4,6 +4,7 @@ import { RuleResult } from "../validation/rule.ts";
 import { useValidation } from "../validation/hooks/use-validation-states.ts";
 import { ValidationMessages } from "../validation/components/validation-messages.tsx";
 import { useGroup } from "../validation/hooks/use-group.ts";
+import { useValidator } from "../validation/hooks/use-validator.ts";
 
 export const Demo = () => {
   // State 定义
@@ -13,6 +14,11 @@ export const Demo = () => {
 
   // 组状态
   const group = useGroup();
+
+  const a = useValidator(name, [nameRequired, nameChinese]);
+  const b = useValidator(name, [nameRequired, nameChinese]);
+
+  console.log(a.getResultSet(), b.getResultSet());
 
   const nameValidation = useValidation(name, [nameRequired, nameChinese], {
     group,
