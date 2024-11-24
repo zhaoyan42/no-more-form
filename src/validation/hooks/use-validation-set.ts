@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from "react";
-import type { Validation } from "./hooks/use-validation.ts";
+import type { Validation } from "./use-validation.ts";
 
 interface ValidationSet {
   addValidation: (key: string, validation: Validation) => void;

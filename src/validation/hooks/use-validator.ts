@@ -3,8 +3,6 @@ import { RuleResultSet } from "../rule-result-set.ts";
 import { RuleSet } from "../rule-set.ts";
 import type { Rule } from "../rule.ts";
 
-import type { Validator } from "../validator.ts";
-
 interface CacheKey<TSubject> {
   subject: TSubject;
   rules: Rule<TSubject>[];
@@ -24,6 +22,13 @@ function getFromCache<TSubject>(cacheKey: CacheKey<TSubject>) {
   }
   console.debug("Cache miss");
   return null;
+}
+
+/**
+ * 验证器
+ */
+export interface Validator {
+  getResultSet: () => RuleResultSet;
 }
 
 export function useValidator<TSubject>(

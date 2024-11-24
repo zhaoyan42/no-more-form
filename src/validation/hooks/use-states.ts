@@ -1,5 +1,17 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { FieldStates, ValidationStates } from "../states.ts";
+
+export interface ValidationStates {
+  dirty: boolean;
+  setDirty: (dirty: boolean) => void;
+  touched: boolean;
+  setTouched: (touched: boolean) => void;
+}
+
+export interface FieldStates {
+  dirty: boolean;
+  touched: boolean;
+  setTouched: (touched: boolean) => void;
+}
 
 function useValidationStates(): ValidationStates {
   const [dirty, setDirty] = useState(false);
