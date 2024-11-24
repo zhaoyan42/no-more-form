@@ -1,8 +1,8 @@
 import { useMemo, useState } from "react";
 import { ValidationMessages } from "../../../validation/components/validation-messages.tsx";
-import { useValidation } from "../../../validation/hooks/use-validation-states.ts";
 import type { Rule } from "../../../validation/rule.ts";
 import { RuleResult } from "../../../validation/rule.ts";
+import { useValidation } from "../../../validation/hooks/use-validation.ts";
 
 export function DynamicRulesValidation() {
   const [accept, setAccept] = useState<boolean>(false);

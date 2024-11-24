@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { ValidationMessages } from "../../../validation/components/validation-messages.tsx";
-import { useValidation } from "../../../validation/hooks/use-validation-states.ts";
 import { compositeRules } from "../common/rules.ts";
+import { useValidation } from "../../../validation/hooks/use-validation.ts";
 
 export function CompositeSubjectValidation() {
   const [accept, setAccept] = useState<boolean>(false);

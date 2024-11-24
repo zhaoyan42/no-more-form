@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { ValidationMessages } from "../../../validation/components/validation-messages.tsx";
-import { useValidation } from "../../../validation/hooks/use-validation-states.ts";
 import { nameRules } from "../common/rules.ts";
 import { useGroup } from "../../../validation/hooks/use-group.ts";
+import { useValidation } from "../../../validation/hooks/use-validation.ts";
 
 export function WithVisualIndicator() {
   const [name, setName] = useState<string>("");

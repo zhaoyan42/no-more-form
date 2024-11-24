@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
-import type { Validation } from "../validation.ts";
 import { useValidationSet } from "../validation.ts";
+import type { Validation } from "./use-validation.ts";
 
 export interface Group {
   isValid: boolean;

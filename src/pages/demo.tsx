@@ -1,10 +1,10 @@
 import { useState } from "react";
 import type { Rule } from "../validation/rule.ts";
 import { RuleResult } from "../validation/rule.ts";
-import { useValidation } from "../validation/hooks/use-validation-states.ts";
 import { ValidationMessages } from "../validation/components/validation-messages.tsx";
 import { useGroup } from "../validation/hooks/use-group.ts";
 import { useValidator } from "../validation/hooks/use-validator.ts";
+import { useValidation } from "../validation/hooks/use-validation.ts";
 
 export const Demo = () => {
   // State 定义

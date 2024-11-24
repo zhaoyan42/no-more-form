@@ -1,13 +1,5 @@
 import { useCallback, useMemo, useState } from "react";
-import type { RuleResultSet } from "./rule-result-set.ts";
-
-export interface Validation {
-  dirty: boolean;
-  touched: boolean;
-  setTouched: () => void;
-  isValid: boolean;
-  getResultSet: () => RuleResultSet;
-}
+import type { Validation } from "./hooks/use-validation.ts";
 
 interface ValidationSet {
   addValidation: (key: string, validation: Validation) => void;

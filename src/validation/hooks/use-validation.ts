@@ -1,43 +1,17 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
-import type { Validation } from "../validation.ts";
-import type { FieldStates, ValidationStates } from "../states.ts";
-import { RuleResultSet } from "../rule-result-set.ts";
 import type { Rule } from "../rule.ts";
-import { RuleSet } from "../rule-set.ts";
 import type { Group } from "./use-group.ts";
+import { useCallback, useEffect, useMemo, useRef } from "react";
+import { v4 as uuidv4 } from "uuid";
+import { RuleSet } from "../rule-set.ts";
+import { RuleResultSet } from "../rule-result-set.ts";
+import { useFieldStates } from "./use-states.ts";
 
-function useValidationStates(): ValidationStates {
-  const [dirty, setDirty] = useState(false);
-  const [touched, setTouched] = useState(false);
-
-  return useMemo(
-    () => ({
-      dirty,
-      setDirty,
-      touched,
-      setTouched,
-    }),
-    [dirty, touched],
-  );
-}
-
-function useFieldStates<T>(subject: T): FieldStates {
-  const { dirty, setDirty, touched, setTouched } = useValidationStates();
-
-  const initialState = useRef(subject);
-
-  useEffect(() => {
-    if (initialState.current !== subject) {
-      setDirty(true);
-    }
-  }, [setDirty, subject]);
-
-  return {
-    dirty,
-    touched,
-    setTouched,
-  } satisfies FieldStates;
+export interface Validation {
+  dirty: boolean;
+  touched: boolean;
+  setTouched: () => void;
+  isValid: boolean;
+  getResultSet: () => RuleResultSet;
 }
 
 export function useValidation<TSubject>(
