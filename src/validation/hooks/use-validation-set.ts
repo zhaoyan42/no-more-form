@@ -1,8 +1,8 @@
 import { useCallback, useMemo, useState } from "react";
 import type { Validation } from "./use-validation.ts";
 
-interface ValidationSet {
-  addValidation: (key: string, validation: Validation) => void;
+export interface ValidationSet {
+  add: (key: string, validation: Validation) => void;
   validations: Record<string, Validation>;
   isValid: boolean;
 }
@@ -12,7 +12,7 @@ export function useValidationSet() {
     {},
   );
 
-  const addValidation = useCallback((key: string, validation: Validation) => {
+  const add = useCallback((key: string, validation: Validation) => {
     setValidations((prev) => ({
       ...prev,
       [key]: validation,
@@ -22,7 +22,7 @@ export function useValidationSet() {
   return useMemo(
     () =>
       ({
-        addValidation,
+        add,
         validations: Array.from(Object.entries(validations)).reduce(
           (acc, [key, validation]) => {
             acc[key] = validation;
@@ -34,6 +34,6 @@ export function useValidationSet() {
           (validation) => validation.isValid,
         ),
       }) satisfies ValidationSet as ValidationSet,
-    [addValidation, validations],
+    [add, validations],
   );
 }

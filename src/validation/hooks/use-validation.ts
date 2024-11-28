@@ -6,6 +6,7 @@ import { RuleSet } from "../rule-set.ts";
 import { RuleResultSet } from "../rule-result-set.ts";
 import { useFieldStates } from "./use-states.ts";
 import { useEffectEvent } from "use-effect-event";
+import type { ValidationSet } from "./use-validation-set.ts";
 
 export interface Validation {
   dirty: boolean;
@@ -20,6 +21,7 @@ export function useValidation<TSubject>(
   rules: Rule<TSubject>[],
   options?: {
     group?: Group;
+    validationSet?: ValidationSet;
   },
 ) {
   const {
@@ -62,13 +64,13 @@ export function useValidation<TSubject>(
     ],
   );
 
-  const addToGroup = useEffectEvent((validation: Validation) => {
-    options?.group?.addToGroup(id.current, validation);
+  const addToSet = useEffectEvent((validation: Validation) => {
+    options?.validationSet?.add(id.current, validation);
   });
 
   useEffect(() => {
-    addToGroup(validation);
-  }, [addToGroup, validation]);
+    addToSet(validation);
+  }, [addToSet, validation]);
 
   return validation;
 }

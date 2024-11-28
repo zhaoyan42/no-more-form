@@ -3,8 +3,8 @@ import type { Rule } from "../validation/rule.ts";
 import { RuleResult } from "../validation/rule.ts";
 import { ValidationMessages } from "../validation/components/validation-messages.tsx";
 import { useGroup } from "../validation/hooks/use-group.ts";
-import { useValidator } from "../validation/hooks/use-validator.ts";
 import { useValidation } from "../validation/hooks/use-validation.ts";
+import { useValidationSet } from "../validation/hooks/use-validation-set.ts";
 
 export const Demo = () => {
   // State 定义
@@ -14,25 +14,24 @@ export const Demo = () => {
 
   // 组状态
   const group = useGroup();
-
-  const a = useValidator(name, [nameRequired, nameChinese]);
-  const b = useValidator(name, [nameRequired, nameChinese]);
-
-  console.log(a.getResultSet(), b.getResultSet());
+  const validationSet = useValidationSet();
 
   const nameValidation = useValidation(name, [nameRequired, nameChinese], {
     group,
+    validationSet,
   });
   const emailValidation = useValidation(email, [emailRequired, emailDomain], {
     group,
+    validationSet,
   });
   const countValidation = useValidation(count, [countRange, countOdd], {
     group,
+    validationSet,
   });
 
   const submit = () => {
     group.validate();
-    if (group.isValid) {
+    if (validationSet.isValid) {
       console.log("Form submitted:", { name, email, count });
     }
   };

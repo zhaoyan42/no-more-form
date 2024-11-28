@@ -3,16 +3,24 @@ import { ValidationMessages } from "../../../validation/components/validation-me
 import { emailRules, nameRules } from "../common/rules.ts";
 import { useGroup } from "../../../validation/hooks/use-group.ts";
 import { useValidation } from "../../../validation/hooks/use-validation.ts";
+import { useValidationSet } from "../../../validation/hooks/use-validation-set.ts";
 
 export function GroupedValidation() {
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
 
   const group = useGroup();
+  const validationSet = useValidationSet();
 
-  const nameValidation = useValidation(name, nameRules, { group });
+  const nameValidation = useValidation(name, nameRules, {
+    group,
+    validationSet,
+  });
 
-  const emailValidation = useValidation(email, emailRules, { group });
+  const emailValidation = useValidation(email, emailRules, {
+    group,
+    validationSet,
+  });
 
   return (
     <div>
@@ -54,7 +62,7 @@ export function GroupedValidation() {
       <button
         onClick={() => {
           group.validate();
-          if (group.isValid) {
+          if (validationSet.isValid) {
             console.log("表单已提交:", { name, email });
           }
         }}
