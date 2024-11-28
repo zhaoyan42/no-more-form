@@ -7,5 +7,9 @@ export class RuleResultSet {
     return this.results.every((result) => !result.isInvalid);
   }
 
+  get notValidResults() {
+    return this.results.filter((result) => !result.isValid);
+  }
+
   static empty = new RuleResultSet([]);
 }

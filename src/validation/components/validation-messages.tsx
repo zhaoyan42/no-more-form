@@ -22,10 +22,7 @@ export function ValidationMessages({
     eager || (onChange && validation.dirty) || (onTouch && validation.touched);
 
   const results = useMemo(
-    () =>
-      messageVisible
-        ? validation.getResultSet().results.filter((result) => !result.isValid)
-        : [],
+    () => (messageVisible ? validation.resultSet.notValidResults : []),
     [messageVisible, validation],
   );
 

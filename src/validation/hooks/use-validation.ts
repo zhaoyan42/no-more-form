@@ -13,7 +13,7 @@ export interface Validation {
   touched: boolean;
   setTouched: () => void;
   isValid: boolean;
-  getResultSet: () => RuleResultSet;
+  resultSet: RuleResultSet;
 }
 
 export function useValidation<TSubject>(
@@ -35,7 +35,7 @@ export function useValidation<TSubject>(
 
   const ruleSet = useMemo(() => RuleSet.of(rules), [rules]);
 
-  const getResultSet = useCallback(
+  const resultSet = useMemo(
     () => new RuleResultSet(ruleSet.validate(subject)),
     [subject, ruleSet],
   );
@@ -51,17 +51,11 @@ export function useValidation<TSubject>(
         touched: options?.group?.touched || fieldTouched,
         setTouched,
         get isValid() {
-          return getResultSet().isValid;
+          return resultSet.isValid;
         },
-        getResultSet,
+        resultSet: resultSet,
       }) satisfies Validation as Validation,
-    [
-      fieldDirty,
-      fieldTouched,
-      getResultSet,
-      options?.group?.touched,
-      setTouched,
-    ],
+    [fieldDirty, fieldTouched, resultSet, options?.group?.touched, setTouched],
   );
 
   const addToSet = useEffectEvent((validation: Validation) => {
