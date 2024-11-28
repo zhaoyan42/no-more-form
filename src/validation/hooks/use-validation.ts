@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 import { RuleSet } from "../rule-set.ts";
 import { RuleResultSet } from "../rule-result-set.ts";
 import { useFieldStates } from "./use-states.ts";
+import { useEffectEvent } from "use-effect-event";
 
 export interface Validation {
   dirty: boolean;
@@ -61,10 +62,13 @@ export function useValidation<TSubject>(
     ],
   );
 
-  useEffect(() => {
-    // 将当前 Validation 实例添加到 Group 中
+  const addToGroup = useEffectEvent((validation: Validation) => {
     options?.group?.addToGroup(id.current, validation);
-  }, [options?.group, validation]);
+  });
+
+  useEffect(() => {
+    addToGroup(validation);
+  }, [addToGroup, validation]);
 
   return validation;
 }

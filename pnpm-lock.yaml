@@ -14,6 +14,9 @@ importers:
       react-dom:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
+      use-effect-event:
+        specifier: ^1.0.2
+        version: 1.0.2(react@18.3.1)
       uuid:
         specifier: ^11.0.3
         version: 11.0.3
@@ -1466,6 +1469,11 @@ packages:
 
   uri-js@4.4.1:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}
+
+  use-effect-event@1.0.2:
+    resolution: {integrity: sha512-9c8AAmtQja4LwJXI0EQPhQCip6dmrcSe0FMcTUZBeGh/XTCOLgw3Qbt0JdUT8Rcrm/ZH+Web7MIcMdqgQKdXJg==}
+    peerDependencies:
+      react: ^18.3 || ^19.0.0-0
 
   uuid@11.0.3:
     resolution: {integrity: sha512-d0z310fCWv5dJwnX1Y/MncBAqGMKEzlBb1AOf7z9K8ALnd0utBX/msg/fA0+sbyN1ihbMsLhrBlnl1ak7Wa0rg==}
@@ -3070,6 +3078,10 @@ snapshots:
   uri-js@4.4.1:
     dependencies:
       punycode: 2.3.1
+
+  use-effect-event@1.0.2(react@18.3.1):
+    dependencies:
+      react: 18.3.1
 
   uuid@11.0.3: {}
 
