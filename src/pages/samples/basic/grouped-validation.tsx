@@ -13,12 +13,10 @@ export function GroupedValidation() {
   const validationSet = useValidationSet();
 
   const nameValidation = useValidation(name, nameRules, {
-    group,
     validationSet,
   });
 
   const emailValidation = useValidation(email, emailRules, {
-    group,
     validationSet,
   });
 
@@ -45,7 +43,7 @@ export function GroupedValidation() {
           onChange={(e) => setName(e.target.value)}
           autoComplete="off"
         />
-        <ValidationMessages validation={nameValidation} />
+        <ValidationMessages validation={nameValidation} group={group} />
       </div>
       <div>
         电子邮件：
@@ -56,12 +54,12 @@ export function GroupedValidation() {
           onChange={(e) => setEmail(e.target.value)}
           autoComplete="off"
         />
-        <ValidationMessages validation={emailValidation} />
+        <ValidationMessages validation={emailValidation} group={group} />
       </div>
 
       <button
         onClick={() => {
-          group.validate();
+          group.showResults();
           if (validationSet.isValid) {
             console.log("表单已提交:", { name, email });
           }

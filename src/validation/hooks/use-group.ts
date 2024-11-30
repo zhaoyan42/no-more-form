@@ -2,18 +2,18 @@ import { useCallback, useState } from "react";
 
 export interface Group {
   touched: boolean;
-  validate: () => void;
+  showResults: () => void;
 }
 
 export function useGroup() {
   const [touched, setTouched] = useState(false);
 
-  const validate = useCallback(() => {
+  const showResults = useCallback(() => {
     setTouched(true);
   }, []);
 
   return {
     touched,
-    validate,
+    showResults: showResults,
   } satisfies Group as Group;
 }

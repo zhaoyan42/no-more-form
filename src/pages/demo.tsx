@@ -17,20 +17,17 @@ export const Demo = () => {
   const validationSet = useValidationSet();
 
   const nameValidation = useValidation(name, [nameRequired, nameChinese], {
-    group,
     validationSet,
   });
   const emailValidation = useValidation(email, [emailRequired, emailDomain], {
-    group,
     validationSet,
   });
   const countValidation = useValidation(count, [countRange, countOdd], {
-    group,
     validationSet,
   });
 
   const submit = () => {
-    group.validate();
+    group.showResults();
     if (validationSet.isValid) {
       console.log("Form submitted:", { name, email, count });
     }
@@ -47,7 +44,7 @@ export const Demo = () => {
           }}
           onBlur={nameValidation.setTouched}
         />
-        <ValidationMessages validation={nameValidation} />
+        <ValidationMessages validation={nameValidation} group={group} />
       </div>
       <div>
         <label>邮箱:</label>
@@ -58,7 +55,7 @@ export const Demo = () => {
           }}
           onBlur={emailValidation.setTouched}
         />
-        <ValidationMessages validation={emailValidation} />
+        <ValidationMessages validation={emailValidation} group={group} />
       </div>
       <div>
         <label>计数:</label>
@@ -83,7 +80,7 @@ export const Demo = () => {
         >
           +
         </button>
-        <ValidationMessages validation={countValidation} />
+        <ValidationMessages validation={countValidation} group={group} />
       </div>
       <button type="button" onClick={submit}>
         提交

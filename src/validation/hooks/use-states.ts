@@ -1,11 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-
-export interface ValidationStates {
-  dirty: boolean;
-  setDirty: (dirty: boolean) => void;
-  touched: boolean;
-  setTouched: (touched: boolean) => void;
-}
+import { useEffect, useRef, useState } from "react";
 
 export interface FieldStates {
   dirty: boolean;
@@ -13,23 +6,9 @@ export interface FieldStates {
   setTouched: (touched: boolean) => void;
 }
 
-function useValidationStates(): ValidationStates {
+export function useFieldState<T>(subject: T): FieldStates {
   const [dirty, setDirty] = useState(false);
   const [touched, setTouched] = useState(false);
-
-  return useMemo(
-    () => ({
-      dirty,
-      setDirty,
-      touched,
-      setTouched,
-    }),
-    [dirty, touched],
-  );
-}
-
-export function useFieldStates<T>(subject: T): FieldStates {
-  const { dirty, setDirty, touched, setTouched } = useValidationStates();
 
   const initialState = useRef(subject);
 

@@ -2,24 +2,30 @@ import { useCallback, useMemo } from "react";
 import type { RuleResult } from "../rule.ts";
 
 import type { Validation } from "../hooks/use-validation.ts";
+import type { Group } from "../hooks/use-group.ts";
 
 export function ValidationMessages({
   validation,
   eager,
   onChange,
   onTouch,
+  group,
 }: {
   validation: Validation;
   eager?: boolean;
   onChange?: boolean;
   onTouch?: boolean;
+  group?: Group;
 }) {
   eager = eager ?? false;
   onChange = onChange ?? true;
   onTouch = onTouch ?? true;
 
   const messageVisible =
-    eager || (onChange && validation.dirty) || (onTouch && validation.touched);
+    eager ||
+    (onChange && validation.dirty) ||
+    (onTouch && validation.touched) ||
+    group?.touched;
 
   const results = useMemo(
     () => (messageVisible ? validation.resultSet.notValidResults : []),
