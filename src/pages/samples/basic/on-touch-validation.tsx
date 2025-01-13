@@ -14,7 +14,7 @@ export function OnTouchValidation() {
     <div>
       <h2>
         <span style={{ color: "red" }}>被触动后触发验证</span>
-        （验证会在输入字段失去焦点时触发）
+        （验证会在输入框失去焦点时显示）
       </h2>
       <ul>
         <li>名字是必填项（为空：错误）</li>
