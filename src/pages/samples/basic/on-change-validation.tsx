@@ -13,7 +13,7 @@ export function OnChangeValidation() {
       <h2>
         这些规则将会对名字进行
         <span style={{ color: "red" }}>修改时触发验证</span>
-        （验证会在输入字段更改时触发）
+        （验证会在输入字段更改时显示）
       </h2>
       <ul>
         <li>名字是必填项（为空：错误）</li>

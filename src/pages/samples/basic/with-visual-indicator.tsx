@@ -18,7 +18,7 @@ export function WithVisualIndicator() {
       <h2>
         使用验证结果对页面元素进行
         <span style={{ color: "red" }}>视觉提示</span>
-        （当验证不通过时，提交按钮将被禁用。）
+        （无论错误信息是否显示，当验证不通过时，提交按钮将被禁用。）
       </h2>
       <ul>
         <li>名字是必填项（为空：错误）</li>
