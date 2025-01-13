@@ -12,13 +12,9 @@ export function GroupedValidation() {
   const group = useGroup();
   const validationSet = useValidationSet();
 
-  const nameValidation = useValidation(name, nameRules, {
-    validationSet,
-  });
+  const nameValidation = useValidation(name, nameRules, validationSet);
 
-  const emailValidation = useValidation(email, emailRules, {
-    validationSet,
-  });
+  const emailValidation = useValidation(email, emailRules, validationSet);
 
   return (
     <div>

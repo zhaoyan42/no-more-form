@@ -11,7 +11,7 @@ export function WithVisualIndicator() {
   const group = useGroup();
   const validationSet = useValidationSet();
 
-  const validation = useValidation(name, nameRules, { validationSet });
+  const validation = useValidation(name, nameRules, validationSet);
 
   return (
     <div>

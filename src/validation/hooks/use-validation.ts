@@ -28,16 +28,15 @@ export interface Validation {
  * @template TSubject 验证主体的类型
  * @param {TSubject} subject 验证主体
  * @param {Rule<TSubject>[]} rules 验证规则数组
+ * @param {ValidationSet} [validationSet] 验证集合
  * @param {Object} [options] 可选配置
- * @param {ValidationSet} [options.validationSet] 验证集合
  * @returns 验证状态对象
  */
 export function useValidation<TSubject>(
   subject: TSubject,
   rules: Rule<TSubject>[],
-  options?: {
-    validationSet?: ValidationSet;
-  },
+  validationSet?: ValidationSet,
+  options?: {},
 ) {
   const {
     dirty: fieldDirty,
@@ -79,7 +78,7 @@ export function useValidation<TSubject>(
 
   /** 将验证实例添加到验证集合 */
   const addToSet = useEffectEvent((validation: Validation) => {
-    options?.validationSet?.add(id.current, validation);
+    validationSet?.add(id.current, validation);
   });
 
   useEffect(() => {
