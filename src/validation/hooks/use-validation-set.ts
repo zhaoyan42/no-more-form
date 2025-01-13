@@ -7,8 +7,6 @@ import type { Validation } from "./use-validation.ts";
 export interface ValidationSet {
   /** 添加验证项 */
   add: (key: string, validation: Validation) => void;
-  /** 所有验证项的集合 */
-  validations: Record<string, Validation>;
   /** 整个验证集合是否有效 */
   isValid: boolean;
 }
@@ -34,6 +32,13 @@ export function useValidationSet() {
     }));
   }, []);
 
+  const isValid = useMemo(
+    () => Object.values(validations).every(
+      (validation) => validation.isValid,
+    ),
+    [validations]
+  );
+
   /**
    * 计算并返回验证集合的状态
    * @returns {ValidationSet} 包含验证集合相关方法和状态的对象
@@ -42,17 +47,8 @@ export function useValidationSet() {
     () =>
       ({
         add,
-        validations: Array.from(Object.entries(validations)).reduce(
-          (acc, [key, validation]) => {
-            acc[key] = validation;
-            return acc;
-          },
-          {} as Record<string, Validation>,
-        ),
-        isValid: Object.values(validations).every(
-          (validation) => validation.isValid,
-        ),
+        isValid,
       }) satisfies ValidationSet as ValidationSet,
-    [add, validations],
+    [add, isValid],
   );
 }
