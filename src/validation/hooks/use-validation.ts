@@ -8,7 +8,7 @@ import { useEffectEvent } from "use-effect-event";
 import type { ValidationSet } from "./use-validation-set.ts";
 
 /**
- * 验证状态接口
+ * 验证
  */
 export interface Validation {
   /** 字段是否被修改 */
@@ -24,13 +24,13 @@ export interface Validation {
 }
 
 /**
- * 管理验证逻辑的hook
+ * 使用验证
  * @template TSubject 验证主体的类型
  * @param {TSubject} subject 验证主体
  * @param {Rule<TSubject>[]} rules 验证规则数组
  * @param {Object} [options] 可选配置
  * @param {ValidationSet} [options.validationSet] 验证集合
- * @returns {Validation} 验证状态对象
+ * @returns 验证状态对象
  */
 export function useValidation<TSubject>(
   subject: TSubject,

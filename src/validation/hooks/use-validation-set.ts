@@ -32,6 +32,9 @@ export function useValidationSet() {
     }));
   }, []);
 
+  /**
+   * 整个验证集合是否有效
+   */
   const isValid = useMemo(
     () => Object.values(validations).every(
       (validation) => validation.isValid,
