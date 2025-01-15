@@ -36,7 +36,6 @@ export function useValidation<TSubject>(
   subject: TSubject,
   rules: Rule<TSubject>[],
   validationSet?: ValidationSet,
-  options?: {},
 ) {
   const {
     dirty: fieldDirty,
