@@ -7,6 +7,9 @@ import type { Validation } from "./use-validation.ts";
 export interface ValidationSet {
   /** 添加验证项 */
   add: (key: string, validation: Validation) => void;
+  /** 删除验证项 */
+  remove: (key: string) => void;
+
   /** 整个验证集合是否有效 */
   isValid: boolean;
 }
@@ -33,13 +36,23 @@ export function useValidationSet() {
   }, []);
 
   /**
+   * 删除验证项
+   * @param {string}
+   */
+  const remove = useCallback((key: string) => {
+    setValidations((prev) => {
+      const next = { ...prev };
+      delete next[key];
+      return next;
+    });
+  }, []);
+
+  /**
    * 整个验证集合是否有效
    */
   const isValid = useMemo(
-    () => Object.values(validations).every(
-      (validation) => validation.isValid,
-    ),
-    [validations]
+    () => Object.values(validations).every((validation) => validation.isValid),
+    [validations],
   );
 
   /**
@@ -50,8 +63,9 @@ export function useValidationSet() {
     () =>
       ({
         add,
+        remove,
         isValid,
       }) satisfies ValidationSet as ValidationSet,
-    [add, isValid],
+    [add, isValid, remove],
   );
 }

@@ -4,8 +4,8 @@ import { v4 as uuidv4 } from "uuid";
 import { RuleSet } from "../rule-set.ts";
 import { RuleResultSet } from "../rule-result-set.ts";
 import { useFieldState } from "./use-states.ts";
-import { useEffectEvent } from "use-effect-event";
 import type { ValidationSet } from "./use-validation-set.ts";
+import { useEffectEvent } from "use-effect-event";
 
 /**
  * 验证
@@ -28,14 +28,13 @@ export interface Validation {
  * @template TSubject 验证主体的类型
  * @param {TSubject} subject 验证主体
  * @param {Rule<TSubject>[]} rules 验证规则数组
- * @param {ValidationSet} [validationSet] 验证集合
- * @param {Object} [options] 可选配置
+ * @param {ValidationSet[]} [validationSet=[]] 验证集合数组
  * @returns 验证状态对象
  */
 export function useValidation<TSubject>(
   subject: TSubject,
   rules: Rule<TSubject>[],
-  validationSet?: ValidationSet,
+  ...validationSet: ValidationSet[]
 ) {
   const {
     dirty: fieldDirty,
@@ -77,12 +76,20 @@ export function useValidation<TSubject>(
 
   /** 将验证实例添加到验证集合 */
   const addToSet = useEffectEvent((validation: Validation) => {
-    validationSet?.add(id.current, validation);
+    validationSet.forEach((set) => set.add(id.current, validation));
+  });
+
+  const removeFromSet = useEffectEvent(() => {
+    validationSet.forEach((set) => set.remove(id.current));
   });
 
   useEffect(() => {
     addToSet(validation);
-  }, [addToSet, validation]);
+
+    return () => {
+      removeFromSet();
+    };
+  }, [addToSet, removeFromSet, validation]);
 
   return validation;
 }
