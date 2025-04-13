@@ -11,10 +11,10 @@
 2. Name 必须是中文
 3. Email 必填
 4. Email 必须是 qq.com 或者 163.com 邮箱
-5. Count 必须在 3 和 10 之间
-6. Count 必须是奇数
-7. Email 为 live.com 时，给出一个警告，但不阻止提交
-8. 提交时，如果有错误，阻止提交
+5. Email 为 live.com 时，给出一个!!!警告!!!，但不阻止提交
+6. Count 必须在 3 和 10 之间
+7. Count 必须是奇数
+8. 如果有错误，应该阻止提交
 
 ## 验证框架
 
@@ -89,7 +89,17 @@ const MyForm = () => {
               <div>
                  <label>Count:</label>
                  <button type="button" onClick={() => setCount(count - 1)}>-</button>
-                 <span>{count}</span>
+                 <input
+                         type="number"
+                         value={count}
+                         onChange={(e) => setCount(parseInt(e.target.value) || 0)}
+                         onWheel={(e) => {
+                            e.preventDefault(); // 阻止页面滚动
+                            const direction = e.deltaY < 0 ? 1 : -1;
+                            setCount(count + direction);
+                         }}
+                         style={{ width: "50px", textAlign: "center", margin: "0 8px" }}
+                 />
                  <button type="button" onClick={() => setCount(count + 1)}>+</button>
                  {errors.count && <span>{errors.count}</span>}
               </div>
@@ -203,23 +213,35 @@ const MyForm = () => {
                  >
                     -
                  </button>
-                 <span>{count}</span>
+                 <input
+                         type="number"
+                         value={count}
+                         onChange={(e) => {
+                            const newValue = parseInt(e.target.value) || 0;
+                            setCount(newValue);
+                            setValue("count", newValue); // 同步到react-hook-form
+                         }}
+                         onWheel={(e) => {
+                            e.preventDefault(); // 阻止页面滚动
+                            const direction = e.deltaY < 0 ? 1 : -1;
+                            const newValue = count + direction;
+                            setCount(newValue);
+                            setValue("count", newValue); // 同步到react-hook-form
+                         }}
+                         {...register("count", {
+                            validate: validateCount,
+                         })}
+                         style={{ width: "50px", textAlign: "center", margin: "0 8px" }}
+                 />
                  <button
                          type="button"
                          onClick={() => {
                             setCount(count + 1);
-                            setValue("count", count + 1); // 这里必须显式手动同步！！！
+                            setValue("count", count + 1); // 同步到react-hook-form
                          }}
                  >
                     +
                  </button>
-                 {/* 为了能利用上框架，我们不得不使用隐藏的input来让验证生效 */}
-                 <input
-                         type="hidden"
-                         {...register("count", {
-                            validate: validateCount,
-                         })}
-                 />
                  {errors.count && <span>{errors.count.message}</span>}
               </div>
               <button type="submit">提交</button>
@@ -237,9 +259,19 @@ const MyForm = () => {
 
    ![2024-09-18-2343.svg](docs%2F2024-09-18-2343.svg)
    
-   你不得不花费额外的精力去保证【hook中验证的数据】和【正在使用的state数据】是同一份数据，这一点在涉及到非标准表单组件等复杂情况的时候，会变得尤为明显。
+   你不得不花费额外的精力去保证【hook中验证的数据】和【正在使用的state数据】是同一份数据，这一点在示例的Count中，尤为明显：
    
-   我知道有人会说，那为什么不直接使用hook中提供的数据呢？请思考一个问题，为什么我们要使用react、vue、angular这样的MVVM框架？
+   在onChange、onWheel、onClick事件中，我们不得不手动同步数据到hook中。并且这个情况在数据修改的途径增多时（比如WebSocket），变得更加复杂，每个修改数据的地方都需要知道【应该同步数据】这件事。
+
+   思考一下，我们到底是因为【按了按钮/滚了滚轮】所以需要进行验证，还是因为【数据被修改】所以需要进行验证？显然是后者。
+   
+   我知道有人会说，那为什么不直接使用hook中提供的数据呢？
+
+   我们之所以要使用MVVM框架，很大程度上是因为我们希望能把数据（状态）作为一等公民，而数据（状态）其实就是我们页面的业务模型核心部分。
+
+   如果是因为验证框架的问题导致我们不得不向框架妥协，使用框架提供的状态数据，那就本末倒置了。
+
+   换句话说，验证框架应该依赖于业务模型，而不是业务模型依赖于验证框架。
 
 2. 结果类型缺失：示例中的【建议】或者叫【警告】类型其实是一个较为常见的验证场景，但是form却用 true | string 来把【类型】和【消息】两个状态进行了合并，这样简化的模型导致我们无法从中区分出【建议】和【错误】。
 
@@ -252,25 +284,11 @@ const MyForm = () => {
    return "Email 必须是 qq.com 或者 163.com 邮箱";
    ```
 
-3. 代码侵入：react-hook-form会侵入到你的jsx代码中。在这个示例中，我不得不使用hidden input来让验证生效，而这个元素如果不使用框架是根本不需要存在的。
-
-   ```typescript jsx
-   // 之所以需要这个标签，只是因为我们需要往react-hook-form上靠，其实我们界面上并不需要它
-   <input
-     type="hidden"
-     {...register("count", {
-        validate: validateCount,
-     })}
-   />
-   ```
-   
-   为了说明问题，我们举个极端的例子：如果我们仅仅是需要在提交之前阻拦（不需要在界面显示提示），我们不得不在每个input中加入一个hidden input来让验证生效。稍后我们会在【当我们在做验证的时候，我们到底在做什么？】章节中讨论，这为什么会是一个问题。
-
 一定要究其根本原因，我认为，其实是因为form是Web 1.0时代基于“同步提交”或者叫“传统表单提交”实现的一个数据交互功能。
 
-时代在进步，数据交互方式发生了改变（Ajax，WebSocket），界面变得复杂的同时，数据结构也同步的在变得复杂。form已经显得有些年迈吃力了。
+时代在进步，数据交互方式发生了改变（Ajax，WebSocket），界面变得复杂的同时，交互方式也在变得更复杂。form已经显得有些年迈吃力了。
 
-如果我们继续使用它，仍然可以利用它的验证状态(稍后会解释这个概念)，但是却不得不蹩脚的绕过它的其它功能。
+如果我们继续使用它，确实仍然可以利用它的验证状态(稍后会解释这个概念)，但不得不强行的往form的验证模型上靠。但我认为这无异于在一个年久失修的代码上不断地堆叠补丁。
 
 # What
 ## 当我们在做验证的时候，我们到底在做什么？

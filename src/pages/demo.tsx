@@ -70,18 +70,33 @@ export const Demo = () => {
           onClick={() => {
             const newCount = count - 1;
             setCount(newCount);
-            countValidation.setTouched();
           }}
         >
           -
         </button>
-        <span>{count}</span>
+
+        <input
+          type="number"
+          value={count}
+          onChange={(e) => {
+            const newCount = parseInt(e.target.value) || 0;
+            setCount(newCount);
+          }}
+          onWheel={(e) => {
+            e.preventDefault(); // 阻止页面滚动
+            const direction = e.deltaY < 0 ? 1 : -1;
+            const newCount = count + direction;
+            setCount(newCount);
+          }}
+          onBlur={countValidation.setTouched}
+          style={{ width: "50px", textAlign: "center", margin: "0 8px" }}
+        />
+
         <button
           type="button"
           onClick={() => {
             const newCount = count + 1;
             setCount(newCount);
-            countValidation.setTouched();
           }}
         >
           +
