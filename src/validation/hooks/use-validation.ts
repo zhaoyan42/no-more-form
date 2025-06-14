@@ -4,7 +4,6 @@ import { useRuleSet } from "./use-rule-set.ts";
 import { useRuleResultSet, type RuleResultSet } from "./use-rule-result-set.ts";
 import { useFieldState } from "./use-states.ts";
 import type { ValidationSet } from "./use-validation-set.ts";
-import { useEffectEvent } from "use-effect-event";
 
 /**
  * 验证
@@ -72,22 +71,15 @@ export function useValidation<TSubject>(
     [fieldDirty, fieldTouched, setTouched, resultSet],
   );
 
-  /** 将验证实例添加到验证集合 */
-  const addToSet = useEffectEvent((validation: Validation) => {
-    validationSet.forEach((set) => set.add(id, validation));
-  });
-
-  const removeFromSet = useEffectEvent(() => {
-    validationSet.forEach((set) => set.remove(id));
-  });
-
   useEffect(() => {
-    addToSet(validation);
+    // 将验证实例添加到验证集合
+    validationSet.forEach((set) => set.add(id, validation));
 
     return () => {
-      removeFromSet();
+      // 从验证集合中移除验证实例
+      validationSet.forEach((set) => set.remove(id));
     };
-  }, [addToSet, removeFromSet, validation]);
+  }, [id, validation, validationSet]);
 
   return validation;
 }
