@@ -1,6 +1,5 @@
 import type { Rule } from "../rule.ts";
 import { useCallback, useEffect, useMemo, useRef } from "react";
-import { v4 as uuidv4 } from "uuid";
 import { RuleSet } from "../rule-set.ts";
 import { RuleResultSet } from "../rule-result-set.ts";
 import { useFieldState } from "./use-states.ts";
@@ -42,10 +41,10 @@ export function useValidation<TSubject>(
     setTouched: setFieldTouched,
   } = useFieldState(subject);
 
-  /** 验证实例的唯一标识 - 懒初始化避免不必要的UUID生成 */
-  const idRef = useRef<string>();
+  /** 验证实例的唯一标识 - 使用Symbol确保真正唯一 */
+  const idRef = useRef<symbol>();
   if (!idRef.current) {
-    idRef.current = uuidv4();
+    idRef.current = Symbol("validation");
   }
   const id = idRef.current;
 

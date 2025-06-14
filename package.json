@@ -8,12 +8,10 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
-  },
-  "dependencies": {
+  },  "dependencies": {
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "use-effect-event": "^1.0.2",
-    "uuid": "^11.0.3"
+    "use-effect-event": "^1.0.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",

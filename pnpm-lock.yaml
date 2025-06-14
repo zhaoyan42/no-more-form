@@ -17,9 +17,6 @@ importers:
       use-effect-event:
         specifier: ^1.0.2
         version: 1.0.2(react@18.3.1)
-      uuid:
-        specifier: ^11.0.3
-        version: 11.0.3
     devDependencies:
       '@eslint/js':
         specifier: ^9.9.0
@@ -1474,10 +1471,6 @@ packages:
     resolution: {integrity: sha512-9c8AAmtQja4LwJXI0EQPhQCip6dmrcSe0FMcTUZBeGh/XTCOLgw3Qbt0JdUT8Rcrm/ZH+Web7MIcMdqgQKdXJg==}
     peerDependencies:
       react: ^18.3 || ^19.0.0-0
-
-  uuid@11.0.3:
-    resolution: {integrity: sha512-d0z310fCWv5dJwnX1Y/MncBAqGMKEzlBb1AOf7z9K8ALnd0utBX/msg/fA0+sbyN1ihbMsLhrBlnl1ak7Wa0rg==}
-    hasBin: true
 
   vite@5.4.11:
     resolution: {integrity: sha512-c7jFQRklXua0mTzneGW9QVyxFjUgwcihC4bXEtujIo2ouWCe1Ajt/amn2PCxYnhYfd5k09JX3SB7OYWFKYqj8Q==}
@@ -3082,8 +3075,6 @@ snapshots:
   use-effect-event@1.0.2(react@18.3.1):
     dependencies:
       react: 18.3.1
-
-  uuid@11.0.3: {}
 
   vite@5.4.11:
     dependencies:
