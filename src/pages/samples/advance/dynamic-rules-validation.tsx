@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { ValidationMessages } from "../../../validation/components/validation-messages.tsx";
-import type { Rule } from "../../../validation/rule.ts";
-import { RuleResult } from "../../../validation/rule.ts";
+import type { Rule } from "../../../validation/hooks/use-rule-result.ts";
+import { aRuleResultOf } from "../../../validation/hooks/use-rule-result.ts";
 import { useValidation } from "../../../validation/hooks/use-validation.ts";
 
 export function DynamicRulesValidation() {
@@ -15,9 +15,9 @@ export function DynamicRulesValidation() {
       if (!accept) {
         result.push((subject: string) => {
           if (!subject) {
-            return RuleResult.invalid("当未勾选接受时，理由是必填项");
+            return aRuleResultOf.invalid("当未勾选接受时，理由是必填项");
           }
-          return RuleResult.valid;
+          return aRuleResultOf.valid();
         });
       }
       return result;

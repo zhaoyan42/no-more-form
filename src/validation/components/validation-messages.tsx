@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from "react";
-import type { RuleResult } from "../rule.ts";
+import type { RuleResult } from "../hooks/use-rule-result.ts";
 
 import type { Validation } from "../hooks/use-validation.ts";
 import type { Group } from "../hooks/use-group.ts";

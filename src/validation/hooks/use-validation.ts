@@ -1,7 +1,7 @@
-import type { Rule } from "../rule.ts";
+import type { Rule } from "./use-rule-result.ts";
 import { useCallback, useEffect, useMemo, useRef } from "react";
-import { RuleSet } from "../rule-set.ts";
-import { RuleResultSet } from "../rule-result-set.ts";
+import { useRuleSet } from "./use-rule-set.ts";
+import { useRuleResultSet, type RuleResultSet } from "./use-rule-result-set.ts";
 import { useFieldState } from "./use-states.ts";
 import type { ValidationSet } from "./use-validation-set.ts";
 import { useEffectEvent } from "use-effect-event";
@@ -49,13 +49,10 @@ export function useValidation<TSubject>(
   const id = idRef.current;
 
   /** 验证规则集合 */
-  const ruleSet = useMemo(() => RuleSet.of(rules), [rules]);
+  const ruleSet = useRuleSet(rules);
 
-  /** 验证结果集合 */
-  const resultSet = useMemo(
-    () => new RuleResultSet(ruleSet.validate(subject)),
-    [subject, ruleSet],
-  );
+  /** 使用验证结果集合 */
+  const resultSet = useRuleResultSet(subject, ruleSet);
 
   /** 设置touched状态 */
   const setTouched = useCallback(() => {
@@ -69,12 +66,10 @@ export function useValidation<TSubject>(
         dirty: fieldDirty,
         touched: fieldTouched,
         setTouched,
-        get isValid() {
-          return resultSet.isValid;
-        },
-        resultSet: resultSet,
+        isValid: resultSet.isValid,
+        resultSet,
       }) satisfies Validation as Validation,
-    [fieldDirty, fieldTouched, resultSet, setTouched],
+    [fieldDirty, fieldTouched, setTouched, resultSet],
   );
 
   /** 将验证实例添加到验证集合 */

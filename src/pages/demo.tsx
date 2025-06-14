@@ -1,6 +1,6 @@
 import { useState } from "react";
-import type { Rule } from "../validation/rule.ts";
-import { RuleResult } from "../validation/rule.ts";
+import type { Rule } from "../validation/hooks/use-rule-result.ts";
+import { aRuleResultOf } from "../validation/hooks/use-rule-result.ts";
 import { ValidationMessages } from "../validation/components/validation-messages.tsx";
 import { useGroup } from "../validation/hooks/use-group.ts";
 import { useValidation } from "../validation/hooks/use-validation.ts";
@@ -112,35 +112,35 @@ export const Demo = () => {
 
 // Rule 定义
 const nameRequired: Rule<string> = (value) => {
-  if (!value) return RuleResult.invalid("姓名不能为空");
-  return RuleResult.valid;
+  if (!value) return aRuleResultOf.invalid("姓名不能为空");
+  return aRuleResultOf.valid();
 };
 
 const nameChinese: Rule<string> = (value) => {
   if (!/^[\u4e00-\u9fa5]+$/.test(value))
-    return RuleResult.invalid("姓名必须为中文");
-  return RuleResult.valid;
+    return aRuleResultOf.invalid("姓名必须为中文");
+  return aRuleResultOf.valid();
 };
 
 const emailRequired: Rule<string> = (value) => {
-  if (!value) return RuleResult.invalid("Email不能为空");
-  return RuleResult.valid;
+  if (!value) return aRuleResultOf.invalid("Email不能为空");
+  return aRuleResultOf.valid();
 };
 
 const emailDomain: Rule<string> = (value) => {
-  if (/^\S+@(qq\.com|163\.com)$/.test(value)) return RuleResult.valid;
+  if (/^\S+@(qq\.com|163\.com)$/.test(value)) return aRuleResultOf.valid();
   if (/^\S+@live\.com$/.test(value))
-    return RuleResult.warning("警告: live.com 邮箱可能注册失败");
-  return RuleResult.invalid("Email 必须是 qq.com 或者 163.com 邮箱");
+    return aRuleResultOf.warning("警告: live.com 邮箱可能注册失败");
+  return aRuleResultOf.invalid("Email 必须是 qq.com 或者 163.com 邮箱");
 };
 
 const countRange: Rule<number> = (value) => {
   if (value < 3 || value > 10)
-    return RuleResult.invalid("Count 必须在 3 和 10 之间");
-  return RuleResult.valid;
+    return aRuleResultOf.invalid("Count 必须在 3 和 10 之间");
+  return aRuleResultOf.valid();
 };
 
 const countOdd: Rule<number> = (value) => {
-  if (value % 2 === 0) return RuleResult.invalid("Count 必须是奇数");
-  return RuleResult.valid;
+  if (value % 2 === 0) return aRuleResultOf.invalid("Count 必须是奇数");
+  return aRuleResultOf.valid();
 };
