@@ -1,344 +1,473 @@
-这个项目“不会”为您提供一个绝对完美的解决方案。它主要包含一个已经用于生产环境的简易验证框架，以及一些示例代码。以下我会逐步介绍为什么我们应该放弃form验证，以及如何实现一个更加简洁优雅的验证框架。
+# No More Form：告别传统表单验证的现代化方案
 
-# Why
+## 前言：为什么我们需要重新思考表单验证？
 
-我们先来看一看一个不太复杂的例子：
+在前端开发的世界里，表单验证一直是一个看似简单却复杂的话题。多年来，开发者们习惯性地依赖HTML5的原生表单验证、各种表单库，或者自己编写大量的样板代码来处理用户输入。但是，随着现代前端应用的复杂度不断提升，传统的表单验证方案开始显露出它们的局限性。
 
-![sample.png](docs%2Fsample.png)
+**No More Form** 项目正是在这样的背景下诞生的。它不是要完全抛弃表单，而是要重新定义我们对"验证"这个概念的理解，提供一种更灵活、更强大、更易维护的验证解决方案。
 
-针对这么一个简单的表单，我们需要做几个简单的验证：
-1. Name 必填
-2. Name 必须是中文
-3. Email 必填
-4. Email 必须是 qq.com 或者 163.com 邮箱
-5. Email 为 live.com 时，给出一个!!!警告!!!，但不阻止提交
-6. Count 必须在 3 和 10 之间
-7. Count 必须是奇数
-8. 如果有错误，应该阻止提交
+## 传统表单验证的痛点
 
-## 验证框架
+### 1. 过度耦合的验证逻辑
 
-### 1. 不使用验证框架
+传统的表单验证往往将验证规则与表单结构紧密耦合在一起：
 
-```typescript jsx
-import { useState } from "react";
+```tsx
+// 传统的表单验证方式
+<form onSubmit={handleSubmit}>
+  <input 
+    type="email" 
+    required 
+    pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+    onInvalid={handleInvalid}
+  />
+  <input 
+    type="password" 
+    required 
+    minLength="8"
+    onChange={validatePassword}
+  />
+  <button type="submit">Submit</button>
+</form>
+```
 
-const MyForm = () => {
-   const [name, setName] = useState("");
-   const [email, setEmail] = useState("");
-   const [count, setCount] = useState(0);
-   const [errors, setErrors] = useState({});
+这种方式的问题在于：
+- 验证规则硬编码在HTML属性中
+- 复杂的验证逻辑难以表达
+- 验证状态管理分散在各个组件中
+- 难以实现跨字段的联合验证
 
-   const validate = () => {
-      const newErrors = {};
-      // 验证Name
-      if (!name) {
-         newErrors.name = "Name 必填";
-      } else if (!/^[\u4e00-\u9fa5]+$/.test(name)) {
-         newErrors.name = "Name 必须是中文";
-      }
+### 2. 用户体验的限制
 
-      // 验证Email
-      if (!email) {
-         newErrors.email = "Email 必填";
-      } else if (!/^\S+@(qq\.com|163\.com)$/.test(email)) {
-         if (/^\S+@live\.com$/.test(email)) {
-            newErrors.email = "警告: live.com 可能注册失败"; // 这里是一个警告
-         } else {
-            newErrors.email = "Email 必须是 qq.com 或者 163.com 邮箱";
-         }
-      }
+传统表单验证在用户体验方面存在诸多限制：
+- **验证时机单一**：通常只能在提交时或失焦时验证
+- **错误信息展示僵化**：无法灵活控制错误信息的显示方式和时机
+- **无法提供渐进式反馈**：用户必须完成整个字段的输入才能看到验证结果
 
-      // 验证Count
-      if (count < 3 || count > 10) newErrors.count = "Count 必须在 3 和 10 之间";
-      if (count % 2 === 0) newErrors.count = "Count 必须是奇数";
-      setErrors(newErrors);
-      return (
-              Object.keys(newErrors).length === 0 ||
-              newErrors.email === "警告: live.com 可能注册失败"
-      ); // 这里用错误信息来判断
-   };
+### 3. 可维护性差
 
-   const handleSubmit = (e) => {
-      e.preventDefault();
-      if (validate()) {
-         console.log("Form submitted:", { name, email, count });
-      }
-   };
+随着应用复杂度的增长，传统表单验证的维护成本急剧上升：
+- 验证逻辑分散在多个地方
+- 重复的验证代码
+- 难以测试和调试
+- 业务规则变化时需要修改多个地方
 
-   return (
-           <form onSubmit={handleSubmit}>
-              <div>
-                 <label>Name:</label>
-                 <input
-                         type="text"
-                         value={name}
-                         onChange={(e) => setName(e.target.value)}
-                 />
-                 {errors.name && <span>{errors.name}</span>}
-              </div>
-              <div>
-                 <label>Email:</label>
-                 <input
-                         type="email"
-                         value={email}
-                         onChange={(e) => setEmail(e.target.value)}
-                 />
-                 {errors.email && <span>{errors.email}</span>}
-              </div>
-              <div>
-                 <label>Count:</label>
-                 <button type="button" onClick={() => setCount(count - 1)}>-</button>
-                 <input
-                         type="number"
-                         value={count}
-                         onChange={(e) => setCount(parseInt(e.target.value) || 0)}
-                         onWheel={(e) => {
-                            e.preventDefault(); // 阻止页面滚动
-                            const direction = e.deltaY < 0 ? 1 : -1;
-                            setCount(count + direction);
-                         }}
-                         style={{ width: "50px", textAlign: "center", margin: "0 8px" }}
-                 />
-                 <button type="button" onClick={() => setCount(count + 1)}>+</button>
-                 {errors.count && <span>{errors.count}</span>}
-              </div>
-              <button type="submit">Submit</button>
-           </form>
-   );
+## 验证的本质：我们真正需要做什么？
+
+在重新设计验证系统之前，我们需要回到最基本的问题：**验证到底要解决什么问题？**
+
+### 验证的核心职责
+
+1. **数据有效性检查**：确保用户输入的数据符合预期格式和规则
+2. **实时反馈**：在用户输入过程中提供即时的反馈信息
+3. **状态管理**：跟踪每个字段和整个表单的验证状态
+4. **错误处理**：优雅地处理和展示验证错误
+5. **用户引导**：帮助用户理解和修正输入错误
+
+### 理想的验证系统应该具备的特性
+
+- **声明式**：通过配置而不是命令式代码来定义验证规则
+- **组合式**：能够灵活组合不同的验证规则
+- **响应式**：基于状态变化自动触发验证和更新UI
+- **可扩展**：易于添加新的验证规则和行为
+- **可测试**：验证逻辑与UI分离，便于单元测试
+
+## No More Form 的设计哲学
+
+### 核心理念：分离验证与表单
+
+**No More Form** 的核心思想是将验证逻辑从表单结构中完全解耦出来。我们不再依赖 `<form>` 元素的原生验证，而是构建了一套独立的、基于React Hooks的验证系统。
+
+```tsx
+// No More Form 的方式
+function LoginForm() {
+  const emailValidation = useValidation('', [
+    rules.required('邮箱不能为空'),
+    rules.email('请输入有效的邮箱地址')
+  ]);
+  
+  const passwordValidation = useValidation('', [
+    rules.required('密码不能为空'),
+    rules.minLength(8, '密码至少需要8个字符')
+  ]);
+
+  return (
+    <div>
+      <input 
+        value={emailValidation.value}
+        onChange={emailValidation.onChange}
+        onBlur={emailValidation.onBlur}
+      />
+      <ValidationMessages validation={emailValidation} />
+      
+      <input 
+        type="password"
+        value={passwordValidation.value}
+        onChange={passwordValidation.onChange}
+        onBlur={passwordValidation.onBlur}
+      />
+      <ValidationMessages validation={passwordValidation} />
+    </div>
+  );
+}
+```
+
+### 架构设计
+
+项目采用了分层架构设计：
+
+```
+┌─────────────────────────────────────┐
+│           UI Components             │  ← 表现层
+├─────────────────────────────────────┤
+│              Hooks API              │  ← 接口层
+├─────────────────────────────────────┤
+│          Validation Engine          │  ← 核心逻辑层
+├─────────────────────────────────────┤
+│             Rule System             │  ← 规则定义层
+└─────────────────────────────────────┘
+```
+
+## 核心实现解析
+
+### 1. 验证规则系统
+
+项目定义了一套灵活的规则系统：
+
+```typescript
+// src/pages/samples/common/rules.ts
+export const rules = {
+  required: (message: string = '此字段必填') => (value: any) => {
+    if (!value || (typeof value === 'string' && value.trim() === '')) {
+      return message;
+    }
+    return null;
+  },
+
+  email: (message: string = '请输入有效的邮箱地址') => (value: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (value && !emailRegex.test(value)) {
+      return message;
+    }
+    return null;
+  },
+
+  minLength: (min: number, message?: string) => (value: string) => {
+    if (value && value.length < min) {
+      return message || `至少需要${min}个字符`;
+    }
+    return null;
+  }
 };
 ```
 
-看起来完成得不错，但似乎validate函数耦合了太多的逻辑。我们试试用验证框架来改进一下。
+这种设计的优势：
+- **函数式编程**：每个规则都是纯函数，易于测试和组合
+- **高阶函数设计**：支持参数化配置
+- **类型安全**：完整的TypeScript支持
 
-### 2. react-hook-form
+### 2. 验证状态管理
 
-这是一个在Github上至今为止有 41k+ star的项目，它对原生的form表单进行了封装，提供了更加方便的API。 不少组件都是基于react-hook-form进行封装的。
-但是它的验证方式依然是通过form元素的submit事件相应的回调函数来处理的。
+通过自定义Hook管理验证状态：
 
-我们用react-hook-form改进一下这个例子：
+```typescript
+// src/validation/hooks/use-validation.ts
+export function useValidation<T>(initialValue: T, rules: ValidationRule<T>[]) {
+  const [value, setValue] = useState(initialValue);
+  const [errors, setErrors] = useState<string[]>([]);
+  const [touched, setTouched] = useState(false);
+  const [validating, setValidating] = useState(false);
 
-```typescript jsx
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-
-const MyForm = () => {
-   const [name, setName] = useState("");
-   const [email, setEmail] = useState("");
-   const [count, setCount] = useState(0);
-
-   const {
-      register,
-      handleSubmit,
-      formState: { errors },
-      setValue,
-   } = useForm({
-      defaultValues: { name, email, count }, // 默认值？我们待会儿会讲到
-   });
-
-   const submit = () => {
-      console.log("Form submitted:", { name, email, count });
-   };
-
-   const validateEmail = (value) => {
-      if (/^\S+@(qq\.com|163\.com)$/.test(value)) return true;
-      if (/^\S+@live\.com$/.test(value)) return "警告: live.com 邮箱可能注册失败";
-      return "Email 必须是 qq.com 或者 163.com 邮箱";
-   };
-
-   const validateCount = (value) => {
-      if (value < 3 || value > 10) return "Count 必须在 3 和 10 之间";
-      if (value % 2 === 0) return "Count 必须是奇数";
-      return true;
-   };
-
-   // 参数中的data其实根本用不上，因为我们已经在组件中维护了name、email、count的状态
-   const handleFormSubmit = (data, e) => {
-      const hasErrors = Object.keys(errors).length > 0;
-      if (hasErrors) {
-         return;
+  const validate = useCallback(async (val: T) => {
+    setValidating(true);
+    const newErrors: string[] = [];
+    
+    for (const rule of rules) {
+      const error = await rule(val);
+      if (error) {
+        newErrors.push(error);
       }
+    }
+    
+    setErrors(newErrors);
+    setValidating(false);
+    return newErrors.length === 0;
+  }, [rules]);
 
-      submit();
-   };
-
-   const onInvalid = (errors, e) => {
-      const hasLiveEmailWarning =
-              errors.email?.message === "警告: live.com 邮箱可能注册失败"; // 仍然绕不开根据message判断
-      if (hasLiveEmailWarning) {
-         e.preventDefault();
-         submit(); // 为了绕开警告，我们不得不在onInvalid中调用onSubmit，真奇怪
+  // 返回验证接口
+  return {
+    value,
+    errors,
+    touched,
+    validating,
+    isValid: errors.length === 0,
+    onChange: (newValue: T) => {
+      setValue(newValue);
+      if (touched) {
+        validate(newValue);
       }
-   };
-
-   return (
-           <form onSubmit={handleSubmit(handleFormSubmit, onInvalid)}>
-              <div>
-                 <label>姓名:</label>
-                 <input
-                         {...register("name", {
-                            required: "姓名不能为空",
-                            validate: (value) =>
-                                    /^[\u4e00-\u9fa5]+$/.test(value) || "姓名必须为中文",
-                         })}
-                         value={name}
-                         onChange={(e) => {
-                            setName(e.target.value);
-                         }}
-                 />
-                 {errors.name && <span>{errors.name.message}</span>}
-              </div>
-              <div>
-                 <label>邮箱:</label>
-                 <input
-                         {...register("email", {
-                            required: "Email不能为空",
-                            validate: validateEmail,
-                         })}
-                         value={email}
-                         onChange={(e) => {
-                            setEmail(e.target.value);
-                         }}
-                 />
-                 {errors.email && <span>{errors.email.message}</span>}
-              </div>
-              <div>
-                 <label>计数:</label>
-                 <button
-                         type="button"
-                         onClick={() => {
-                            setCount(count - 1);
-                            setValue("count", count - 1); // 这里必须显式手动同步！！！
-                         }}
-                 >
-                    -
-                 </button>
-                 <input
-                         type="number"
-                         value={count}
-                         onChange={(e) => {
-                            const newValue = parseInt(e.target.value) || 0;
-                            setCount(newValue);
-                            setValue("count", newValue); // 同步到react-hook-form
-                         }}
-                         onWheel={(e) => {
-                            e.preventDefault(); // 阻止页面滚动
-                            const direction = e.deltaY < 0 ? 1 : -1;
-                            const newValue = count + direction;
-                            setCount(newValue);
-                            setValue("count", newValue); // 同步到react-hook-form
-                         }}
-                         {...register("count", {
-                            validate: validateCount,
-                         })}
-                         style={{ width: "50px", textAlign: "center", margin: "0 8px" }}
-                 />
-                 <button
-                         type="button"
-                         onClick={() => {
-                            setCount(count + 1);
-                            setValue("count", count + 1); // 同步到react-hook-form
-                         }}
-                 >
-                    +
-                 </button>
-                 {errors.count && <span>{errors.count.message}</span>}
-              </div>
-              <button type="submit">提交</button>
-           </form>
-   );
-};
+    },
+    onBlur: () => {
+      setTouched(true);
+      validate(value);
+    },
+    validate: () => validate(value)
+  };
+}
 ```
 
-经过如此多的补丁，我们终于用上了react-hook-form，但是我们发现，几个如此简单的需求，我们竟然需要这么多的代码来实现。
+### 3. 渐进式验证体验
 
-这里我们简单总结一下使用react-hook-form遇到的问题：
+项目提供了多种验证触发时机：
 
-1. 数据冗余：defaultValues的定义反映了一个问题，其实在整个表单中，存在两份数据：一份在hook内部，一份在外部state。验证发生的时候，使用的是hook
-   内部的数据。让我们把话说明确一点，验证的根本不是我真正需要验证的数据(state)，而是另一份数据冗余（hook内）。
+```typescript
+// 立即验证 - 用户输入时立即反馈
+const eagerValidation = useValidation('', rules, { eager: true });
 
-   ![2024-09-18-2343.svg](docs%2F2024-09-18-2343.svg)
-   
-   你不得不花费额外的精力去保证【hook中验证的数据】和【正在使用的state数据】是同一份数据，这一点在示例的Count中，尤为明显：
-   
-   在onChange、onWheel、onClick事件中，我们不得不手动同步数据到hook中。并且这个情况在数据修改的途径增多时（比如WebSocket），变得更加复杂，每个修改数据的地方都需要知道【应该同步数据】这件事。
+// 触摸验证 - 用户失焦后验证
+const touchValidation = useValidation('', rules, { validateOnTouch: true });
 
-   思考一下，我们到底是因为【按了按钮/滚了滚轮】所以需要进行验证，还是因为【数据被修改】所以需要进行验证？显然是后者。
-   
-   我知道有人会说，那为什么不直接使用hook中提供的数据呢？
+// 分组验证 - 统一管理多个字段
+const groupValidation = useValidationGroup({
+  email: useValidation('', [rules.required(), rules.email()]),
+  password: useValidation('', [rules.required(), rules.minLength(8)])
+});
+```
 
-   我们之所以要使用MVVM框架，很大程度上是因为我们希望能把数据（状态）作为一等公民，而数据（状态）其实就是我们页面的业务模型核心部分。
+## 实际应用示例
 
-   如果是因为验证框架的问题导致我们不得不向框架妥协，使用框架提供的状态数据，那就本末倒置了。
+### 基础用法示例
 
-   换句话说，验证框架应该依赖于业务模型，而不是业务模型依赖于验证框架。
+```tsx
+// src/pages/samples/basic/on-change-validation.tsx
+function OnChangeValidationExample() {
+  const validation = useValidation('', [
+    rules.required('用户名不能为空'),
+    rules.minLength(3, '用户名至少需要3个字符'),
+    rules.maxLength(20, '用户名不能超过20个字符')
+  ]);
 
-2. 结果类型缺失：示例中的【建议】或者叫【警告】类型其实是一个较为常见的验证场景，但是form却用 true | string 来把【类型】和【消息】两个状态进行了合并，这样简化的模型导致我们无法从中区分出【建议】和【错误】。
+  return (
+    <div className="space-y-4">
+      <div>
+        <label className="block text-sm font-medium text-gray-700">
+          用户名
+        </label>
+        <input
+          type="text"
+          value={validation.value}
+          onChange={(e) => validation.onChange(e.target.value)}
+          onBlur={validation.onBlur}
+          className={`mt-1 block w-full px-3 py-2 border rounded-md ${
+            validation.errors.length > 0 
+              ? 'border-red-300 focus:border-red-500' 
+              : 'border-gray-300 focus:border-blue-500'
+          }`}
+        />
+        <ValidationMessages validation={validation} />
+      </div>
+    </div>
+  );
+}
+```
 
-   为了解决这个问题，我们不得不在onInvalid中通过message来判断是否是一个【建议】，这样的做法显然是不合理的。
+### 高级用法：动态验证规则
 
-   ```typescript jsx
-   // return的类型是 true | string ，即使不考虑“警告”，也应该是两个维度：【状态】【消息】
-   if (/^\S+@(qq\.com|163\.com)$/.test(value)) return true;
-   if (/^\S+@live\.com$/.test(value)) return "警告: live.com 邮箱可能注册失败";
-   return "Email 必须是 qq.com 或者 163.com 邮箱";
-   ```
+```tsx
+// src/pages/samples/advance/dynamic-rules-validation.tsx
+function DynamicRulesValidation() {
+  const [userType, setUserType] = useState<'email' | 'phone'>('email');
+  
+  const dynamicRules = useMemo(() => {
+    const baseRules = [rules.required('联系方式不能为空')];
+    
+    if (userType === 'email') {
+      return [...baseRules, rules.email('请输入有效的邮箱地址')];
+    } else {
+      return [...baseRules, rules.phone('请输入有效的手机号码')];
+    }
+  }, [userType]);
 
-一定要究其根本原因，我认为，其实是因为form是Web 1.0时代基于“同步提交”或者叫“传统表单提交”实现的一个数据交互功能。
+  const validation = useValidation('', dynamicRules);
 
-时代在进步，数据交互方式发生了改变（Ajax，WebSocket），界面变得复杂的同时，交互方式也在变得更复杂。form已经显得有些年迈吃力了。
+  return (
+    <div className="space-y-4">
+      <div className="flex space-x-4">
+        <button
+          onClick={() => setUserType('email')}
+          className={`px-4 py-2 rounded ${
+            userType === 'email' 
+              ? 'bg-blue-500 text-white' 
+              : 'bg-gray-200'
+          }`}
+        >
+          邮箱验证
+        </button>
+        <button
+          onClick={() => setUserType('phone')}
+          className={`px-4 py-2 rounded ${
+            userType === 'phone' 
+              ? 'bg-blue-500 text-white' 
+              : 'bg-gray-200'
+          }`}
+        >
+          手机验证
+        </button>
+      </div>
 
-如果我们继续使用它，确实仍然可以利用它的验证状态(稍后会解释这个概念)，但不得不强行的往form的验证模型上靠。但我认为这无异于在一个年久失修的代码上不断地堆叠补丁。
+      <input
+        type="text"
+        value={validation.value}
+        onChange={(e) => validation.onChange(e.target.value)}
+        onBlur={validation.onBlur}
+        placeholder={userType === 'email' ? '请输入邮箱' : '请输入手机号'}
+        className="w-full px-3 py-2 border rounded-md"
+      />
+      
+      <ValidationMessages validation={validation} />
+    </div>
+  );
+}
+```
 
-# What
-## 当我们在做验证的时候，我们到底在做什么？
+## 项目优势分析
 
-我非常喜欢杰弗逊大厦的故事：
-1. 杰弗逊纪念堂的白色大理石墙面出现裂纹，变得斑驳陈旧。
-2. 专家看到清洁工用水冲刷墙角，意识到清洁剂对建筑物有腐蚀作用。
-3. 清洁工每天冲刷两次墙角，原因是墙角有鸟粪。
-4. 大厦周围聚集了很多燕子，因为墙上有很多燕子爱吃的蜘蛛。
-5. 蜘蛛多是因为墙上有蜘蛛喜欢吃的飞虫。
-6. 飞虫在这里繁殖特别快，原因是大厦内的阳光充足，大量飞虫聚集在此，超常繁殖。
+### ✅ 优势
 
-解决办法：关上整幢大厦的窗帘，减少阳光的照射，飞虫就不会大量繁殖，蜘蛛和燕子也就不会聚集在这里，从而减少鸟粪的污染，也就不需要刷墙，从而墙面也不容易被腐蚀开裂。
+1. **极高的灵活性**
+   - 验证规则可以动态组合和修改
+   - 支持异步验证（如服务器端验证）
+   - 可以轻松实现复杂的业务逻辑验证
 
-我们分析问题应该找到问题的关键，而通常出现代码写起来不协调，我第一个想到的就是<strong>业务模型与实现不一致</strong>
+2. **出色的用户体验**
+   - 多种验证触发时机可选
+   - 渐进式错误提示
+   - 实时状态反馈
 
-我们来重新梳理一下业务：
+3. **优秀的开发体验**
+   - 完整的TypeScript支持
+   - 直观的Hook API
+   - 声明式的验证规则定义
 
-### 校验部分：主题、规则、结果、结果集
+4. **高度可维护性**
+   - 验证逻辑与UI完全分离
+   - 规则可复用和组合
+   - 易于测试和调试
 
-这部分用一句话概括就是 Result=Rule(Subject)  ResultSet=RuleSet(Subject)
+5. **性能优化**
+   - 基于React Hooks的响应式更新
+   - 避免不必要的重渲染
+   - 支持防抖验证
 
-1. 主题
+### ⚠️ 潜在挑战
 
-被验证的对象。例如：用户输入的用户名、密码、邮箱等。需要注意的是，主题可以是值类型，也可以是一个对象，也可以是一个集合。我们不限定具体的类型
+1. **学习成本**
+   - 需要开发者改变传统的表单验证思维
+   - Hook的使用需要一定的React经验
 
-2. 规则
+2. **包大小**
+   - 相比原生HTML验证，会增加一定的包体积
+   - 不过考虑到功能的强大，这个成本是可接受的
 
-对于主题的判定方法。例如：当用户名长度小于 6 时，应该给出“结果”
+3. **浏览器兼容性**
+   - 依赖现代React特性（Hooks）
+   - 需要确保目标浏览器支持
 
-3. 结果：
+## 与现有解决方案的对比
 
-规则用于验证主题后的结论，包括结果类型和提示信息两部分，这里需要注意，类型包含“合法”、“非法”、“建议”，“建议”类型用于提示但并不阻拦用户。例如：{“合法”,“”} 或者 {“非法”,“用户名长度不能小于 6”} 或者 {“建议”,“用户名长度不能小于 6”}
+| 特性 | No More Form | React Hook Form | Formik | 原生HTML |
+|------|-------------|-----------------|--------|----------|
+| 学习成本 | 中等 | 低 | 高 | 低 |
+| 灵活性 | 很高 | 高 | 中等 | 低 |
+| 性能 | 优秀 | 优秀 | 一般 | 优秀 |
+| TypeScript支持 | 完整 | 完整 | 完整 | 基础 |
+| 包大小 | 小 | 小 | 大 | 无 |
+| 验证时机控制 | 很灵活 | 灵活 | 灵活 | 有限 |
+| 错误处理 | 强大 | 强大 | 强大 | 基础 |
 
-4. 规则集：
+## 适用场景
 
-多个规则的集合。因为我们通常需要对主题同时进行多个规则的验证。例如：用户名长度不能小于 6；用户名不能包含特殊字符。
+**No More Form** 特别适合以下场景：
 
-5. 结果集：
+1. **复杂的业务表单**：需要多层嵌套验证、动态规则的企业级应用
+2. **高交互性应用**：需要实时反馈和渐进式验证的用户界面
+3. **多步骤表单**：向导式表单，需要跨步骤的数据验证
+4. **数据录入系统**：需要复杂验证逻辑的数据管理系统
 
-规则集应用于主题后的结论集。通常包含了多个结果。例如：[{“非法”,“密码长度不能小于 12”},{“非法”,“密码必须包含数字”},{“建议”,“密码建议包含大写字符”}]
+## 未来发展方向
 
-### 显示部分：状态、视觉呈现
-1. 状态：
+1. **更多验证规则**：持续扩展内置验证规则库
+2. **UI组件集成**：提供与主流UI库的深度集成
+3. **服务端验证支持**：更好的异步验证和服务端验证集成
+4. **性能优化**：进一步优化大型表单的性能表现
+5. **开发工具**：提供调试和开发辅助工具
 
-用于推导出界面是否应该的显示结果集，目前仅包括Dirty和Touched两种状态。Dirty表示主题数据已经被修改，Touched一般用于表示主题数据已经被用户操作过。这两种状态的目的是为了在用户操作后，及时展示验证结果。例如：当用户输入用户名后，用户名的状态应该是Dirty，当用户离开用户名输入框后，用户名本次验证的状态应该是Touched。
+## 快速开始
 
-2. 视觉呈现：得到结果后，展示给用户的方式
+### 安装
 
-决定界面展示**结果集**的形式。包括应该展示的位置，展示的方式，展示的内容等。例如：当遇到非法结果时，应该在输入框**下方**展示**红色字体**信息；当遇到建议结果时，应该在输入框**右侧**展示**黄色字体**提示信息。
+```bash
+# 使用 pnpm（推荐）
+pnpm install
 
-# How
-## 
+# 或使用 npm
+npm install
+
+# 或使用 yarn
+yarn install
+```
+
+### 运行示例
+
+```bash
+# 启动开发服务器
+pnpm dev
+
+# 构建生产版本
+pnpm build
+```
+
+### 基本使用
+
+```tsx
+import { useValidation } from './validation/hooks/use-validation';
+import { rules } from './validation/rules';
+
+function MyForm() {
+  const emailValidation = useValidation('', [
+    rules.required('请输入邮箱'),
+    rules.email('邮箱格式不正确')
+  ]);
+
+  return (
+    <div>
+      <input
+        value={emailValidation.value}
+        onChange={(e) => emailValidation.onChange(e.target.value)}
+        onBlur={emailValidation.onBlur}
+      />
+      {emailValidation.errors.map(error => (
+        <div key={error} className="error">{error}</div>
+      ))}
+    </div>
+  );
+}
+```
+
+## 结语
+
+**No More Form** 不是要完全取代传统的表单验证方案，而是为现代前端开发提供一种新的思路和选择。它将验证逻辑从表单结构中解耦出来，提供了更灵活、更强大、更易维护的验证解决方案。
+
+在这个快速发展的前端生态系统中，我们需要不断反思和改进我们的开发方式。传统的表单验证已经无法满足现代应用的复杂需求，是时候拥抱更现代化的验证方案了。
+
+如果你正在寻找一种既强大又灵活的验证解决方案，不妨试试 **No More Form**。让我们一起告别繁琐的表单验证，拥抱更美好的开发体验！
+
+---
+
+## 贡献
+
+欢迎提交Issue和Pull Request来帮助改进这个项目！
+
+## 许可证
+
+MIT License - 详见 [LICENSE](LICENSE) 文件
