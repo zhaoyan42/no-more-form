@@ -42,8 +42,12 @@ export function useValidation<TSubject>(
     setTouched: setFieldTouched,
   } = useFieldState(subject);
 
-  /** 验证实例的唯一标识 */
-  const id = useRef(uuidv4());
+  /** 验证实例的唯一标识 - 懒初始化避免不必要的UUID生成 */
+  const idRef = useRef<string>();
+  if (!idRef.current) {
+    idRef.current = uuidv4();
+  }
+  const id = idRef.current;
 
   /** 验证规则集合 */
   const ruleSet = useMemo(() => RuleSet.of(rules), [rules]);
@@ -76,11 +80,11 @@ export function useValidation<TSubject>(
 
   /** 将验证实例添加到验证集合 */
   const addToSet = useEffectEvent((validation: Validation) => {
-    validationSet.forEach((set) => set.add(id.current, validation));
+    validationSet.forEach((set) => set.add(id, validation));
   });
 
   const removeFromSet = useEffectEvent(() => {
-    validationSet.forEach((set) => set.remove(id.current));
+    validationSet.forEach((set) => set.remove(id));
   });
 
   useEffect(() => {
