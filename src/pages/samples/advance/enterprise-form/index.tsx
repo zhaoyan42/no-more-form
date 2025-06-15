@@ -7,8 +7,9 @@ import { createCompanyValidationRules } from "./validation/validation-rules";
 import { DepartmentEditor } from "./components/DepartmentEditor";
 import { defaultCompanyData } from "./model/data";
 import { ValidationSetContext } from "./validation/ValidationSetContext";
+import "../../styles/sample-styles.css";
 
-export default function EnterpriseFormValidation() {
+export function EnterpriseFormValidation() {
   const [company, setCompany] = useState<Company>(defaultCompanyData);
 
   const companyValidationSet = useValidationSet();
@@ -70,24 +71,38 @@ export default function EnterpriseFormValidation() {
 
   return (
     <ValidationSetContext.Provider value={companyValidationSet}>
-      <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "20px" }}>
-        <h1>🏢 企业级多层验证示例</h1>
-        <p style={{ color: "#666", marginBottom: "20px" }}>
-          这个示例展示了复杂的多层组件结构和灵活的组合验证，包括：
-          <br />• 跨组件的数据依赖验证
-          <br />• 动态验证规则
-          <br />• 多层级的验证状态管理
-          <br />• 复杂的业务逻辑验证
-        </p>
+      <div className="sample-container">
+        <div className="sample-description">
+          <h3>💡 功能说明</h3>
+          <p>
+            这个示例展示了
+            <span className="sample-highlight">企业级多层验证</span>
+            的完整实现。涵盖复杂的业务场景和多层级的数据验证管理。
+          </p>
+          <p>
+            适用场景：大型表单系统、企业级应用、复杂业务流程、多层级数据结构验证等。
+          </p>
+        </div>
 
-        <div
-          style={{
-            border: "3px solid #28a745",
-            padding: "24px",
-            borderRadius: "12px",
-            backgroundColor: "#f8fff9",
-          }}
-        >
+        <div className="sample-rules">
+          <h4>📋 验证特性</h4>
+          <ul>
+            <li>
+              <strong>跨组件验证：</strong>不同组件间的数据依赖验证
+            </li>
+            <li>
+              <strong>动态规则：</strong>根据业务状态动态生成验证规则
+            </li>
+            <li>
+              <strong>多层级管理：</strong>公司、部门、员工三级验证状态管理
+            </li>
+            <li>
+              <strong>复杂业务逻辑：</strong>预算分配、薪资核算等业务规则验证
+            </li>
+          </ul>
+        </div>
+
+        <div className="sample-form">
           <h2>公司信息</h2>
 
           <div
@@ -98,25 +113,27 @@ export default function EnterpriseFormValidation() {
               marginBottom: "20px",
             }}
           >
-            <div>
-              <label>公司名称 *</label>
+            <div className="sample-field">
+              <label className="sample-label">公司名称 *</label>
               <input
                 type="text"
+                className="sample-input"
                 value={company.name}
                 onChange={(e) => updateCompanyField("name", e.target.value)}
-                style={{ width: "100%", padding: "12px", fontSize: "16px" }}
+                placeholder="请输入公司名称"
               />
             </div>
 
-            <div>
-              <label>总预算 *</label>
+            <div className="sample-field">
+              <label className="sample-label">总预算 *</label>
               <input
                 type="number"
+                className="sample-input"
                 value={company.totalBudget}
                 onChange={(e) =>
                   updateCompanyField("totalBudget", Number(e.target.value))
                 }
-                style={{ width: "100%", padding: "12px", fontSize: "16px" }}
+                placeholder="请输入总预算金额"
               />
             </div>
           </div>
@@ -126,21 +143,14 @@ export default function EnterpriseFormValidation() {
             <ValidationMessages validation={companyValidation} />
           </div>
 
-          <div style={{ marginBottom: "20px" }}>
+          <div className="sample-demo-section">
             <h3>部门管理 ({company.departments.length})</h3>
             <button
               onClick={addDepartment}
-              style={{
-                padding: "12px 24px",
-                backgroundColor: "#28a745",
-                color: "white",
-                border: "none",
-                borderRadius: "6px",
-                cursor: "pointer",
-                fontSize: "16px",
-              }}
+              className="sample-button"
+              style={{ backgroundColor: "#28a745", marginBottom: "20px" }}
             >
-              添加部门
+              ➕ 添加部门
             </button>
           </div>
 
@@ -174,86 +184,121 @@ export default function EnterpriseFormValidation() {
             </div>
           ))}
 
-          <div
-            style={{
-              marginTop: "30px",
-              padding: "20px",
-              backgroundColor: "#e9ecef",
-              borderRadius: "8px",
-            }}
-          >
-            <h3>公司整体统计</h3>
+          <div className="sample-visual-demo">
+            <h3>📊 公司整体统计</h3>
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: "1fr 1fr 1fr",
+                gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
                 gap: "16px",
+                marginTop: "16px",
               }}
             >
-              <div>
-                <strong>部门总数：</strong> {company.departments.length}
+              <div style={{ textAlign: "center", padding: "12px" }}>
+                <div
+                  style={{
+                    fontSize: "24px",
+                    fontWeight: "bold",
+                    color: "#007acc",
+                  }}
+                >
+                  {company.departments.length}
+                </div>
+                <div style={{ fontSize: "14px", color: "#666" }}>部门总数</div>
               </div>
-              <div>
-                <strong>员工总数：</strong>{" "}
-                {company.departments.reduce(
-                  (sum, dept) => sum + dept.employees.length,
-                  0,
-                )}
-              </div>
-              <div>
-                <strong>预算使用率：</strong>{" "}
-                {(
-                  (company.departments.reduce(
-                    (sum, dept) => sum + dept.budget,
+              <div style={{ textAlign: "center", padding: "12px" }}>
+                <div
+                  style={{
+                    fontSize: "24px",
+                    fontWeight: "bold",
+                    color: "#28a745",
+                  }}
+                >
+                  {company.departments.reduce(
+                    (sum, dept) => sum + dept.employees.length,
                     0,
-                  ) /
-                    company.totalBudget) *
-                  100
-                ).toFixed(1)}
-                %
+                  )}
+                </div>
+                <div style={{ fontSize: "14px", color: "#666" }}>员工总数</div>
               </div>
-              <div>
-                <strong>薪资总支出：</strong> ¥
-                {company.departments
-                  .reduce(
-                    (sum, dept) =>
-                      sum +
-                      dept.employees.reduce(
-                        (empSum, emp) => empSum + emp.salary,
-                        0,
-                      ),
-                    0,
-                  )
-                  .toLocaleString()}
+              <div style={{ textAlign: "center", padding: "12px" }}>
+                <div
+                  style={{
+                    fontSize: "24px",
+                    fontWeight: "bold",
+                    color: "#ffc107",
+                  }}
+                >
+                  {(
+                    (company.departments.reduce(
+                      (sum, dept) => sum + dept.budget,
+                      0,
+                    ) /
+                      company.totalBudget) *
+                    100
+                  ).toFixed(1)}
+                  %
+                </div>
+                <div style={{ fontSize: "14px", color: "#666" }}>
+                  预算使用率
+                </div>
               </div>
-              <div>
-                <strong>整体验证状态：</strong>{" "}
+              <div style={{ textAlign: "center", padding: "12px" }}>
+                <div
+                  style={{
+                    fontSize: "24px",
+                    fontWeight: "bold",
+                    color: "#dc3545",
+                  }}
+                >
+                  ¥
+                  {company.departments
+                    .reduce(
+                      (sum, dept) =>
+                        sum +
+                        dept.employees.reduce(
+                          (empSum, emp) => empSum + emp.salary,
+                          0,
+                        ),
+                      0,
+                    )
+                    .toLocaleString()}
+                </div>
+                <div style={{ fontSize: "14px", color: "#666" }}>
+                  薪资总支出
+                </div>
+              </div>
+            </div>
+
+            <div style={{ marginTop: "20px", textAlign: "center" }}>
+              <span
+                className={`sample-status-indicator ${
+                  companyValidationSet.isValid
+                    ? "sample-status-valid"
+                    : "sample-status-invalid"
+                }`}
+              >
                 {companyValidationSet.isValid
-                  ? "✅ 所有数据有效"
+                  ? "✅ 所有数据验证通过"
                   : "❌ 存在验证错误"}
-              </div>
+              </span>
             </div>
           </div>
 
-          <div style={{ marginTop: "30px", textAlign: "center" }}>
+          <div className="sample-demo-section" style={{ textAlign: "center" }}>
             <button
               onClick={handleSubmit}
+              className="sample-button"
+              disabled={!companyValidationSet.isValid}
               style={{
-                padding: "16px 32px",
-                fontSize: "18px",
                 backgroundColor: companyValidationSet.isValid
                   ? "#007acc"
                   : "#6c757d",
-                color: "white",
-                border: "none",
-                borderRadius: "8px",
-                cursor: companyValidationSet.isValid
-                  ? "pointer"
-                  : "not-allowed",
+                fontSize: "18px",
+                padding: "16px 32px",
               }}
-              disabled={!companyValidationSet.isValid}
             >
-              提交企业信息
+              🚀 提交企业信息
             </button>
           </div>
         </div>

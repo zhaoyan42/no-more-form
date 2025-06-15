@@ -13,6 +13,7 @@ import {
 } from "../validation/validation-rules";
 import { EmployeeEditor } from "./EmployeeEditor";
 import { useValidationSetContext } from "../validation/ValidationSetContext";
+import "../../../styles/sample-styles.css";
 
 export function DepartmentEditor({
   department,
@@ -102,40 +103,41 @@ export function DepartmentEditor({
           marginBottom: "20px",
         }}
       >
-        <div>
-          <label>部门名称 *</label>
+        <div className="sample-field">
+          <label className="sample-label">部门名称 *</label>
           <input
             type="text"
+            className="sample-input"
             value={department.name}
             onChange={(e) => updateField("name", e.target.value)}
-            style={{ width: "100%", padding: "8px" }}
+            placeholder="请输入部门名称"
           />
         </div>
 
-        <div>
-          <label>预算 *</label>
+        <div className="sample-field">
+          <label className="sample-label">预算 *</label>
           <input
             type="number"
+            className="sample-input"
             value={department.budget}
             onChange={(e) => updateField("budget", Number(e.target.value))}
             onBlur={budgetValidation.setTouched}
+            placeholder="请输入部门预算"
             style={{
-              width: "100%",
-              padding: "8px",
               borderColor: !budgetValidation.resultSet.isValid
-                ? "#ff4444"
-                : "#ddd",
+                ? "#dc3545"
+                : undefined,
             }}
           />
           <ValidationMessages validation={budgetValidation} />
         </div>
 
-        <div>
-          <label>部门管理者</label>
+        <div className="sample-field">
+          <label className="sample-label">部门管理者</label>
           <select
+            className="sample-input"
             value={department.manager}
             onChange={(e) => updateField("manager", e.target.value)}
-            style={{ width: "100%", padding: "8px" }}
           >
             <option value="">选择管理者</option>
             {department.employees.map((emp) => (
@@ -154,18 +156,8 @@ export function DepartmentEditor({
 
       <div style={{ marginBottom: "16px" }}>
         <h4>员工列表 ({department.employees.length})</h4>
-        <button
-          onClick={addEmployee}
-          style={{
-            padding: "8px 16px",
-            backgroundColor: "#007acc",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer",
-          }}
-        >
-          添加员工
+        <button onClick={addEmployee} className="sample-button">
+          👥 添加员工
         </button>
       </div>
 

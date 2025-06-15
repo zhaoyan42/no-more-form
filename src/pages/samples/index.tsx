@@ -7,6 +7,7 @@ import { GroupedValidation } from "./basic/grouped-validation";
 import { CompositeSubjectValidation } from "./advance/composite-subject-validation";
 import { DynamicRulesValidation } from "./advance/dynamic-rules-validation";
 import { MultipleLayerSubjectValidation } from "./advance/multiple-layer-subject-validation";
+import { EnterpriseFormValidation } from "./advance/enterprise-form";
 import "./styles/sample-styles.css";
 
 interface SampleItem {
@@ -84,6 +85,15 @@ const samples: SampleItem[] = [
     category: "advanced",
     component: MultipleLayerSubjectValidation,
     icon: "🏗️",
+  },
+  {
+    id: "enterprise-form-validation",
+    title: "企业级表单验证",
+    description:
+      "展示复杂的多层组件结构和灵活的组合验证，包括跨组件的数据依赖验证和多层级的验证状态管理",
+    category: "advanced",
+    component: EnterpriseFormValidation,
+    icon: "🏢",
   },
 ];
 
