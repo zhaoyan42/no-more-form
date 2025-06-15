@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { ValidationMessages } from "@/validation/components/validation-messages.tsx";
-import { ageRules, itemsRules, nameRules } from "../common/rules.ts";
+import { ageRules, itemsRules, nameRules } from "../../common/rules.ts";
 import { useValidation } from "@/validation/hooks/use-validation.ts";
-import "../styles/sample-styles.css";
+import { useValidationSet } from "@/validation/hooks/use-validation-set.ts";
+import { ValidationSetProvider } from "./components/ValidationSetProvider.tsx";
+import { useValidationSetContext } from "./context/ValidationSetContext.ts";
+import "../../styles/sample-styles.css";
 
 interface Item {
   name: string;
@@ -22,8 +25,11 @@ function ItemEditor({
   onAgeChanged: (value: number) => void;
   onRemove: () => void;
 }) {
-  const nameValidation = useValidation(name, nameRules);
-  const ageValidation = useValidation(age, ageRules);
+  // 从Context获取验证集合
+  const validationSet = useValidationSetContext();
+
+  const nameValidation = useValidation(name, nameRules, validationSet);
+  const ageValidation = useValidation(age, ageRules, validationSet);
 
   return (
     <div
@@ -124,6 +130,10 @@ function ItemEditor({
 export function MultipleLayerSubjectValidation() {
   const [items, setItems] = useState<Item[]>([]);
 
+  // 创建一个验证集合来收集所有子项目的验证
+  const itemValidationSet = useValidationSet();
+
+  // 集合层面的验证
   const itemsValidation = useValidation(items, itemsRules);
 
   const addItem = () => {
@@ -239,6 +249,39 @@ export function MultipleLayerSubjectValidation() {
             >
               集合验证: {itemsValidation.isValid ? "✅ 通过" : "❌ 失败"}
             </div>
+            <div
+              style={{
+                padding: "8px 12px",
+                borderRadius: "6px",
+                background: itemValidationSet.isValid ? "#d1fae5" : "#fee2e2",
+                color: itemValidationSet.isValid ? "#065f46" : "#991b1b",
+                fontWeight: "600",
+                fontSize: "14px",
+              }}
+            >
+              子项验证: {itemValidationSet.isValid ? "✅ 通过" : "❌ 失败"}
+            </div>
+            <div
+              style={{
+                padding: "8px 12px",
+                borderRadius: "6px",
+                background:
+                  itemsValidation.isValid && itemValidationSet.isValid
+                    ? "#d1fae5"
+                    : "#fee2e2",
+                color:
+                  itemsValidation.isValid && itemValidationSet.isValid
+                    ? "#065f46"
+                    : "#991b1b",
+                fontWeight: "600",
+                fontSize: "14px",
+              }}
+            >
+              整体验证:{" "}
+              {itemsValidation.isValid && itemValidationSet.isValid
+                ? "✅ 通过"
+                : "❌ 失败"}
+            </div>
           </div>
         </div>
 
@@ -258,24 +301,26 @@ export function MultipleLayerSubjectValidation() {
             }}
           >
             <p style={{ margin: 0, fontSize: "16px" }}>
-              🎯 点击"添加项目"按钮开始创建项目列表
+              🎯 点击&quot;添加项目&quot;按钮开始创建项目列表
             </p>
           </div>
         ) : (
-          <div
-            style={{ display: "flex", flexDirection: "column", gap: "16px" }}
-          >
-            {items.map((item, index) => (
-              <ItemEditor
-                key={index}
-                index={index}
-                item={item}
-                onNameChanged={(value) => updateItem(index, "name", value)}
-                onAgeChanged={(value) => updateItem(index, "age", value)}
-                onRemove={() => removeItem(index)}
-              />
-            ))}
-          </div>
+          <ValidationSetProvider validationSet={itemValidationSet}>
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "16px" }}
+            >
+              {items.map((item, index) => (
+                <ItemEditor
+                  key={index}
+                  index={index}
+                  item={item}
+                  onNameChanged={(value) => updateItem(index, "name", value)}
+                  onAgeChanged={(value) => updateItem(index, "age", value)}
+                  onRemove={() => removeItem(index)}
+                />
+              ))}
+            </div>
+          </ValidationSetProvider>
         )}
       </div>
     </div>
