@@ -35,11 +35,42 @@ export function ValidationMessages({
   const getStyles = useCallback((result: RuleResult) => {
     switch (result.state) {
       case "warning":
-        return { color: "yellow" };
+        return {
+          color: "#d97706",
+          display: "flex",
+          alignItems: "center",
+          gap: "6px",
+          fontSize: "14px",
+          marginBottom: "4px",
+        };
       case "invalid":
-        return { color: "red" };
+        return {
+          color: "red",
+          display: "flex",
+          alignItems: "center",
+          gap: "6px",
+          fontSize: "14px",
+          marginBottom: "4px",
+        };
       default:
-        return {};
+        return {
+          display: "flex",
+          alignItems: "center",
+          gap: "6px",
+          fontSize: "14px",
+          marginBottom: "4px",
+        };
+    }
+  }, []);
+
+  const getIcon = useCallback((result: RuleResult) => {
+    switch (result.state) {
+      case "warning":
+        return "⚠️";
+      case "invalid":
+        return "❌";
+      default:
+        return "ℹ️";
     }
   }, []);
 
@@ -48,7 +79,8 @@ export function ValidationMessages({
       <>
         {results.map((result, index) => (
           <div key={index} style={getStyles(result)}>
-            {result.message}
+            <span>{getIcon(result)}</span>
+            <span>{result.message}</span>
           </div>
         ))}
       </>

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ValidationMessages } from "@/validation/components/validation-messages.tsx";
 import { nameRules } from "../common/rules.ts";
 import { useValidation } from "@/validation/hooks/use-validation.ts";
+import "../styles/sample-styles.css";
 
 export function EagerValidation() {
   const [name, setName] = useState<string>("");
@@ -9,24 +10,64 @@ export function EagerValidation() {
   const validation = useValidation(name, nameRules);
 
   return (
-    <div>
-      <h2>
-        <span style={{ color: "red" }}>即时触发验证</span>
-        （验证会在组件渲染时触发）
-      </h2>
-      <ul>
-        <li>名字是必填项（为空：错误）</li>
-        <li>名字可能太短（长度小于5：警告）</li>
-        <li>名字太长（长度大于10：错误）</li>
-      </ul>
-      <input
-        type="text"
-        value={name}
-        placeholder="输入一些内容"
-        onChange={(e) => setName(e.target.value)}
-        autoComplete="off"
-      />
-      <ValidationMessages validation={validation} eager />
+    <div className="sample-container">
+      <div className="sample-header">
+        <h1 className="sample-title">
+          <span className="sample-title-icon">⚡</span>
+          即时验证
+          <span className="sample-badge sample-badge-basic">基础</span>
+        </h1>
+        <p className="sample-subtitle">
+          验证会在组件渲染时立即触发，实时反馈输入状态
+        </p>
+      </div>
+
+      <div className="sample-description">
+        <h3>💡 功能说明</h3>
+        <p>
+          这个示例展示了<span className="sample-highlight">即时验证</span>
+          的工作原理。验证规则会在组件初始化时就开始执行，并随着用户输入实时更新验证结果。
+        </p>
+        <p>
+          适用场景：需要实时反馈的表单字段，如密码强度检查、用户名可用性验证等。
+        </p>
+      </div>
+
+      <div className="sample-rules">
+        <h4>📋 验证规则</h4>
+        <ul>
+          <li>
+            <strong>必填验证：</strong>名字不能为空（空值时显示错误）
+          </li>
+          <li>
+            <strong>长度警告：</strong>名字长度少于5个字符时显示警告
+          </li>
+          <li>
+            <strong>长度限制：</strong>名字长度超过10个字符时显示错误
+          </li>
+        </ul>
+      </div>
+
+      <div className="sample-form">
+        <div className="sample-field">
+          <label className="sample-label" htmlFor="eager-name">
+            用户名字
+          </label>
+          <input
+            id="eager-name"
+            type="text"
+            className="sample-input"
+            value={name}
+            placeholder="请输入您的名字"
+            onChange={(e) => setName(e.target.value)}
+            autoComplete="off"
+          />
+        </div>
+
+        <div className="sample-demo-section">
+          <ValidationMessages validation={validation} eager />
+        </div>
+      </div>
     </div>
   );
 }

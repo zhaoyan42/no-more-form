@@ -1,5 +1,5 @@
 import { Demo } from "./pages/demo.tsx";
-import { Sample } from "./pages/sample.tsx";
+import { SamplesIndex } from "./pages/index";
 
 function App() {
   //根据查询字符串渲染不同的页面
@@ -8,7 +8,7 @@ function App() {
     return <Demo />;
   }
 
-  return <Sample />;
+  return <SamplesIndex />;
 }
 
 export default App;
