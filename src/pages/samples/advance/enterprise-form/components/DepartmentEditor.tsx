@@ -1,7 +1,7 @@
 import { useMemo, useCallback } from "react";
-import { ValidationMessages } from "../../../../../validation/components/validation-messages";
-import { useValidation } from "../../../../../validation/hooks/use-validation";
-import { useValidationSet } from "../../../../../validation/hooks/use-validation-set";
+import { ValidationMessages } from "@/validation/components/validation-messages";
+import { useValidation } from "@/validation/hooks/use-validation";
+import { useValidationSet } from "@/validation/hooks/use-validation-set";
 import type {
   DepartmentEditorProps,
   Department,

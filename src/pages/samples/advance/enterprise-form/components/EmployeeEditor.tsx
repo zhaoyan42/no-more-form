@@ -1,6 +1,6 @@
 import { useMemo, useCallback } from "react";
-import { ValidationMessages } from "../../../../validation/components/validation-messages.tsx";
-import { useValidation } from "../../../../validation/hooks/use-validation.ts";
+import { ValidationMessages } from "@/validation/components/validation-messages.tsx";
+import { useValidation } from "@/validation/hooks/use-validation.ts";
 import type { EmployeeEditorProps, Employee } from "../model/types";
 import {
   employeeNameRules,
@@ -19,35 +19,35 @@ export function EmployeeEditor({
   const nameValidation = useValidation(
     employee.name,
     employeeNameRules,
-    validationSet
+    validationSet,
   );
   const emailValidation = useValidation(
     employee.email,
     emailRules,
-    validationSet
+    validationSet,
   );
   const salaryValidation = useValidation(
     employee.salary,
     salaryRules,
-    validationSet
+    validationSet,
   );
 
   // 动态验证规则：检查邮箱唯一性
   const emailUniquenessRules = useMemo(
     () => createEmailUniquenessRules(allEmployees, employee.id),
-    [allEmployees, employee.id]
+    [allEmployees, employee.id],
   );
 
   const emailUniquenessValidation = useValidation(
     employee.email,
     emailUniquenessRules,
-    validationSet
+    validationSet,
   );
   const updateField = useCallback(
     <K extends keyof Employee>(field: K, value: Employee[K]) => {
       onUpdate({ ...employee, [field]: value });
     },
-    [employee, onUpdate]
+    [employee, onUpdate],
   );
 
   return (
@@ -168,7 +168,7 @@ export function EmployeeEditor({
           onChange={(e) =>
             updateField(
               "skills",
-              e.target.value.split(",").map((s) => s.trim())
+              e.target.value.split(",").map((s) => s.trim()),
             )
           }
           style={{ width: "100%", padding: "8px" }}

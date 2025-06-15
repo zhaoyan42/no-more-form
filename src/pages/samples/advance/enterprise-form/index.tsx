@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback } from "react";
-import { ValidationMessages } from "../../../../validation/components/validation-messages.tsx";
-import { useValidation } from "../../../../validation/hooks/use-validation.ts";
-import { useValidationSet } from "../../../../validation/hooks/use-validation-set.ts";
+import { ValidationMessages } from "@/validation/components/validation-messages.tsx";
+import { useValidation } from "@/validation/hooks/use-validation.ts";
+import { useValidationSet } from "@/validation/hooks/use-validation-set.ts";
 import type { Company, Department } from "./model/types";
 import { createCompanyValidationRules } from "./validation/validation-rules";
 import { DepartmentEditor } from "./components/DepartmentEditor";

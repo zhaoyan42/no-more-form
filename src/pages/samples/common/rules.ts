@@ -1,4 +1,4 @@
-import { aRuleResultOf } from "../../../validation/hooks/use-rule-result.ts";
+import { aRuleResultOf } from "@/validation/hooks/use-rule-result.ts";
 
 export const nameRules = [
   (subject: string) => {

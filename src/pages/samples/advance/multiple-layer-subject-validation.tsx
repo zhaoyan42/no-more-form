@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { ValidationMessages } from "../../../validation/components/validation-messages.tsx";
+import { ValidationMessages } from "@/validation/components/validation-messages.tsx";
 import { ageRules, itemsRules, nameRules } from "../common/rules.ts";
-import { useValidation } from "../../../validation/hooks/use-validation.ts";
+import { useValidation } from "@/validation/hooks/use-validation.ts";
 
 interface Item {
   name: string;

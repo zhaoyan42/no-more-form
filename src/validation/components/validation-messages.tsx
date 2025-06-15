@@ -1,8 +1,8 @@
 import { useCallback, useMemo } from "react";
-import type { RuleResult } from "../hooks/use-rule-result.ts";
+import type { RuleResult } from "../hooks/use-rule-result";
 
-import type { Validation } from "../hooks/use-validation.ts";
-import type { Group } from "../hooks/use-group.ts";
+import type { Validation } from "../hooks/use-validation";
+import type { Group } from "../hooks/use-group";
 
 export function ValidationMessages({
   validation,

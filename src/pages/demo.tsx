@@ -1,10 +1,10 @@
 import { useState } from "react";
-import type { Rule } from "../validation/hooks/use-rule-result.ts";
-import { aRuleResultOf } from "../validation/hooks/use-rule-result.ts";
-import { ValidationMessages } from "../validation/components/validation-messages.tsx";
-import { useGroup } from "../validation/hooks/use-group.ts";
-import { useValidation } from "../validation/hooks/use-validation.ts";
-import { useValidationSet } from "../validation/hooks/use-validation-set.ts";
+import type { Rule } from "@/validation/hooks/use-rule-result.ts";
+import { aRuleResultOf } from "@/validation/hooks/use-rule-result.ts";
+import { ValidationMessages } from "@/validation/components/validation-messages.tsx";
+import { useGroup } from "@/validation/hooks/use-group.ts";
+import { useValidation } from "@/validation/hooks/use-validation.ts";
+import { useValidationSet } from "@/validation/hooks/use-validation-set.ts";
 
 export const Demo = () => {
   // State 定义

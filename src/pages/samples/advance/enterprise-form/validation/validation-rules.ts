@@ -1,4 +1,4 @@
-import { aRuleResultOf } from "../../../../validation/hooks/use-rule-result.ts";
+import { aRuleResultOf } from "@/validation/hooks/use-rule-result.ts";
 import type { Company, Department, Employee } from "../model/types";
 
 // 员工验证规则

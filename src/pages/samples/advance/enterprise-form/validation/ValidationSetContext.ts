@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import type { ValidationSet } from "../../../../../validation/hooks/use-validation-set";
+import type { ValidationSet } from "@/validation/hooks/use-validation-set";
 
 export const ValidationSetContext = createContext<ValidationSet | null>(null);
 

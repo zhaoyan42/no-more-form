@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from "react";
-import type { Validation } from "./use-validation.ts";
+import type { Validation } from "./use-validation";
 
 /**
  * 验证集合

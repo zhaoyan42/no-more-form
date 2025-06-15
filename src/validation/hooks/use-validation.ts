@@ -1,9 +1,9 @@
-import type { Rule } from "./use-rule-result.ts";
+import type { Rule } from "./use-rule-result";
 import { useCallback, useEffect, useMemo, useRef } from "react";
-import { useRuleSet } from "./use-rule-set.ts";
-import { useRuleResultSet, type RuleResultSet } from "./use-rule-result-set.ts";
-import { useFieldState } from "./use-states.ts";
-import type { ValidationSet } from "./use-validation-set.ts";
+import { useRuleSet } from "./use-rule-set";
+import { useRuleResultSet, type RuleResultSet } from "./use-rule-result-set";
+import { useFieldState } from "./use-states";
+import type { ValidationSet } from "./use-validation-set";
 
 /**
  * 验证

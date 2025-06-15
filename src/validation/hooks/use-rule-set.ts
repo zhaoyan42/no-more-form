@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import type { Rule, RuleResult } from "./use-rule-result.ts";
+import type { Rule, RuleResult } from "./use-rule-result";
 
 export interface RuleSet<TSubject> {
   rules: Rule<TSubject>[];

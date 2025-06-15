@@ -1,6 +1,6 @@
 import { useMemo } from "react";
-import type { RuleResult } from "./use-rule-result.ts";
-import type { RuleSet } from "./use-rule-set.ts";
+import type { RuleResult } from "./use-rule-result";
+import type { RuleSet } from "./use-rule-set";
 
 export interface RuleResultSet {
   results: RuleResult[];
