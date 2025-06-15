@@ -27,9 +27,12 @@ function ItemEditor({
 }) {
   // 从Context获取验证集合
   const validationSet = useValidationSetContext();
-
-  const nameValidation = useValidation(name, nameRules, validationSet);
-  const ageValidation = useValidation(age, ageRules, validationSet);
+  const nameValidation = useValidation(name, nameRules, {
+    validationSets: [validationSet],
+  });
+  const ageValidation = useValidation(age, ageRules, {
+    validationSets: [validationSet],
+  });
 
   return (
     <div

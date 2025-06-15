@@ -4,14 +4,14 @@ import type { RuleResult } from "../hooks/use-rule-result";
 import type { Validation } from "../hooks/use-validation";
 import type { Group } from "../hooks/use-group";
 
-export function ValidationMessages({
+export function ValidationMessages<TExtra = undefined>({
   validation,
   eager,
   onChange,
   onTouch,
   group,
 }: {
-  validation: Validation;
+  validation: Validation<TExtra>;
   eager?: boolean;
   onChange?: boolean;
   onTouch?: boolean;

@@ -1,7 +1,9 @@
 import { useMemo, useCallback } from "react";
 import { ValidationMessages } from "@/validation/components/validation-messages";
-import { useValidation } from "@/validation/hooks/use-validation";
-import { useValidationSet } from "@/validation/hooks/use-validation-set";
+import {
+  useValidation,
+  validationOptions,
+} from "@/validation/hooks/use-validation";
 import type {
   DepartmentEditorProps,
   Department,
@@ -12,7 +14,8 @@ import {
   createDepartmentValidationRules,
 } from "../validation/validation-rules";
 import { EmployeeEditor } from "./EmployeeEditor";
-import { useValidationSetContext } from "../validation/ValidationSetContext";
+import { useValidationSetsContext } from "../validation/ValidationSetContext";
+import { createValidationGroup } from "../validation/validation-groups";
 import "../../../styles/sample-styles.css";
 
 export function DepartmentEditor({
@@ -20,13 +23,18 @@ export function DepartmentEditor({
   onUpdate,
   company,
 }: DepartmentEditorProps) {
-  const validationSet = useValidationSetContext();
-  const departmentValidationSet = useValidationSet();
+  const { departmentValidationSet } = useValidationSetsContext();
+
   const budgetValidation = useValidation(
     department.budget,
     departmentBudgetRules,
-    validationSet,
-    departmentValidationSet,
+    validationOptions.withExtra(
+      createValidationGroup.department(
+        department.id,
+        `${department.name} 预算`,
+      ),
+      [departmentValidationSet],
+    ),
   );
 
   // 部门级别的复合验证
@@ -35,8 +43,13 @@ export function DepartmentEditor({
   const departmentValidation = useValidation(
     department,
     departmentRules,
-    validationSet,
-    departmentValidationSet,
+    validationOptions.withExtra(
+      createValidationGroup.department(
+        department.id,
+        department.name || "未命名部门",
+      ),
+      [departmentValidationSet],
+    ),
   );
 
   const updateField = useCallback(

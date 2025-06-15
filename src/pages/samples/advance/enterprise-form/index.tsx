@@ -1,25 +1,32 @@
 import { useState, useMemo, useCallback } from "react";
 import { ValidationMessages } from "@/validation/components/validation-messages.tsx";
-import { useValidation } from "@/validation/hooks/use-validation.ts";
+import {
+  useValidation,
+  validationOptions,
+} from "@/validation/hooks/use-validation.ts";
 import { useValidationSet } from "@/validation/hooks/use-validation-set.ts";
-import type { Company, Department } from "./model/types";
+import type { Company, Department, Employee } from "./model/types";
 import { createCompanyValidationRules } from "./validation/validation-rules";
 import { DepartmentEditor } from "./components/DepartmentEditor";
 import { defaultCompanyData } from "./model/data";
-import { ValidationSetContext } from "./validation/ValidationSetContext";
+import { ValidationSetsContext } from "./validation/ValidationSetContext";
+import { GroupedValidationDisplay } from "./components/GroupedValidationDisplay";
 import "../../styles/sample-styles.css";
 
 export function EnterpriseFormValidation() {
   const [company, setCompany] = useState<Company>(defaultCompanyData);
 
-  const companyValidationSet = useValidationSet();
+  // 创建多个独立的验证集合
+  const companyValidationSet = useValidationSet<Company>();
+  const departmentValidationSet = useValidationSet<Department>();
+  const employeeValidationSet = useValidationSet<Employee>();
 
   // 公司级别的验证
   const companyRules = useMemo(() => createCompanyValidationRules(), []);
   const companyValidation = useValidation(
     company,
     companyRules,
-    companyValidationSet,
+    validationOptions.withSets(companyValidationSet),
   );
 
   const updateCompanyField = useCallback(
@@ -70,8 +77,15 @@ export function EnterpriseFormValidation() {
   }, [companyValidation, companyValidationSet.isValid, company]);
 
   return (
-    <ValidationSetContext.Provider value={companyValidationSet}>
+    <ValidationSetsContext.Provider
+      value={{
+        companyValidationSet,
+        departmentValidationSet,
+        employeeValidationSet,
+      }}
+    >
       <div className="sample-container">
+        {" "}
         <div className="sample-description">
           <h3>💡 功能说明</h3>
           <p>
@@ -80,13 +94,22 @@ export function EnterpriseFormValidation() {
             的完整实现。涵盖复杂的业务场景和多层级的数据验证管理。
           </p>
           <p>
+            <strong>🆕 新增功能：</strong>
+            支持<span className="sample-highlight">验证分组</span>，
+            可以根据公司、部门、员工等不同层级对验证错误进行分组显示，
+            便于快速定位和修复问题。
+          </p>
+          <p>
             适用场景：大型表单系统、企业级应用、复杂业务流程、多层级数据结构验证等。
           </p>
-        </div>
-
+        </div>{" "}
         <div className="sample-rules">
           <h4>📋 验证特性</h4>
           <ul>
+            <li>
+              <strong>验证分组：</strong>
+              根据公司、部门、员工层级对验证错误进行分组显示
+            </li>
             <li>
               <strong>跨组件验证：</strong>不同组件间的数据依赖验证
             </li>
@@ -101,10 +124,8 @@ export function EnterpriseFormValidation() {
             </li>
           </ul>
         </div>
-
         <div className="sample-form">
           <h2>公司信息</h2>
-
           <div
             style={{
               display: "grid",
@@ -137,12 +158,10 @@ export function EnterpriseFormValidation() {
               />
             </div>
           </div>
-
           {/* 公司级别验证消息 */}
           <div onBlur={companyValidation.setTouched}>
             <ValidationMessages validation={companyValidation} />
           </div>
-
           <div className="sample-demo-section">
             <h3>部门管理 ({company.departments.length})</h3>
             <button
@@ -153,7 +172,6 @@ export function EnterpriseFormValidation() {
               ➕ 添加部门
             </button>
           </div>
-
           {company.departments.map((department, index) => (
             <div
               key={department.id}
@@ -183,7 +201,6 @@ export function EnterpriseFormValidation() {
               />
             </div>
           ))}
-
           <div className="sample-visual-demo">
             <h3>📊 公司整体统计</h3>
             <div
@@ -270,21 +287,9 @@ export function EnterpriseFormValidation() {
               </div>
             </div>
 
-            <div style={{ marginTop: "20px", textAlign: "center" }}>
-              <span
-                className={`sample-status-indicator ${
-                  companyValidationSet.isValid
-                    ? "sample-status-valid"
-                    : "sample-status-invalid"
-                }`}
-              >
-                {companyValidationSet.isValid
-                  ? "✅ 所有数据验证通过"
-                  : "❌ 存在验证错误"}
-              </span>
-            </div>
+            {/* 分组验证详情显示 */}
+            <GroupedValidationDisplay />
           </div>
-
           <div className="sample-demo-section" style={{ textAlign: "center" }}>
             <button
               onClick={handleSubmit}
@@ -303,6 +308,6 @@ export function EnterpriseFormValidation() {
           </div>
         </div>
       </div>
-    </ValidationSetContext.Provider>
+    </ValidationSetsContext.Provider>
   );
 }

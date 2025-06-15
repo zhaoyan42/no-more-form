@@ -1,6 +1,9 @@
 import { useMemo, useCallback } from "react";
 import { ValidationMessages } from "@/validation/components/validation-messages.tsx";
-import { useValidation } from "@/validation/hooks/use-validation.ts";
+import {
+  useValidation,
+  validationOptions,
+} from "@/validation/hooks/use-validation.ts";
 import type { EmployeeEditorProps, Employee } from "../model/types";
 import {
   employeeNameRules,
@@ -8,7 +11,8 @@ import {
   salaryRules,
   createEmailUniquenessRules,
 } from "../validation/validation-rules";
-import { useValidationSetContext } from "../validation/ValidationSetContext";
+import { useValidationSetsContext } from "../validation/ValidationSetContext";
+import { createValidationGroup } from "../validation/validation-groups";
 import "../../../styles/sample-styles.css";
 
 export function EmployeeEditor({
@@ -16,21 +20,44 @@ export function EmployeeEditor({
   onUpdate,
   allEmployees,
 }: EmployeeEditorProps) {
-  const validationSet = useValidationSetContext();
+  const { employeeValidationSet } = useValidationSetsContext();
   const nameValidation = useValidation(
     employee.name,
     employeeNameRules,
-    validationSet,
+    validationOptions.withExtra(
+      createValidationGroup.employee(
+        employee.id,
+        `${employee.name} 姓名`,
+        employee.department,
+      ),
+      [employeeValidationSet],
+    ),
   );
+
   const emailValidation = useValidation(
     employee.email,
     emailRules,
-    validationSet,
+    validationOptions.withExtra(
+      createValidationGroup.employee(
+        employee.id,
+        `${employee.name} 邮箱`,
+        employee.department,
+      ),
+      [employeeValidationSet],
+    ),
   );
+
   const salaryValidation = useValidation(
     employee.salary,
     salaryRules,
-    validationSet,
+    validationOptions.withExtra(
+      createValidationGroup.employee(
+        employee.id,
+        `${employee.name} 薪资`,
+        employee.department,
+      ),
+      [employeeValidationSet],
+    ),
   );
 
   // 动态验证规则：检查邮箱唯一性
@@ -38,12 +65,19 @@ export function EmployeeEditor({
     () => createEmailUniquenessRules(allEmployees, employee.id),
     [allEmployees, employee.id],
   );
-
   const emailUniquenessValidation = useValidation(
     employee.email,
     emailUniquenessRules,
-    validationSet,
+    validationOptions.withExtra(
+      createValidationGroup.employee(
+        employee.id,
+        `${employee.name} 邮箱唯一性`,
+        employee.department,
+      ),
+      [employeeValidationSet],
+    ),
   );
+
   const updateField = useCallback(
     <K extends keyof Employee>(field: K, value: Employee[K]) => {
       onUpdate({ ...employee, [field]: value });

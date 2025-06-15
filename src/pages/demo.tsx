@@ -16,21 +16,15 @@ export const Demo = () => {
   const group = useGroup();
   const validationSet = useValidationSet();
 
-  const nameValidation = useValidation(
-    name,
-    [nameRequired, nameChinese],
-    validationSet,
-  );
-  const emailValidation = useValidation(
-    email,
-    [emailRequired, emailDomain],
-    validationSet,
-  );
-  const countValidation = useValidation(
-    count,
-    [countRange, countOdd],
-    validationSet,
-  );
+  const nameValidation = useValidation(name, [nameRequired, nameChinese], {
+    validationSets: [validationSet],
+  });
+  const emailValidation = useValidation(email, [emailRequired, emailDomain], {
+    validationSets: [validationSet],
+  });
+  const countValidation = useValidation(count, [countRange, countOdd], {
+    validationSets: [validationSet],
+  });
 
   const submit = () => {
     group.showResults();

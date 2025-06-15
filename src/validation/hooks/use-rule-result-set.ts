@@ -2,10 +2,11 @@ import { useMemo } from "react";
 import type { RuleResult } from "./use-rule-result";
 import type { RuleSet } from "./use-rule-set";
 
-export interface RuleResultSet {
+export interface RuleResultSet<TExtra = undefined> {
   results: RuleResult[];
   isValid: boolean;
   notValidResults: RuleResult[];
+  extra?: TExtra;
 }
 
 export function useRuleResultSet<TSubject>(

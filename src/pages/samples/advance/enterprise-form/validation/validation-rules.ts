@@ -112,6 +112,18 @@ export const createDepartmentValidationRules = () => [
 // 创建公司验证规则
 export const createCompanyValidationRules = () => [
   (company: Company) => {
+    if (!company.name.trim()) {
+      return aRuleResultOf.invalid("公司名称不能为空");
+    }
+    return aRuleResultOf.valid();
+  },
+  (company: Company) => {
+    if (company.totalBudget <= 0) {
+      return aRuleResultOf.invalid("公司预算不能为0");
+    }
+    return aRuleResultOf.valid();
+  },
+  (company: Company) => {
     const totalDepartmentBudget = company.departments.reduce(
       (sum, dept) => sum + dept.budget,
       0,
