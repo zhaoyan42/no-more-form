@@ -16,17 +16,6 @@ export function WithVisualIndicator() {
 
   return (
     <div className="sample-container">
-      <div className="sample-header">
-        <h1 className="sample-title">
-          <span className="sample-title-icon">🎨</span>
-          视觉指示器
-          <span className="sample-badge sample-badge-basic">基础</span>
-        </h1>
-        <p className="sample-subtitle">
-          利用验证结果控制页面元素的视觉状态，提供直观的用户反馈
-        </p>
-      </div>
-
       <div className="sample-description">
         <h3>💡 功能说明</h3>
         <p>

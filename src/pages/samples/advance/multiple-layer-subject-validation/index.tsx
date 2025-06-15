@@ -156,17 +156,6 @@ export function MultipleLayerSubjectValidation() {
 
   return (
     <div className="sample-container">
-      <div className="sample-header">
-        <h1 className="sample-title">
-          <span className="sample-title-icon">🏗️</span>
-          多层验证
-          <span className="sample-badge sample-badge-advanced">高级</span>
-        </h1>
-        <p className="sample-subtitle">
-          对嵌套数据结构进行分层验证，同时验证集合本身和集合中的每个元素
-        </p>
-      </div>
-
       <div className="sample-description">
         <h3>💡 功能说明</h3>
         <p>

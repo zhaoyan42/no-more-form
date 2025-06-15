@@ -15,17 +15,6 @@ export function CompositeSubjectValidation() {
 
   return (
     <div className="sample-container">
-      <div className="sample-header">
-        <h1 className="sample-title">
-          <span className="sample-title-icon">🧩</span>
-          组合对象验证
-          <span className="sample-badge sample-badge-advanced">高级</span>
-        </h1>
-        <p className="sample-subtitle">
-          对包含多个字段的复合对象进行统一验证，实现字段间的关联逻辑
-        </p>
-      </div>
-
       <div className="sample-description">
         <h3>💡 功能说明</h3>
         <p>

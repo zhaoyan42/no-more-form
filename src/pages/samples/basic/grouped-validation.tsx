@@ -26,17 +26,6 @@ export function GroupedValidation() {
 
   return (
     <div className="sample-container">
-      <div className="sample-header">
-        <h1 className="sample-title">
-          <span className="sample-title-icon">📋</span>
-          分组验证
-          <span className="sample-badge sample-badge-basic">基础</span>
-        </h1>
-        <p className="sample-subtitle">
-          对多个字段进行分组管理，统一触发验证，适用于表单提交场景
-        </p>
-      </div>
-
       <div className="sample-description">
         <h3>💡 功能说明</h3>
         <p>

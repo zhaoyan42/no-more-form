@@ -13,17 +13,6 @@ export function OnTouchValidation() {
 
   return (
     <div className="sample-container">
-      <div className="sample-header">
-        <h1 className="sample-title">
-          <span className="sample-title-icon">👆</span>
-          失焦时验证
-          <span className="sample-badge sample-badge-basic">基础</span>
-        </h1>
-        <p className="sample-subtitle">
-          验证会在用户离开输入框（失去焦点）时触发，避免输入过程中的干扰
-        </p>
-      </div>
-
       <div className="sample-description">
         <h3>💡 功能说明</h3>
         <p>

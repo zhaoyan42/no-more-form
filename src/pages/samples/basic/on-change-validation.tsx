@@ -11,17 +11,6 @@ export function OnChangeValidation() {
 
   return (
     <div className="sample-container">
-      <div className="sample-header">
-        <h1 className="sample-title">
-          <span className="sample-title-icon">✏️</span>
-          输入时验证
-          <span className="sample-badge sample-badge-basic">基础</span>
-        </h1>
-        <p className="sample-subtitle">
-          验证会在用户输入或修改内容时触发，提供即时反馈
-        </p>
-      </div>
-
       <div className="sample-description">
         <h3>💡 功能说明</h3>
         <p>

@@ -29,17 +29,6 @@ export function DynamicRulesValidation() {
 
   return (
     <div className="sample-container">
-      <div className="sample-header">
-        <h1 className="sample-title">
-          <span className="sample-title-icon">🔄</span>
-          动态规则验证
-          <span className="sample-badge sample-badge-advanced">高级</span>
-        </h1>
-        <p className="sample-subtitle">
-          根据应用状态动态生成验证规则集，实现灵活的条件验证逻辑
-        </p>
-      </div>
-
       <div className="sample-description">
         <h3>💡 功能说明</h3>
         <p>
