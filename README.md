@@ -454,6 +454,145 @@ function MyForm() {
 }
 ```
 
+### 高级示例：企业级多层验证表单
+
+项目中还包含了一个复杂的企业级表单验证示例，展示了如何处理多层嵌套组件、跨组件验证依赖和复杂业务逻辑验证：
+
+```tsx
+// src/pages/samples/advance/enterprise-form-validation.tsx
+function EnterpriseFormValidation() {
+  // 企业数据结构
+  const [company, setCompany] = useState<Company>({
+    name: '科技创新有限公司',
+    totalBudget: 1000000,
+    departments: [
+      {
+        id: 'dept_1',
+        name: '技术部',
+        budget: 500000,
+        manager: '',
+        employees: [
+          {
+            id: 'emp_1',
+            name: '张三',
+            email: 'zhangsan@company.com',
+            // ... 更多员工信息
+          }
+        ]
+      }
+    ]
+  });
+
+  // 多层验证集合
+  const companyValidationSet = useValidationSet();
+  
+  // 公司级别的复合验证规则
+  const companyRules = useMemo(() => [
+    (company: Company) => {
+      const totalDepartmentBudget = company.departments.reduce(
+        (sum, dept) => sum + dept.budget, 0
+      );
+      if (totalDepartmentBudget > company.totalBudget) {
+        return aRuleResultOf.invalid('各部门预算总和不能超过公司总预算');
+      }
+      return aRuleResultOf.valid();
+    },
+    (company: Company) => {
+      const departmentNames = company.departments.map(dept => dept.name);
+      const uniqueNames = new Set(departmentNames);
+      if (uniqueNames.size !== departmentNames.length) {
+        return aRuleResultOf.invalid('部门名称不能重复');
+      }
+      return aRuleResultOf.valid();
+    }
+  ], []);
+
+  const companyValidation = useValidation(company, companyRules, companyValidationSet);
+
+  return (
+    <div>
+      {/* 公司信息输入 */}
+      <CompanyEditor 
+        company={company} 
+        onUpdate={setCompany}
+        validationSet={companyValidationSet}
+      />
+      
+      {/* 部门列表，每个部门包含员工列表 */}
+      {company.departments.map((department, index) => (
+        <DepartmentEditor
+          key={department.id}
+          department={department}
+          onUpdate={(dept) => updateDepartment(index, dept)}
+          company={company}
+          validationSet={companyValidationSet}
+        />
+      ))}
+    </div>
+  );
+}
+```
+
+这个示例展示了以下高级特性：
+
+#### 1. 多层嵌套验证
+
+- **公司层级**：验证总预算、部门名称唯一性
+- **部门层级**：验证部门预算、员工薪资总和、管理者指定
+- **员工层级**：验证个人信息、邮箱唯一性
+
+#### 2. 跨组件验证依赖
+
+```tsx
+// 部门级别的复合验证，依赖整个公司的数据
+const createDepartmentValidationRules = (company: Company, departmentId: string) => [
+  (department: Department) => {
+    const totalEmployeeSalary = department.employees.reduce(
+      (sum, emp) => sum + emp.salary, 0
+    );
+    if (totalEmployeeSalary > department.budget) {
+      return aRuleResultOf.invalid('员工薪资总和超出部门预算');
+    }
+    return aRuleResultOf.valid();
+  },
+  (department: Department) => {
+    const managerEmployee = department.employees.find(
+      emp => emp.id === department.manager
+    );
+    if (!managerEmployee && department.employees.length > 0) {
+      return aRuleResultOf.invalid('部门必须指定一个管理者');
+    }
+    return aRuleResultOf.valid();
+  }
+];
+```
+
+#### 3. 动态验证规则
+
+```tsx
+// 基于上下文的动态验证规则
+const emailUniquenessRules = useMemo(() => [
+  (email: string) => {
+    const duplicates = allEmployees.filter(emp => 
+      emp.id !== employee.id && emp.email === email
+    );
+    if (duplicates.length > 0) {
+      return aRuleResultOf.invalid('邮箱地址已被其他员工使用');
+    }
+    return aRuleResultOf.valid();
+  }
+], [allEmployees, employee.id]);
+```
+
+#### 4. 实时统计和反馈
+
+示例中包含了实时的统计信息显示：
+- 各层级的员工数量统计
+- 预算使用情况计算
+- 验证状态的可视化反馈
+
+这个复杂示例充分展示了 **No More Form** 在处理企业级复杂表单时的强大能力和灵活性。
+
 ## 结语
 
 **No More Form** 不是要完全取代传统的表单验证方案，而是为现代前端开发提供一种新的思路和选择。它将验证逻辑从表单结构中解耦出来，提供了更灵活、更强大、更易维护的验证解决方案。

@@ -7,6 +7,7 @@ import { GroupedValidation } from "./samples/basic/grouped-validation.tsx";
 import { CompositeSubjectValidation } from "./samples/advance/composite-subject-validation.tsx";
 import { DynamicRulesValidation } from "./samples/advance/dynamic-rules-validation.tsx";
 import { MultipleLayerSubjectValidation } from "./samples/advance/multiple-layer-subject-validation.tsx";
+import EnterpriseFormValidation from "./samples/advance/enterprise-form/index.tsx";
 
 type SampleType =
   | "即时验证"
@@ -16,7 +17,8 @@ type SampleType =
   | "分组验证"
   | "复合验证"
   | "动态验证"
-  | "多层次验证";
+  | "多层次验证"
+  | "企业级表单";
 const basicSamples: SampleType[] = [
   "即时验证",
   "变更时验证",
@@ -25,7 +27,12 @@ const basicSamples: SampleType[] = [
   "分组验证",
 ];
 
-const advancedSamples: SampleType[] = ["复合验证", "动态验证", "多层次验证"];
+const advancedSamples: SampleType[] = [
+  "复合验证",
+  "动态验证",
+  "多层次验证",
+  "企业级表单",
+];
 
 function Option(props: {
   onClick: () => void;
@@ -96,9 +103,12 @@ export function Sample() {
         <div>
           {currentSample === "复合验证" && <CompositeSubjectValidation />}
         </div>
-        <div>{currentSample === "动态验证" && <DynamicRulesValidation />}</div>
+        <div>{currentSample === "动态验证" && <DynamicRulesValidation />}</div>{" "}
         <div>
           {currentSample === "多层次验证" && <MultipleLayerSubjectValidation />}
+        </div>
+        <div>
+          {currentSample === "企业级表单" && <EnterpriseFormValidation />}
         </div>
       </div>
     </div>
