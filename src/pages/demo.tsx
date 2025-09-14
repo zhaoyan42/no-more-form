@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import type { Rule } from "@/validation/hooks/use-rule-result.ts";
 import { aRuleResultOf } from "@/validation/hooks/use-rule-result.ts";
 import { ValidationMessages } from "@/validation/components/validation-messages.tsx";
 import { useGroup } from "@/validation/hooks/use-group.ts";
 import { useValidation } from "@/validation/hooks/use-validation.ts";
-import { useValidationSet } from "@/validation/hooks/use-validation-set.ts";
+import { ValidationSet } from "@/validation/hooks/use-validation-set.ts";
 
 export const Demo = () => {
   // State 定义
@@ -14,21 +14,30 @@ export const Demo = () => {
 
   // 组状态
   const group = useGroup();
-  const validationSet = useValidationSet();
+  const validationSet = ValidationSet();
 
   const nameValidation = useValidation(name, [nameRequired, nameChinese], {
-    validationSets: [validationSet],
+    validationSetWriters: useMemo(
+      () => [validationSet.writer],
+      [validationSet.writer],
+    ),
   });
   const emailValidation = useValidation(email, [emailRequired, emailDomain], {
-    validationSets: [validationSet],
+    validationSetWriters: useMemo(
+      () => [validationSet.writer],
+      [validationSet.writer],
+    ),
   });
   const countValidation = useValidation(count, [countRange, countOdd], {
-    validationSets: [validationSet],
+    validationSetWriters: useMemo(
+      () => [validationSet.writer],
+      [validationSet.writer],
+    ),
   });
 
   const submit = () => {
     group.showResults();
-    if (validationSet.isValid) {
+    if (validationSet.result.isValid) {
       console.log("Form submitted:", { name, email, count });
     }
   };

@@ -28,12 +28,16 @@ export function DepartmentEditor({
   const budgetValidation = useValidation(
     department.budget,
     departmentBudgetRules,
-    validationOptions.withExtra(
-      createValidationGroup.department(
-        department.id,
-        `${department.name} 预算`,
-      ),
-      [departmentValidationSet],
+    useMemo(
+      () =>
+        validationOptions.withExtra(
+          createValidationGroup.department(
+            department.id,
+            `${department.name} 预算`,
+          ),
+          [departmentValidationSet.writer],
+        ),
+      [department.id, department.name, departmentValidationSet.writer],
     ),
   );
 
@@ -43,12 +47,16 @@ export function DepartmentEditor({
   const departmentValidation = useValidation(
     department,
     departmentRules,
-    validationOptions.withExtra(
-      createValidationGroup.department(
-        department.id,
-        department.name || "未命名部门",
-      ),
-      [departmentValidationSet],
+    useMemo(
+      () =>
+        validationOptions.withExtra(
+          createValidationGroup.department(
+            department.id,
+            department.name || "未命名部门",
+          ),
+          [departmentValidationSet.writer],
+        ),
+      [department.id, department.name, departmentValidationSet.writer],
     ),
   );
 
@@ -225,7 +233,8 @@ export function DepartmentEditor({
           department.employees.reduce((sum, emp) => sum + emp.salary, 0)
         ).toLocaleString()}
         <br />
-        验证状态：{departmentValidationSet.isValid ? "✅ 有效" : "❌ 无效"}
+        验证状态：
+        {departmentValidationSet.result.isValid ? "✅ 有效" : "❌ 无效"}
       </div>
     </div>
   );

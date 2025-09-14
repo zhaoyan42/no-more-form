@@ -11,9 +11,10 @@ export function GroupedValidationDisplay() {
   } = useValidationSetsContext();
 
   // 获取不同类型的验证
-  const companyValidations = companyValidationSet.getAllValidations();
-  const departmentValidations = departmentValidationSet.getAllValidations();
-  const employeeValidations = employeeValidationSet.getAllValidations();
+  const companyValidations = companyValidationSet.result.getAllValidations();
+  const departmentValidations =
+    departmentValidationSet.result.getAllValidations();
+  const employeeValidations = employeeValidationSet.result.getAllValidations();
 
   // 只显示有错误的分组
   const hasErrors = (validations: Validation<unknown>[]) =>

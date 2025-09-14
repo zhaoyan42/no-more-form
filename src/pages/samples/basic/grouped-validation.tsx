@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { ValidationMessages } from "@/validation/components/validation-messages.tsx";
 import { emailRules, nameRules } from "../common/rules.ts";
 import { useGroup } from "@/validation/hooks/use-group.ts";
 import { useValidation } from "@/validation/hooks/use-validation.ts";
-import { useValidationSet } from "@/validation/hooks/use-validation-set.ts";
+import { ValidationSet } from "@/validation/hooks/use-validation-set.ts";
 import "../styles/sample-styles.css";
 
 export function GroupedValidation() {
@@ -11,13 +11,13 @@ export function GroupedValidation() {
   const [email, setEmail] = useState<string>("");
 
   const group = useGroup();
-  const validationSet = useValidationSet();
+  const { result: validationSet, writer } = ValidationSet();
 
   const nameValidation = useValidation(name, nameRules, {
-    validationSets: [validationSet],
+    validationSetWriters: useMemo(() => [writer], [writer]),
   });
   const emailValidation = useValidation(email, emailRules, {
-    validationSets: [validationSet],
+    validationSetWriters: useMemo(() => [writer], [writer]),
   });
 
   const handleSubmit = () => {

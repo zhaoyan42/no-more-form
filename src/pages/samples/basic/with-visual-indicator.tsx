@@ -1,19 +1,22 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { ValidationMessages } from "@/validation/components/validation-messages.tsx";
 import { nameRules } from "../common/rules.ts";
 import { useGroup } from "@/validation/hooks/use-group.ts";
 import { useValidation } from "@/validation/hooks/use-validation.ts";
-import { useValidationSet } from "@/validation/hooks/use-validation-set.ts";
+import { ValidationSet } from "@/validation/hooks/use-validation-set.ts";
 import "../styles/sample-styles.css";
 
 export function WithVisualIndicator() {
   const [name, setName] = useState<string>("");
 
   const group = useGroup();
-  const validationSet = useValidationSet();
+  const {
+    result: { isValid },
+    writer,
+  } = ValidationSet();
 
   const validation = useValidation(name, nameRules, {
-    validationSets: [validationSet],
+    validationSetWriters: useMemo(() => [writer], [writer]),
   });
 
   return (
@@ -81,21 +84,21 @@ export function WithVisualIndicator() {
           >
             <button
               className="sample-button"
-              disabled={!validationSet.isValid}
+              disabled={!isValid}
               onClick={() => alert("表单提交成功！")}
             >
-              {validationSet.isValid ? "✅ 提交表单" : "❌ 无法提交"}
+              {isValid ? "✅ 提交表单" : "❌ 无法提交"}
             </button>
             <div
               style={{
                 padding: "8px 12px",
                 borderRadius: "6px",
-                background: validationSet.isValid ? "#d1fae5" : "#fee2e2",
-                color: validationSet.isValid ? "#065f46" : "#991b1b",
+                background: isValid ? "#d1fae5" : "#fee2e2",
+                color: isValid ? "#065f46" : "#991b1b",
                 fontWeight: "600",
               }}
             >
-              验证集状态: {validationSet.isValid ? "通过" : "未通过"}
+              验证集状态: {isValid ? "通过" : "未通过"}
             </div>
           </div>
         </div>

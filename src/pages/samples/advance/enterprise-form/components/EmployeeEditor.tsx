@@ -24,39 +24,66 @@ export function EmployeeEditor({
   const nameValidation = useValidation(
     employee.name,
     employeeNameRules,
-    validationOptions.withExtra(
-      createValidationGroup.employee(
+    useMemo(
+      () =>
+        validationOptions.withExtra(
+          createValidationGroup.employee(
+            employee.id,
+            `${employee.name} 姓名`,
+            employee.department,
+          ),
+          [employeeValidationSet.writer],
+        ),
+      [
         employee.id,
-        `${employee.name} 姓名`,
+        employee.name,
         employee.department,
-      ),
-      [employeeValidationSet],
+        employeeValidationSet.writer,
+      ],
     ),
   );
 
   const emailValidation = useValidation(
     employee.email,
     emailRules,
-    validationOptions.withExtra(
-      createValidationGroup.employee(
-        employee.id,
-        `${employee.name} 邮箱`,
+    useMemo(
+      () =>
+        validationOptions.withExtra(
+          createValidationGroup.employee(
+            employee.id,
+            `${employee.name} 邮箱`,
+            employee.department,
+          ),
+          [employeeValidationSet.writer],
+        ),
+      [
         employee.department,
-      ),
-      [employeeValidationSet],
+        employee.id,
+        employee.name,
+        employeeValidationSet.writer,
+      ],
     ),
   );
 
   const salaryValidation = useValidation(
     employee.salary,
     salaryRules,
-    validationOptions.withExtra(
-      createValidationGroup.employee(
-        employee.id,
-        `${employee.name} 薪资`,
+    useMemo(
+      () =>
+        validationOptions.withExtra(
+          createValidationGroup.employee(
+            employee.id,
+            `${employee.name} 薪资`,
+            employee.department,
+          ),
+          [employeeValidationSet.writer],
+        ),
+      [
         employee.department,
-      ),
-      [employeeValidationSet],
+        employee.id,
+        employee.name,
+        employeeValidationSet.writer,
+      ],
     ),
   );
 
@@ -68,13 +95,22 @@ export function EmployeeEditor({
   const emailUniquenessValidation = useValidation(
     employee.email,
     emailUniquenessRules,
-    validationOptions.withExtra(
-      createValidationGroup.employee(
-        employee.id,
-        `${employee.name} 邮箱唯一性`,
+    useMemo(
+      () =>
+        validationOptions.withExtra(
+          createValidationGroup.employee(
+            employee.id,
+            `${employee.name} 邮箱唯一性`,
+            employee.department,
+          ),
+          [employeeValidationSet.writer],
+        ),
+      [
         employee.department,
-      ),
-      [employeeValidationSet],
+        employee.id,
+        employee.name,
+        employeeValidationSet.writer,
+      ],
     ),
   );
 

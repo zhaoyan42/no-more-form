@@ -4,29 +4,37 @@ import {
   useValidation,
   validationOptions,
 } from "@/validation/hooks/use-validation.ts";
-import { useValidationSet } from "@/validation/hooks/use-validation-set.ts";
-import type { Company, Department, Employee } from "./model/types";
+import { ValidationSet } from "@/validation/hooks/use-validation-set.ts";
+import type { Company, Department } from "./model/types";
 import { createCompanyValidationRules } from "./validation/validation-rules";
 import { DepartmentEditor } from "./components/DepartmentEditor";
 import { defaultCompanyData } from "./model/data";
 import { ValidationSetsContext } from "./validation/ValidationSetContext";
 import { GroupedValidationDisplay } from "./components/GroupedValidationDisplay";
 import "../../styles/sample-styles.css";
+import type {
+  CompanyValidationGroup,
+  DepartmentValidationGroup,
+  EmployeeValidationGroup,
+} from "./validation/validation-groups";
 
 export function EnterpriseFormValidation() {
   const [company, setCompany] = useState<Company>(defaultCompanyData);
 
   // 创建多个独立的验证集合
-  const companyValidationSet = useValidationSet<Company>();
-  const departmentValidationSet = useValidationSet<Department>();
-  const employeeValidationSet = useValidationSet<Employee>();
+  const companyValidationSet = ValidationSet<CompanyValidationGroup>();
+  const departmentValidationSet = ValidationSet<DepartmentValidationGroup>();
+  const employeeValidationSet = ValidationSet<EmployeeValidationGroup>();
 
   // 公司级别的验证
   const companyRules = useMemo(() => createCompanyValidationRules(), []);
   const companyValidation = useValidation(
     company,
     companyRules,
-    validationOptions.withSets(companyValidationSet),
+    useMemo(
+      () => validationOptions.withWriters(companyValidationSet.writer),
+      [companyValidationSet.writer],
+    ),
   );
 
   const updateCompanyField = useCallback(
@@ -68,13 +76,13 @@ export function EnterpriseFormValidation() {
     // 触发所有验证
     companyValidation.setTouched();
 
-    if (companyValidationSet.isValid) {
+    if (companyValidationSet.result.isValid) {
       alert("企业信息验证通过，可以提交！");
       console.log("提交的企业数据：", company);
     } else {
       alert("请检查并修复所有验证错误后再提交");
     }
-  }, [companyValidation, companyValidationSet.isValid, company]);
+  }, [companyValidation, companyValidationSet.result.isValid, company]);
 
   return (
     <ValidationSetsContext.Provider
@@ -294,9 +302,9 @@ export function EnterpriseFormValidation() {
             <button
               onClick={handleSubmit}
               className="sample-button"
-              disabled={!companyValidationSet.isValid}
+              disabled={!companyValidationSet.result.isValid}
               style={{
-                backgroundColor: companyValidationSet.isValid
+                backgroundColor: companyValidationSet.result.isValid
                   ? "#007acc"
                   : "#6c757d",
                 fontSize: "18px",

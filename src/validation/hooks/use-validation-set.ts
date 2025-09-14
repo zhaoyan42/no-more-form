@@ -1,13 +1,17 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import type { Validation } from "./use-validation";
+
+export interface ValidationSet<TExtra = unknown> {
+  /** 验证集合的写入器 */
+  writer: ValidationSetWriter<TExtra>;
+  /** 验证集合 */
+  result: ValidationSetResult<TExtra>;
+}
 
 /**
  * 验证集合
  */
-export interface ValidationSet<TExtra = unknown> {
-  /** 添加验证项 */ add: (key: symbol, validation: Validation<unknown>) => void;
-  /** 删除验证项 */
-  remove: (key: symbol) => void;
+export interface ValidationSetResult<TExtra = unknown> {
   /** 整个验证集合是否有效 */
   isValid: boolean;
   /** 获取所有验证项 */
@@ -18,41 +22,36 @@ export interface ValidationSet<TExtra = unknown> {
   ) => Array<Validation<T>>;
 }
 
+export interface ValidationSetWriter<TExtra = unknown> {
+  /** 添加验证项 */ add: (key: symbol, validation: Validation<TExtra>) => void;
+  /** 删除验证项 */ remove: (key: symbol) => void;
+}
+
 /**
  * 使用验证集合
  * @returns 包含验证集合相关方法和状态的对象
  */
-export function useValidationSet<TExtra = unknown>(): ValidationSet<TExtra> {
+export function ValidationSet<TExtra = unknown>(): ValidationSet<TExtra> {
   const [validations, setValidations] = useState<
     Map<symbol, Validation<TExtra>>
   >(() => new Map());
 
-  /**
-   * 添加新的验证项
-   * @param {symbol} key 验证项的唯一标识
-   * @param {Validation<TExtra>} validation 验证项对象
-   */ const add = useCallback(
-    (key: symbol, validation: Validation<unknown>) => {
+  const writerRef = useRef<ValidationSetWriter<TExtra>>({
+    add: (key: symbol, validation: Validation<TExtra>) => {
       setValidations((prev) => {
         const next = new Map(prev);
-        next.set(key, validation as Validation<TExtra>);
+        next.set(key, validation);
         return next;
       });
     },
-    [],
-  );
-
-  /**
-   * 删除验证项
-   * @param {symbol} key 验证项的唯一标识
-   */
-  const remove = useCallback((key: symbol) => {
-    setValidations((prev) => {
-      const next = new Map(prev);
-      next.delete(key);
-      return next;
-    });
-  }, []);
+    remove: (key: symbol) => {
+      setValidations((prev) => {
+        const next = new Map(prev);
+        next.delete(key);
+        return next;
+      });
+    },
+  });
 
   /**
    * 整个验证集合是否有效
@@ -88,16 +87,17 @@ export function useValidationSet<TExtra = unknown>(): ValidationSet<TExtra> {
 
   /**
    * 计算并返回验证集合的状态
-   * @returns {ValidationSet<TExtra>} 包含验证集合相关方法和状态的对象
-   */ return useMemo(
-    () =>
-      ({
-        add,
-        remove,
+   * @returns { writer: ValidationSetWriter<TExtra>, validationSet: ValidationSet<TExtra> }
+   */
+  return useMemo(
+    () => ({
+      writer: writerRef.current,
+      result: {
         isValid,
         getAllValidations,
         getValidationsByExtra,
-      }) satisfies ValidationSet<TExtra> as ValidationSet<TExtra>,
-    [add, isValid, remove, getAllValidations, getValidationsByExtra],
+      },
+    }),
+    [isValid, getAllValidations, getValidationsByExtra],
   );
 }

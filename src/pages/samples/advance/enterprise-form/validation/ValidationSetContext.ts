@@ -1,11 +1,15 @@
 import { createContext, useContext } from "react";
 import type { ValidationSet } from "@/validation/hooks/use-validation-set";
-import type { Company, Department, Employee } from "../model/types";
+import type {
+  CompanyValidationGroup,
+  DepartmentValidationGroup,
+  EmployeeValidationGroup,
+} from "./validation-groups";
 
 export interface ValidationSetsContextValue {
-  companyValidationSet: ValidationSet<Company>;
-  departmentValidationSet: ValidationSet<Department>;
-  employeeValidationSet: ValidationSet<Employee>;
+  companyValidationSet: ValidationSet<CompanyValidationGroup>;
+  departmentValidationSet: ValidationSet<DepartmentValidationGroup>;
+  employeeValidationSet: ValidationSet<EmployeeValidationGroup>;
 }
 
 export const ValidationSetsContext =

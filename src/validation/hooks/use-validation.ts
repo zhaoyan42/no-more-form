@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useRuleSet } from "./use-rule-set";
 import { useRuleResultSet, type RuleResultSet } from "./use-rule-result-set";
 import { useFieldState } from "./use-states";
-import type { ValidationSet } from "./use-validation-set";
+import type { ValidationSetWriter } from "./use-validation-set";
 
 /**
  * 验证
@@ -30,7 +30,7 @@ export interface ValidationOptions<TExtra = undefined> {
   /** 额外的分组信息 */
   extra?: TExtra;
   /** 验证集合数组 */
-  validationSets?: ValidationSet<unknown>[];
+  validationSetWriters: ValidationSetWriter<TExtra>[];
 }
 
 // 便捷工具函数
@@ -38,17 +38,17 @@ export const validationOptions = {
   /** 创建带有额外分组信息的验证选项 */
   withExtra: <TExtra>(
     extra: TExtra,
-    validationSets?: ValidationSet<unknown>[],
+    validationSetWriters: ValidationSetWriter<TExtra>[],
   ): ValidationOptions<TExtra> => ({
     extra,
-    validationSets,
+    validationSetWriters,
   }),
 
   /** 创建只有验证集合的验证选项 */
-  withSets: (
-    ...validationSets: ValidationSet<unknown>[]
-  ): ValidationOptions<undefined> => ({
-    validationSets,
+  withWriters: <TExtra>(
+    ...validationSetWriters: ValidationSetWriter<TExtra>[]
+  ): ValidationOptions<TExtra> => ({
+    validationSetWriters,
   }),
 };
 
@@ -68,9 +68,9 @@ export function useValidation<TSubject, TExtra = undefined>(
 ): Validation<TExtra> {
   // 解析选项
   const extra = options?.extra ?? (undefined as TExtra);
-  const validationSets = useMemo(
-    () => options?.validationSets ?? [],
-    [options?.validationSets],
+  const validationSetWriters = useMemo(
+    () => options?.validationSetWriters ?? [],
+    [options?.validationSetWriters],
   );
 
   const {
@@ -113,15 +113,13 @@ export function useValidation<TSubject, TExtra = undefined>(
 
   useEffect(() => {
     // 将验证实例添加到验证集合
-    validationSets.forEach((set) =>
-      set.add(id, validation as Validation<unknown>),
-    );
+    validationSetWriters.forEach((writer) => writer.add(id, validation));
 
     return () => {
       // 从验证集合中移除验证实例
-      validationSets.forEach((set) => set.remove(id));
+      validationSetWriters.forEach((writer) => writer.remove(id));
     };
-  }, [id, validation, validationSets]);
+  }, [id, validation, validationSetWriters]);
 
   return validation;
 }
