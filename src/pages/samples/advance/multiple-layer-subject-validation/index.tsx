@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { ValidationMessages } from "@/validation/components/validation-messages.tsx";
 import { ageRules, itemsRules, nameRules } from "../../common/rules.ts";
 import { useValidation } from "@/validation/hooks/use-validation.ts";
-import { ValidationSet } from "@/validation/hooks/use-validation-set.ts";
+import { useValidationSet } from "@/validation/hooks/use-validation-set.ts";
 import { ValidationSetProvider } from "./components/ValidationSetProvider.tsx";
 import { useValidationSetContext } from "./context/ValidationSetContext.ts";
 import "../../styles/sample-styles.css";
@@ -140,7 +140,7 @@ export function MultipleLayerSubjectValidation() {
   const [items, setItems] = useState<Item[]>([]);
 
   // 创建一个验证集合来收集所有子项目的验证
-  const itemValidationSet = ValidationSet();
+  const itemValidationSet = useValidationSet();
 
   // 集合层面的验证
   const itemsValidation = useValidation(items, itemsRules);

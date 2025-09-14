@@ -4,7 +4,7 @@ import { aRuleResultOf } from "@/validation/hooks/use-rule-result.ts";
 import { ValidationMessages } from "@/validation/components/validation-messages.tsx";
 import { useGroup } from "@/validation/hooks/use-group.ts";
 import { useValidation } from "@/validation/hooks/use-validation.ts";
-import { ValidationSet } from "@/validation/hooks/use-validation-set.ts";
+import { useValidationSet } from "@/validation/hooks/use-validation-set.ts";
 
 export const Demo = () => {
   // State 定义
@@ -14,7 +14,7 @@ export const Demo = () => {
 
   // 组状态
   const group = useGroup();
-  const validationSet = ValidationSet();
+  const validationSet = useValidationSet();
 
   const nameValidation = useValidation(name, [nameRequired, nameChinese], {
     validationSetWriters: useMemo(

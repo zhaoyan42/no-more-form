@@ -3,7 +3,7 @@ import { ValidationMessages } from "@/validation/components/validation-messages.
 import { nameRules } from "../common/rules.ts";
 import { useGroup } from "@/validation/hooks/use-group.ts";
 import { useValidation } from "@/validation/hooks/use-validation.ts";
-import { ValidationSet } from "@/validation/hooks/use-validation-set.ts";
+import { useValidationSet } from "@/validation/hooks/use-validation-set.ts";
 import "../styles/sample-styles.css";
 
 export function WithVisualIndicator() {
@@ -13,7 +13,7 @@ export function WithVisualIndicator() {
   const {
     result: { isValid },
     writer,
-  } = ValidationSet();
+  } = useValidationSet();
 
   const validation = useValidation(name, nameRules, {
     validationSetWriters: useMemo(() => [writer], [writer]),

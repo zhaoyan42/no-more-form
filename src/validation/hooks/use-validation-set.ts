@@ -31,7 +31,7 @@ export interface ValidationSetWriter<TExtra = unknown> {
  * 使用验证集合
  * @returns 包含验证集合相关方法和状态的对象
  */
-export function ValidationSet<TExtra = unknown>(): ValidationSet<TExtra> {
+export function useValidationSet<TExtra = unknown>(): ValidationSet<TExtra> {
   const [validations, setValidations] = useState<
     Map<symbol, Validation<TExtra>>
   >(() => new Map());

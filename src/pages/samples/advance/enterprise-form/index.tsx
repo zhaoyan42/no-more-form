@@ -4,7 +4,7 @@ import {
   useValidation,
   validationOptions,
 } from "@/validation/hooks/use-validation.ts";
-import { ValidationSet } from "@/validation/hooks/use-validation-set.ts";
+import { useValidationSet } from "@/validation/hooks/use-validation-set.ts";
 import type { Company, Department } from "./model/types";
 import { createCompanyValidationRules } from "./validation/validation-rules";
 import { DepartmentEditor } from "./components/DepartmentEditor";
@@ -22,9 +22,9 @@ export function EnterpriseFormValidation() {
   const [company, setCompany] = useState<Company>(defaultCompanyData);
 
   // 创建多个独立的验证集合
-  const companyValidationSet = ValidationSet<CompanyValidationGroup>();
-  const departmentValidationSet = ValidationSet<DepartmentValidationGroup>();
-  const employeeValidationSet = ValidationSet<EmployeeValidationGroup>();
+  const companyValidationSet = useValidationSet<CompanyValidationGroup>();
+  const departmentValidationSet = useValidationSet<DepartmentValidationGroup>();
+  const employeeValidationSet = useValidationSet<EmployeeValidationGroup>();
 
   // 公司级别的验证
   const companyRules = useMemo(() => createCompanyValidationRules(), []);
